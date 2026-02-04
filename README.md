@@ -13,6 +13,8 @@ Prototype for normalizing fragmented supplier catalogs, converting units/pack si
 - [Agentic architecture](docs/agentic-architecture.md): Multi-agent design with reasoning, function calling, and ReAct loops.
 - [Architecture & flows](docs/architecture-and-flows.md): System diagrams, data flows, approval workflows.
 - [Data model](docs/data-model.md): ER diagram, Pydantic schemas, state transitions.
+- [MedusaJS architecture](docs/medusajs-architecture.md): Full MedusaJS 2.0 + LangGraph architecture with POS integrations, Vector DB, OCR, and deployment roadmap.
+- [Detailed flows](docs/detailed-flows.md): Step-by-step flows for catalog upload, POS→AI cart, GRN→invoice match, and prep plan generation.
 
 ## Quick start
 1. Install deps
