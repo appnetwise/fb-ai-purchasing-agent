@@ -1,0 +1,26 @@
+{
+  "pdf_options": {
+    "format": "A4",
+    "margin": {
+      "top": "20mm",
+      "right": "20mm",
+      "bottom": "20mm",
+      "left": "20mm"
+    },
+    "printBackground": true,
+    "displayHeaderFooter": true,
+    "headerTemplate": "<div style=\"font-size: 9px; margin: 0 auto; color: #666;\"><span class=\"title\"></span></div>",
+    "footerTemplate": "<div style=\"font-size: 9px; margin: 0 auto; color: #666;\"><span class=\"pageNumber\"></span> / <span class=\"totalPages\"></span></div>"
+  },
+  "stylesheet": [
+    "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown.min.css",
+    "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css"
+  ],
+  "body_class": "markdown-body",
+  "css": "body { max-width: 210mm; margin: 0 auto; padding: 20px; } pre code { white-space: pre-wrap; } img { max-width: 100%; } table { width: 100%; border-collapse: collapse; } th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }",
+  "highlight_style": "github",
+  "marked_options": {
+    "breaks": true,
+    "gfm": true
+  }
+}
