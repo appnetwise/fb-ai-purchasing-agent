@@ -10,11 +10,35 @@ Prototype for normalizing fragmented supplier catalogs, converting units/pack si
 - Produces comparable $/kg pricing so chefs can compare fairly.
 
 ## Architecture & Design
+
+> 🎯 **[📖 Complete Documentation Index](docs/INDEX.md)** — Quick navigation to all diagrams, flows, and specifications
+
+### 📊 Visual Architecture (START HERE!)
+- **[Complete Architecture Diagrams](docs/complete-architecture-visual.md)** ⭐ **[NEW]**
+  - System-wide layered architecture (8 layers)
+  - Restaurant AI agent mesh (Procurement, Inventory, Kitchen Copilot)
+  - Supplier Autonomous Sales Agent (Instant-Close, Upsell, Flash Deals)
+  - External API integrations (POS, Payment Gateway, Poppel E-Invoicing, WhatsApp)
+  - Event-driven real-time flows
+  - Dashboard & observability
+
+- **[Deployment & Infrastructure](docs/deployment-infrastructure.md)** ⭐ **[NEW]**
+  - Cloud infrastructure (AWS + GCP)
+  - Containerized services & Kubernetes orchestration
+  - Database clustering & backup strategy
+  - Security & compliance (UAE E-Invoicing, GDPR, PCI-DSS)
+  - Disaster recovery & high availability
+  - Monitoring with Datadog
+
+### 📚 Detailed Technical Docs
 - [Agentic architecture](docs/agentic-architecture.md): Multi-agent design with reasoning, function calling, and ReAct loops.
 - [Architecture & flows](docs/architecture-and-flows.md): System diagrams, data flows, approval workflows.
 - [Data model](docs/data-model.md): ER diagram, Pydantic schemas, state transitions.
-- [MedusaJS architecture](docs/medusajs-architecture.md): Full MedusaJS 2.0 + LangGraph architecture with POS integrations, Vector DB, OCR, and deployment roadmap.
-- [Detailed flows](docs/detailed-flows.md): Step-by-step flows for catalog upload, POS→AI cart, GRN→invoice match, and prep plan generation.
+- [MedusaJS architecture](docs/medusajs-architecture.md): Full MedusaJS 2.0 + LangGraph architecture with POS integrations, Vector DB, OCR.
+- [Autonomous Sales Agent](docs/autonomous_sales_agent.md): Supplier-side AI agent capabilities (instant quotes, basket-aware negotiation, liquidation).
+- [Detailed flows](docs/detailed-flows.md): Step-by-step flows for catalog upload, POS→AI cart, GRN→invoice match.
+- [System Design Deep-Dive](docs/system-design-deep-dive.md): Journey mapping, technical logic, matching algorithms, channel strategy.
+- [System Specification](docs/system-specification.md): Executive summary, platform strategy, value propositions.
 
 ## Quick start
 1. Install deps
