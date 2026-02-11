@@ -2,6 +2,12 @@
 
 Prototype for normalizing fragmented supplier catalogs, converting units/pack sizes, and enabling apples-to-apples price comparisons.
 
+## 📖 Documentation Website
+
+**🌐 Live Site:** [https://appnetwise.github.io/fb-ai-purchasing-agent/](https://appnetwise.github.io/fb-ai-purchasing-agent/)
+
+Complete documentation with interactive guides, architecture diagrams, and implementation details.
+
 ## What this MVP does
 - Parses pack sizes like `10 x 1kg`, `5lb`, `12/500g`, etc.
 - Normalizes units (kg, g, lb, oz) into a common base (kg).
