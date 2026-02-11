@@ -13,8 +13,17 @@ Prototype for normalizing fragmented supplier catalogs, converting units/pack si
 
 > 🎯 **[📖 Complete Documentation Index](docs/INDEX.md)** — Quick navigation to all diagrams, flows, and specifications
 
+### � Implementation-Ready Guides
+
+- **[Implementation Guide](docs/IMPLEMENTATION-GUIDE.md)** ⭐ **[NEW: SYSTEM OF RESULTS]**
+  - **7-Step Procurement Journey:** Intelligent Intake → SKU Normalization → Multi-Supplier Sourcing → Autonomous Negotiation → HITL Approval → GRN Tallying → 3-Way Invoice Match
+  - **Technical Stack:** MedusaJS 2.0, LangGraph, Weaviate/Chroma, Foodics POS, WhatsApp API, AWS Textract
+  - **UAE Compliance:** Poppel E-Invoicing, Ne'ma food waste reporting
+  - **Business Impact:** 40% faster decisions, 1-4% food cost reduction, 80% time savings
+  - **Agent Patterns:** ReAct loops, Human-in-the-Loop, autonomous negotiation guardrails
+
 ### 📊 Visual Architecture (START HERE!)
-- **[Complete Architecture Diagrams](docs/complete-architecture-visual.md)** ⭐ **[NEW]**
+- **[Complete Architecture Diagrams](docs/complete-architecture-visual.md)** ⭐ **[FLAGSHIP]**
   - System-wide layered architecture (8 layers)
   - Restaurant AI agent mesh (Procurement, Inventory, Kitchen Copilot)
   - Supplier Autonomous Sales Agent (Instant-Close, Upsell, Flash Deals)

@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project X | The Agentic AI Procurement SaaS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background-color: #f8fafc;
+        scroll-behavior: smooth;
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        height: 280px;
+      }
+      .nav-link {
+        position: relative;
+        transition: color 0.3s;
+      }
+      .nav-link::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -4px;
+        left: 0;
+        background-color: #3b82f6;
+        transition: width 0.3s;
+      }
+      .nav-link:hover::after {
+        width: 100%;
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+      }
+      .hero-gradient {
+        background: radial-gradient(circle at top right, #1e3a8a, #0f172a);
+      }
+      input[type="range"] {
+        accent-color: #3b82f6;
+      }
+      .step-active {
+        border-color: #3b82f6;
+        background-color: #eff6ff;
+      }
+      .arch-node:hover {
+        transform: scale(1.02);
+        border-color: #3b82f6;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .animate-fade {
+        animation: fadeIn 0.5s ease-out forwards;
+      }
+    </style>
+    <!-- Chosen Palette: Modern Enterprise (Slate, Royal Blue, Emerald, and Arctic White) -->
+    <!-- Application Structure Plan:
+         1. Dual-Track Navigation: Switch between "Product Blueprint" (The Tech) and "Value Dashboard" (The Business).
+         2. Hero: Highlighting the SaaS multi-tenant capability for UAE F&B.
+         3. Value Pillars: Interactive modules on Waste, Cost, Insights, and Speed.
+         4. Agentic Workflow: Step-by-step journey of the AI Procurement Manager.
+         5. Technical Architecture: Interactive stack explanation (Medusa, Python, etc.).
+         6. ROI Simulator: Multi-restaurant savings calculator.
+    -->
+    <!-- Visualization & Content Choices:
+         - Chart.js for all ROI and Waste visualizations.
+         - CSS Flex/Grid for the Architecture diagram (No SVG).
+         - Interactive JS state management for switching between "Value" and "Blueprint" modes.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  </head>
+  <body class="text-slate-800">
+    <!-- Sticky Navigation -->
+    <nav
+      class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-18 items-center py-4">
+          <div class="flex items-center space-x-2">
+            <div
+              class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold"
+            >
+              X
+            </div>
+            <span class="text-xl font-bold tracking-tight text-slate-900"
+              >Project X
+              <span class="text-blue-600 font-medium text-sm"
+                >SaaS AI</span
+              ></span
+            >
+          </div>
+          <div class="hidden md:flex space-x-8 items-center">
+            <button
+              onclick="showView('value')"
+              class="nav-link text-sm font-semibold text-slate-600 hover:text-blue-600"
+            >
+              Value Proposition
+            </button>
+            <button
+              onclick="showView('blueprint')"
+              class="nav-link text-sm font-semibold text-slate-600 hover:text-blue-600"
+            >
+              Technical Blueprint
+            </button>
+            <button
+              onclick="scrollToId('roi')"
+              class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-blue-700 transition shadow-md"
+            >
+              ROI Calculator
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero-gradient text-white py-20 px-4">
+      <div class="max-w-7xl mx-auto text-center">
+        <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
+          Agentic Procurement for the <br /><span class="text-blue-400"
+            >Next Generation of F&B</span
+          >
+        </h1>
+        <p class="text-lg md:text-xl text-slate-300 max-w-3xl mx-auto mb-10">
+          A multi-tenant SaaS platform that turns every restaurant's procurement
+          office into an AI-powered profit center. Automate SKU mapping,
+          benchmark UAE suppliers, and eliminate waste.
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+          <div
+            class="flex items-center space-x-2 bg-white/10 px-4 py-2 rounded-lg border border-white/20"
+          >
+            <span class="text-green-400">●</span>
+            <span class="text-sm font-medium">Multi-tenant Infrastructure</span>
+          </div>
+          <div
+            class="flex items-center space-x-2 bg-white/10 px-4 py-2 rounded-lg border border-white/20"
+          >
+            <span class="text-blue-400">●</span>
+            <span class="text-sm font-medium">Agentic AI Workflows</span>
+          </div>
+          <div
+            class="flex items-center space-x-2 bg-white/10 px-4 py-2 rounded-lg border border-white/20"
+          >
+            <span class="text-purple-400">●</span>
+            <span class="text-sm font-medium">Real-time UAE Benchmarking</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main View Switcher Section -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-10">
+      <!-- View Toggle -->
+      <div class="flex justify-center mb-10">
+        <div class="bg-slate-200 p-1 rounded-2xl inline-flex shadow-xl">
+          <button
+            id="tab-value"
+            onclick="showView('value')"
+            class="px-8 py-3 rounded-xl font-bold text-sm transition-all bg-white text-blue-600 shadow-sm"
+          >
+            Restaurant Value Dashboard
+          </button>
+          <button
+            id="tab-blueprint"
+            onclick="showView('blueprint')"
+            class="px-8 py-3 rounded-xl font-bold text-sm text-slate-600 hover:text-slate-900 transition-all"
+          >
+            Product & Tech Blueprint
+          </button>
+        </div>
+      </div>
+
+      <!-- Dynamic Container -->
+      <div id="view-container">
+        <!-- Content will be injected here -->
+      </div>
+    </main>
+
+    <!-- Global ROI Simulator (Available in both views) -->
+    <section
+      id="roi"
+      class="py-20 bg-slate-900 text-white overflow-hidden mt-20"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div>
+            <h2 class="text-3xl font-bold mb-6">SaaS Performance Estimator</h2>
+            <p class="text-slate-400 mb-10">
+              See how Project X scales its value across your entire portfolio.
+              Adjust the sliders to see the impact on your Bottom Line.
+            </p>
+
+            <div class="space-y-10">
+              <div>
+                <div class="flex justify-between mb-4">
+                  <label
+                    class="text-sm font-bold text-slate-300 uppercase tracking-widest"
+                    >Number of Outlets</label
+                  >
+                  <span id="val-outlets" class="text-blue-400 font-bold text-xl"
+                    >5</span
+                  >
+                </div>
+                <input
+                  type="range"
+                  id="input-outlets"
+                  min="1"
+                  max="50"
+                  step="1"
+                  value="5"
+                  class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer"
+                />
+              </div>
+              <div>
+                <div class="flex justify-between mb-4">
+                  <label
+                    class="text-sm font-bold text-slate-300 uppercase tracking-widest"
+                    >Avg. Monthly Spend per Outlet (AED)</label
+                  >
+                  <span id="val-spend" class="text-blue-400 font-bold text-xl"
+                    >80,000</span
+                  >
+                </div>
+                <input
+                  type="range"
+                  id="input-spend"
+                  min="10000"
+                  max="500000"
+                  step="5000"
+                  value="80000"
+                  class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="relative">
+            <div
+              class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl blur opacity-25"
+            ></div>
+            <div
+              class="relative bg-slate-800 border border-slate-700 rounded-3xl p-10 shadow-2xl"
+            >
+              <div class="text-center mb-10">
+                <span
+                  class="text-xs font-bold text-blue-400 uppercase tracking-widest"
+                  >Estimated Group Yearly Savings</span
+                >
+                <div id="total-savings" class="text-5xl font-black mt-2">
+                  AED 216,000
+                </div>
+              </div>
+              <div class="space-y-6">
+                <div
+                  class="flex justify-between items-center p-4 bg-slate-900/50 rounded-xl border border-slate-700"
+                >
+                  <div class="flex items-center space-x-3">
+                    <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
+                    <span class="text-sm text-slate-300"
+                      >Procurement Optimization (4.5%)</span
+                    >
+                  </div>
+                  <span id="save-procure" class="font-bold text-emerald-400"
+                    >AED 108k</span
+                  >
+                </div>
+                <div
+                  class="flex justify-between items-center p-4 bg-slate-900/50 rounded-xl border border-slate-700"
+                >
+                  <div class="flex items-center space-x-3">
+                    <div class="w-2 h-2 rounded-full bg-blue-400"></div>
+                    <span class="text-sm text-slate-300"
+                      >Waste Reduction (2.5%)</span
+                    >
+                  </div>
+                  <span id="save-waste" class="font-bold text-blue-400"
+                    >AED 60k</span
+                  >
+                </div>
+                <div
+                  class="flex justify-between items-center p-4 bg-slate-900/50 rounded-xl border border-slate-700"
+                >
+                  <div class="flex items-center space-x-3">
+                    <div class="w-2 h-2 rounded-full bg-purple-400"></div>
+                    <span class="text-sm text-slate-300"
+                      >Admin Efficiency Gains</span
+                    >
+                  </div>
+                  <span id="save-admin" class="font-bold text-purple-400"
+                    >AED 48k</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white py-12 border-t border-slate-200">
+      <div class="max-w-7xl mx-auto px-4 text-center">
+        <div class="flex justify-center space-x-2 mb-6">
+          <div
+            class="w-6 h-6 bg-slate-900 rounded flex items-center justify-center text-white text-[10px] font-bold"
+          >
+            X
+          </div>
+          <span class="font-bold text-slate-900">Project X Platforms</span>
+        </div>
+        <p class="text-slate-500 text-sm">
+          Empowering F&B operators across the UAE with Agentic Intelligence.
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      // --- State Management ---
+      let currentView = "value";
+      let activeChart = null;
+
+      // --- View Injection Logic ---
+      function showView(view) {
+        currentView = view;
+        const container = document.getElementById("view-container");
+        const tabVal = document.getElementById("tab-value");
+        const tabBlue = document.getElementById("tab-blueprint");
+
+        if (view === "value") {
+          tabVal.className =
+            "px-8 py-3 rounded-xl font-bold text-sm transition-all bg-white text-blue-600 shadow-sm";
+          tabBlue.className =
+            "px-8 py-3 rounded-xl font-bold text-sm text-slate-600 hover:text-slate-900 transition-all";
+          renderValueView(container);
+        } else {
+          tabBlue.className =
+            "px-8 py-3 rounded-xl font-bold text-sm transition-all bg-white text-blue-600 shadow-sm";
+          tabVal.className =
+            "px-8 py-3 rounded-xl font-bold text-sm text-slate-600 hover:text-slate-900 transition-all";
+          renderBlueprintView(container);
+        }
+        window.scrollTo({ top: 400, behavior: "smooth" });
+      }
+
+      // --- Value View Components ---
+      function renderValueView(container) {
+        container.innerHTML = `
+                <div class="animate-fade">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                        <div class="glass-card p-6 rounded-3xl shadow-sm border border-slate-200">
+                            <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center text-xl mb-4">🗑️</div>
+                            <h3 class="font-bold text-slate-900">Waste Intelligence</h3>
+                            <p class="text-xs text-slate-500 mt-2">Flagging variance between POS sales and GRN intake.</p>
+                        </div>
+                        <div class="glass-card p-6 rounded-3xl shadow-sm border border-slate-200">
+                            <div class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-xl mb-4">💰</div>
+                            <h3 class="font-bold text-slate-900">Cost Reduction</h3>
+                            <p class="text-xs text-slate-500 mt-2">Automated benchmark across UAE supplier network.</p>
+                        </div>
+                        <div class="glass-card p-6 rounded-3xl shadow-sm border border-slate-200">
+                            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-xl mb-4">🔍</div>
+                            <h3 class="font-bold text-slate-900">Real-time Insights</h3>
+                            <p class="text-xs text-slate-500 mt-2">Item-level inflation tracking and menu engineering.</p>
+                        </div>
+                        <div class="glass-card p-6 rounded-3xl shadow-sm border border-slate-200">
+                            <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-xl mb-4">⚡</div>
+                            <h3 class="font-bold text-slate-900">Decision Speed</h3>
+                            <p class="text-xs text-slate-500 mt-2">PO approval workflows that take seconds, not hours.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-[2.5rem] p-10 shadow-sm border border-slate-100">
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                            <div class="lg:col-span-7">
+                                <h2 class="text-3xl font-bold text-slate-900 mb-6">Unlocking Hidden Margins</h2>
+                                <p class="text-slate-600 mb-8 leading-relaxed">
+                                    Project X uses a "Theoretical vs Actual" (TvA) model. By connecting your POS and your Procurement, the AI identifies exactly where ingredients go missing—whether it's over-portioning in the kitchen or shrinkage in the store room.
+                                </p>
+                                <div class="space-y-4">
+                                    <div class="flex items-center p-4 bg-slate-50 rounded-2xl">
+                                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs mr-4">1</span>
+                                        <span class="text-sm font-medium">Automatic Price Matching to UAE Market Averages</span>
+                                    </div>
+                                    <div class="flex items-center p-4 bg-slate-50 rounded-2xl">
+                                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs mr-4">2</span>
+                                        <span class="text-sm font-medium">Predictive Ordering based on historical traffic patterns</span>
+                                    </div>
+                                    <div class="flex items-center p-4 bg-slate-50 rounded-2xl">
+                                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs mr-4">3</span>
+                                        <span class="text-sm font-medium">Digital GRN captures weight discrepancies on delivery</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="lg:col-span-5 bg-slate-50 p-6 rounded-3xl border border-slate-100">
+                                <div class="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Avg. Impact per Outlet</div>
+                                <div class="chart-container">
+                                    <canvas id="impactChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        initImpactChart();
+      }
+
+      // --- Blueprint View Components ---
+      function renderBlueprintView(container) {
+        container.innerHTML = `
+                <div class="animate-fade">
+                    <div class="bg-white rounded-[2.5rem] p-10 shadow-sm border border-slate-100 mb-10">
+                        <h2 class="text-3xl font-bold text-slate-900 mb-4 text-center">The Agentic AI Workflow</h2>
+                        <p class="text-slate-500 text-center mb-12 max-w-2xl mx-auto">How the "Digital Procurement Manager" handles the lifecycle from request to payment.</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 relative">
+                            <!-- Step 1 -->
+                            <div class="p-6 rounded-3xl border-2 border-slate-100 hover:border-blue-500 transition cursor-pointer group">
+                                <div class="text-blue-600 font-black text-4xl mb-4 opacity-20 group-hover:opacity-100 transition">01</div>
+                                <h4 class="font-bold text-slate-900">Demand Sync</h4>
+                                <p class="text-xs text-slate-500 mt-2">AI pulls POS/Inventory data to forecast needs.</p>
+                            </div>
+                            <!-- Step 2 -->
+                            <div class="p-6 rounded-3xl border-2 border-slate-100 hover:border-blue-500 transition cursor-pointer group">
+                                <div class="text-blue-600 font-black text-4xl mb-4 opacity-20 group-hover:opacity-100 transition">02</div>
+                                <h4 class="font-bold text-slate-900">Market Benchmarking</h4>
+                                <p class="text-xs text-slate-500 mt-2">Agent splits the PO between suppliers for best price.</p>
+                            </div>
+                            <!-- Step 3 -->
+                            <div class="p-6 rounded-3xl border-2 border-slate-100 hover:border-blue-500 transition cursor-pointer group">
+                                <div class="text-blue-600 font-black text-4xl mb-4 opacity-20 group-hover:opacity-100 transition">03</div>
+                                <h4 class="font-bold text-slate-900">Digital Receiving</h4>
+                                <p class="text-xs text-slate-500 mt-2">Mobile GRN checks weights/quality at the door.</p>
+                            </div>
+                            <!-- Step 4 -->
+                            <div class="p-6 rounded-3xl border-2 border-slate-100 hover:border-blue-500 transition cursor-pointer group">
+                                <div class="text-blue-600 font-black text-4xl mb-4 opacity-20 group-hover:opacity-100 transition">04</div>
+                                <h4 class="font-bold text-slate-900">3-Way Match</h4>
+                                <p class="text-xs text-slate-500 mt-2">PO = GRN = Invoice. Auto-approve for payment.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Architecture Diagram -->
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-10">
+                        <div class="lg:col-span-8 bg-slate-900 rounded-[2.5rem] p-10 text-white">
+                            <h3 class="text-xl font-bold mb-8">Technical Architecture Stack</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div class="p-6 rounded-2xl bg-slate-800 border border-slate-700 arch-node">
+                                    <div class="text-blue-400 text-xs font-bold uppercase mb-2">Frontend</div>
+                                    <div class="font-bold">Next.js PWA</div>
+                                    <div class="text-[10px] text-slate-500 mt-1">Tailwind / Offline Sync</div>
+                                </div>
+                                <div class="p-6 rounded-2xl bg-blue-600 border border-blue-400 arch-node">
+                                    <div class="text-white/70 text-xs font-bold uppercase mb-2">AI Engine</div>
+                                    <div class="font-bold">FastAPI / LangChain</div>
+                                    <div class="text-[10px] text-white/70 mt-1">Vector DB / SKU Mapping</div>
+                                </div>
+                                <div class="p-6 rounded-2xl bg-slate-800 border border-slate-700 arch-node">
+                                    <div class="text-blue-400 text-xs font-bold uppercase mb-2">Persistence</div>
+                                    <div class="font-bold">PostgreSQL</div>
+                                    <div class="text-[10px] text-slate-500 mt-1">Multi-tenant Schema</div>
+                                </div>
+                                <div class="md:col-span-3 p-6 rounded-2xl bg-slate-800/50 border border-slate-700 text-center italic text-sm text-slate-400">
+                                    The core system is built on a Headless Commerce foundation (Medusa.js) with custom procurement modules for many-to-many order routing.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-4 bg-white rounded-[2.5rem] p-10 border border-slate-100 flex flex-col justify-center">
+                            <h4 class="font-bold text-slate-900 mb-4">SaaS Multi-tenancy</h4>
+                            <p class="text-sm text-slate-500 mb-6 leading-relaxed">Each restaurant group operates in an isolated environment while benefiting from global SKU intelligence and price anonymized benchmarks.</p>
+                            <div class="space-y-3">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-widest">Integrations</div>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="px-3 py-1 bg-slate-100 rounded-full text-xs font-bold text-slate-600">Foodics</span>
+                                    <span class="px-3 py-1 bg-slate-100 rounded-full text-xs font-bold text-slate-600">Xero</span>
+                                    <span class="px-3 py-1 bg-slate-100 rounded-full text-xs font-bold text-slate-600">Oracle MICROS</span>
+                                    <span class="px-3 py-1 bg-slate-100 rounded-full text-xs font-bold text-slate-600">WhatsApp API</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+      }
+
+      // --- Charts Implementation ---
+      function initImpactChart() {
+        const ctx = document.getElementById("impactChart").getContext("2d");
+        if (activeChart) activeChart.destroy();
+        activeChart = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: ["Manual Procurement", "Project X AI"],
+            datasets: [
+              {
+                label: "Inventory Waste",
+                data: [12, 3],
+                backgroundColor: "#f87171",
+              },
+              {
+                label: "Admin Overhead",
+                data: [15, 2],
+                backgroundColor: "#fbbf24",
+              },
+              {
+                label: "Purchase Variance",
+                data: [8, 1],
+                backgroundColor: "#60a5fa",
+              },
+            ],
+          },
+          options: {
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: "bottom",
+                labels: { boxWidth: 10, font: { size: 10 } },
+              },
+            },
+            scales: {
+              x: { stacked: true },
+              y: {
+                stacked: true,
+                title: { display: true, text: "% of COGS Leakage" },
+              },
+            },
+          },
+        });
+      }
+
+      // --- ROI Calculator Logic ---
+      function calculateROI() {
+        const outlets = parseInt(
+          document.getElementById("input-outlets").value,
+        );
+        const spend = parseInt(document.getElementById("input-spend").value);
+
+        document.getElementById("val-outlets").innerText = outlets;
+        document.getElementById("val-spend").innerText = spend.toLocaleString();
+
+        const totalSpend = outlets * spend * 12;
+
+        // Estimates based on UAE market averages
+        const procureSave = totalSpend * 0.045; // 4.5% better pricing
+        const wasteSave = totalSpend * 0.025; // 2.5% waste reduction
+        const adminSave = outlets * 12 * 20 * 60; // 20 hours saved/mo per outlet @ 60 AED/hr
+
+        const total = procureSave + wasteSave + adminSave;
+
+        document.getElementById("save-procure").innerText =
+          `AED ${(procureSave / 1000).toFixed(0)}k`;
+        document.getElementById("save-waste").innerText =
+          `AED ${(wasteSave / 1000).toFixed(0)}k`;
+        document.getElementById("save-admin").innerText =
+          `AED ${(adminSave / 1000).toFixed(0)}k`;
+        document.getElementById("total-savings").innerText =
+          `AED ${Math.round(total).toLocaleString()}`;
+      }
+
+      // Helpers
+      function scrollToId(id) {
+        document.getElementById(id).scrollIntoView({ behavior: "smooth" });
+      }
+
+      // Init
+      window.onload = () => {
+        showView("value");
+        calculateROI();
+
+        // Slider listeners
+        document
+          .getElementById("input-outlets")
+          .addEventListener("input", calculateROI);
+        document
+          .getElementById("input-spend")
+          .addEventListener("input", calculateROI);
+      };
+    </script>
+  </body>
+</html>

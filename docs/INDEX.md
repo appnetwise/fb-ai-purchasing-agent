@@ -7,10 +7,11 @@
 ## 🎯 Quick Navigation
 
 ### 🚀 Start Here (Executives & PMs)
-1. **[Omnichannel WhatsApp-First (Visual Edition)](omnichannel-whatsapp-architecture-v2.md)** ⭐ **NEW** — Beautiful visuals, easy to scan
-2. **[Complete Architecture Diagrams](complete-architecture-visual.md)** — Comprehensive visual overview of the entire system
-3. **[System Specification](system-specification.md)** — Executive summary, strategy, business value
-4. **[Autonomous Sales Agent](autonomous_sales_agent.md)** — Supplier-side value proposition
+1. **[Procurement Manager Brainstorm](../PROCUREMENT-MANAGER-BRAINSTORM.md)** ⭐ **STRATEGIC** — Complete use case exploration: user journeys, business benefits, competitive advantages
+2. **[Implementation Guide](IMPLEMENTATION-GUIDE.md)** ⭐ **TECHNICAL** — 7-step autonomous procurement journey, tech stack, UAE compliance
+3. **[System Specification](system-specification.md)** — Executive summary, platform strategy, business value
+4. **[Complete Architecture Diagrams](complete-architecture-visual.md)** — Comprehensive visual overview of entire system
+5. **[Autonomous Sales Agent](autonomous_sales_agent.md)** — Supplier-side value proposition
 
 ### 🏗️ Architecture (Engineers)
 1. **[Omnichannel WhatsApp-First (Technical)](omnichannel-whatsapp-architecture.md)** — Detailed technical architecture
