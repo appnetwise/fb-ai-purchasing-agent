@@ -1,0 +1,43 @@
+# Jekyll configuration for GitHub Pages (optional - for markdown rendering)
+
+# Site settings
+title: F&B AI Procurement Manager
+description: Transform manual F&B procurement into autonomous, intelligent orchestration with AI agents
+author: AppNetWise
+email: contact@appnetwise.com
+
+# Build settings
+markdown: kramdown
+theme: minima
+
+# Enable relative links
+baseurl: "/fb-ai-purchasing-agent"
+url: "https://appnetwise.github.io"
+
+# Collections
+collections:
+  docs:
+    output: true
+    permalink: /:collection/:path/
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "docs"
+    values:
+      layout: "default"
+
+# Exclude from processing
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap

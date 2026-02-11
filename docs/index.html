@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-Powered Procurement Manager for F&B Industry - Transform manual procurement into autonomous, intelligent orchestration">
+    <title>F&B AI Procurement Manager | Digital Transformation Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            color: white;
+        }
+        
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        header p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            max-width: 800px;
+            margin: 0 auto 40px;
+        }
+        
+        .tagline {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #ffd700;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn-primary {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+        
+        .content {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            margin-top: -40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card h3 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .feature-card {
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .feature-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .docs-section {
+            margin: 60px 0;
+        }
+        
+        .docs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .doc-card {
+            padding: 25px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #333;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        
+        .doc-card:hover {
+            border-color: #667eea;
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+        
+        .doc-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .doc-card .badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .doc-card .badge.new {
+            background: #ffd700;
+            color: #333;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+            margin-top: 60px;
+        }
+        
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+        
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .tech-badge {
+            background: #667eea;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="tagline">🤖 From "System of Record" → "System of Results"</div>
+            <h1>F&B AI Procurement Manager</h1>
+            <p>Transform fragmented, manual F&B procurement into an intelligent, automated marketplace with AI agents acting as digital procurement managers</p>
+            
+            <div class="cta-buttons">
+                <a href="#documentation" class="btn btn-primary">📖 Read Documentation</a>
+                <a href="https://github.com/appnetwise/fb-ai-purchasing-agent" class="btn btn-secondary">💻 View on GitHub</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="content">
+            <section class="stats">
+                <div class="stat-card">
+                    <h3>40%</h3>
+                    <p>Faster Decision-Making</p>
+                </div>
+                <div class="stat-card">
+                    <h3>1-4%</h3>
+                    <p>Food Cost Reduction</p>
+                </div>
+                <div class="stat-card">
+                    <h3>80%</h3>
+                    <p>Time Savings</p>
+                </div>
+                <div class="stat-card">
+                    <h3>100%</h3>
+                    <p>UAE Compliance</p>
+                </div>
+            </section>
+
+            <section>
+                <h2>🎯 What We're Building</h2>
+                <p style="font-size: 1.1rem; margin-bottom: 30px;">
+                    An AI-powered B2B procurement platform for the F&B industry that replaces manual, fragmented workflows with autonomous agents handling sourcing, negotiation, and reconciliation - while keeping humans in strategic control.
+                </p>
+
+                <div class="features">
+                    <div class="feature-card">
+                        <h3>🤖 AI Procurement Agent</h3>
+                        <p>Predicts demand, generates smart carts, compares suppliers, and recommends optimal sourcing decisions - all before you run out of stock.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>🏷️ SKU Normalization</h3>
+                        <p>Semantic search enables apples-to-apples price comparison across suppliers, even with different pack sizes and naming conventions.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>💬 Autonomous Negotiation</h3>
+                        <p>AI negotiates with suppliers via WhatsApp within pre-set guardrails, delivering 12-15% savings on uncontracted items.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>✅ 3-Way Invoice Match</h3>
+                        <p>Automated reconciliation (PO ↔ GRN ↔ Invoice) with OCR and dispute generation. 95%+ auto-processed.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>🇦🇪 UAE Compliance</h3>
+                        <p>Built-in Poppel e-invoicing integration and Ne'ma food waste reporting. 100% compliance on autopilot.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>📊 Real-Time Intelligence</h3>
+                        <p>POS integration (Foodics, Oracle Simphony) powers demand forecasting and inventory optimization.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>🏗️ Technical Stack</h2>
+                <div class="tech-stack">
+                    <span class="tech-badge">MedusaJS 2.0</span>
+                    <span class="tech-badge">LangGraph</span>
+                    <span class="tech-badge">GPT-4o</span>
+                    <span class="tech-badge">Weaviate</span>
+                    <span class="tech-badge">Prophet ML</span>
+                    <span class="tech-badge">Foodics API</span>
+                    <span class="tech-badge">WhatsApp Business</span>
+                    <span class="tech-badge">AWS Textract</span>
+                    <span class="tech-badge">Poppel</span>
+                    <span class="tech-badge">PostgreSQL</span>
+                    <span class="tech-badge">Redis</span>
+                    <span class="tech-badge">Docker/K8s</span>
+                </div>
+            </section>
+
+            <section id="documentation" class="docs-section">
+                <h2>📚 Documentation</h2>
+                <p style="margin-bottom: 30px; font-size: 1.1rem;">
+                    Comprehensive guides covering strategy, architecture, implementation, and business value.
+                </p>
+
+                <div class="docs-grid">
+                    <a href="../PROCUREMENT-MANAGER-BRAINSTORM.md" class="doc-card">
+                        <span class="badge">Strategic</span>
+                        <h4>🎯 Procurement Manager Brainstorm</h4>
+                        <p>Complete use case exploration: user journeys, business benefits, ROI analysis, competitive advantages, and go-to-market strategy.</p>
+                    </a>
+
+                    <a href="IMPLEMENTATION-GUIDE.md" class="doc-card">
+                        <span class="badge new">New</span>
+                        <h4>🚀 Implementation Guide</h4>
+                        <p>7-step autonomous procurement journey with tech stack specifications, UAE compliance, agent design patterns, and code examples.</p>
+                    </a>
+
+                    <a href="complete-architecture-visual.md" class="doc-card">
+                        <span class="badge">Flagship</span>
+                        <h4>📊 Complete Architecture Diagrams</h4>
+                        <p>System-wide visual overview: 8 layers, AI agent mesh, external integrations, event-driven flows, and observability.</p>
+                    </a>
+
+                    <a href="system-specification.md" class="doc-card">
+                        <span class="badge">Executive</span>
+                        <h4>📋 System Specification</h4>
+                        <p>Executive summary, platform strategy, technology stack, and strategic value propositions for stakeholders.</p>
+                    </a>
+
+                    <a href="medusajs-architecture.md" class="doc-card">
+                        <span class="badge">Technical</span>
+                        <h4>🛠️ MedusaJS Architecture</h4>
+                        <p>Backend framework details, custom modules, B2B logic, and commerce layer implementation.</p>
+                    </a>
+
+                    <a href="agentic-architecture.md" class="doc-card">
+                        <span class="badge">Technical</span>
+                        <h4>🤖 Agentic Architecture</h4>
+                        <p>Multi-agent design patterns, ReAct loops, function calling, and LangGraph orchestration.</p>
+                    </a>
+
+                    <a href="deployment-infrastructure.md" class="doc-card">
+                        <span class="badge">DevOps</span>
+                        <h4>☁️ Deployment & Infrastructure</h4>
+                        <p>Cloud architecture (AWS/GCP), Kubernetes, security, compliance, disaster recovery, and monitoring.</p>
+                    </a>
+
+                    <a href="autonomous_sales_agent.md" class="doc-card">
+                        <span class="badge">Supplier Side</span>
+                        <h4>💼 Autonomous Sales Agent</h4>
+                        <p>Supplier-side AI capabilities: instant quotes, basket-aware upsells, flash deals, and smart collections.</p>
+                    </a>
+
+                    <a href="data-model.md" class="doc-card">
+                        <span class="badge">Technical</span>
+                        <h4>🗄️ Data Model</h4>
+                        <p>Database schema, ER diagrams, Pydantic models, and state machine definitions.</p>
+                    </a>
+                </div>
+            </section>
+
+            <section style="margin-top: 60px; padding: 40px; background: #f8f9fa; border-radius: 12px;">
+                <h2>📈 Business Impact</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 30px;">
+                    <div>
+                        <h3 style="color: #667eea; margin-bottom: 15px;">For Restaurants</h3>
+                        <ul style="line-height: 2; font-size: 1.05rem;">
+                            <li>💰 <strong>$86,400/year</strong> savings per restaurant</li>
+                            <li>⏱️ <strong>7.5 hours/week</strong> time savings</li>
+                            <li>📉 <strong>60% waste reduction</strong> via forecasting</li>
+                            <li>🎯 <strong>10% leakage eliminated</strong> (GRN tallying)</li>
+                            <li>✅ <strong>Zero compliance effort</strong> (automatic)</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 style="color: #667eea; margin-bottom: 15px;">For Suppliers</h3>
+                        <ul style="line-height: 2; font-size: 1.05rem;">
+                            <li>📈 <strong>+30-50% revenue</strong> from same customer base</li>
+                            <li>⚡ <strong>2-second response time</strong> (vs 2-4 hours)</li>
+                            <li>💹 <strong>40% conversion rate</strong> (vs 25% manual)</li>
+                            <li>💸 <strong>70% inventory recovery</strong> via flash deals</li>
+                            <li>🔄 <strong>40% faster payments</strong> (smart collections)</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section style="margin-top: 60px; text-align: center; padding: 40px;">
+                <h2>🚀 Ready to Transform F&B Procurement?</h2>
+                <p style="font-size: 1.2rem; margin: 20px 0 40px; color: #666;">
+                    From manual chaos to autonomous excellence. Digital procurement managers working 24/7.
+                </p>
+                <div class="cta-buttons">
+                    <a href="https://github.com/appnetwise/fb-ai-purchasing-agent" class="btn btn-primary" style="background: #667eea; color: white;">
+                        ⭐ Star on GitHub
+                    </a>
+                    <a href="INDEX.md" class="btn btn-secondary" style="background: white; color: #667eea; border: 2px solid #667eea;">
+                        📖 Full Documentation Index
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 AppNetWise | F&B AI Procurement Manager</p>
+            <p style="margin-top: 10px; opacity: 0.8;">Built with MedusaJS • LangGraph • GPT-4o • Weaviate</p>
+        </div>
+    </footer>
+</body>
+</html>
