@@ -1,0 +1,1889 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ProcureIQ | Agentic AI Procurement Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <style>
+    body {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      background-color: #f8fafc;
+      scroll-behavior: smooth;
+    }
+
+    .chart-container {
+      position: relative;
+      width: 100%;
+      height: 280px;
+      padding: 20px;
+      background: linear-gradient(135deg,
+          rgba(255, 255, 255, 0.9) 0%,
+          rgba(248, 250, 252, 0.9) 100%);
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .nav-link {
+      position: relative;
+      transition: color 0.3s;
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -4px;
+      left: 0;
+      background-color: #3b82f6;
+      transition: width 0.3s;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+    }
+
+    .hero-gradient {
+      background: linear-gradient(135deg,
+          #0f172a 0%,
+          #1e3a8a 50%,
+          #3b82f6 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-gradient::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle,
+          rgba(59, 130, 246, 0.3) 0%,
+          transparent 70%);
+      animation: pulse 8s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 0.5;
+      }
+
+      50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+      }
+    }
+
+    input[type="range"] {
+      accent-color: #3b82f6;
+    }
+
+    .arch-block {
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 2px solid #e2e8f0;
+    }
+
+    .arch-block:hover {
+      border-color: #3b82f6;
+      background-color: #eff6ff;
+      transform: translateY(-2px);
+    }
+
+    .arch-block.active {
+      border-color: #2563eb;
+      background-color: #dbeafe;
+    }
+
+    .sprint-card {
+      transition: all 0.3s ease;
+      border: 1px solid #e2e8f0;
+      cursor: pointer;
+    }
+
+    .sprint-card.active {
+      border-color: #2563eb;
+      background-color: #eff6ff;
+      box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.1);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade {
+      animation: fadeIn 0.8s ease-out forwards;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+
+    .animate-float {
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes slideInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-50px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .animate-slide-left {
+      animation: slideInLeft 0.8s ease-out forwards;
+    }
+
+    .interactive-card {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .interactive-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow:
+        0 20px 40px -10px rgba(59, 130, 246, 0.3),
+        0 0 0 1px rgba(59, 130, 246, 0.1);
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg,
+          rgba(59, 130, 246, 0.1) 0%,
+          rgba(147, 51, 234, 0.1) 100%);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 30px -5px rgba(59, 130, 246, 0.2);
+      border-color: rgba(59, 130, 246, 0.4);
+    }
+
+    /* === Procurement Journey Styles === */
+    .journey-wrapper {
+      position: relative;
+      background: #0a0f1e;
+      color: #e2e8f0;
+      overflow: hidden;
+    }
+
+    .bg-mesh {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .bg-mesh::before,
+    .bg-mesh::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.15;
+      animation: meshFloat 20s ease-in-out infinite;
+    }
+
+    .bg-mesh::before {
+      width: 600px;
+      height: 600px;
+      background: #3b82f6;
+      top: 0;
+      left: 0;
+    }
+
+    .bg-mesh::after {
+      width: 500px;
+      height: 500px;
+      background: #8b5cf6;
+      bottom: 0;
+      right: 0;
+      animation-delay: -10s;
+    }
+
+    @keyframes meshFloat {
+
+      0%,
+      100% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      50% {
+        transform: translate(60px, 40px) scale(1.15);
+      }
+    }
+
+    /* === Glass Card === */
+    .glass {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(24px);
+      border-radius: 1.5rem;
+    }
+
+    .glass-bright {
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(24px);
+      border-radius: 1.5rem;
+    }
+
+    /* === Phase Timeline === */
+    .phase-line {
+      position: absolute;
+      left: 50%;
+      width: 3px;
+      height: 100%;
+      background: linear-gradient(to bottom, #3b82f6 0%, #8b5cf6 50%, #06b6d4 100%);
+      transform: translateX(-50%);
+      opacity: 0.3;
+    }
+
+    .phase-dot {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+      position: relative;
+      z-index: 10;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
+
+    .phase-dot:hover {
+      transform: scale(1.2);
+    }
+
+    .phase-dot.active {
+      box-shadow: 0 0 0 8px rgba(59, 130, 246, 0.2), 0 0 40px rgba(59, 130, 246, 0.3);
+    }
+
+    /* === Phase Detail Panel === */
+    .detail-panel {
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* === Animations === */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-up {
+      animation: fadeUp 0.8s ease-out forwards;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: -200% 0;
+      }
+
+      100% {
+        background-position: 200% 0;
+      }
+    }
+
+    .shimmer-text {
+      background: linear-gradient(90deg, #60a5fa 25%, #c084fc 50%, #60a5fa 75%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmer 3s linear infinite;
+    }
+
+    /* === Scroll reveal === */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .reveal.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* === Data Flow Diagram === */
+    .data-node {
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      transition: all 0.3s;
+    }
+
+    .data-node:hover {
+      transform: scale(1.05);
+    }
+
+    .connector-arrow {
+      color: #3b82f6;
+      font-size: 20px;
+    }
+
+    /* === Flow Connector === */
+    .flow-step {
+      position: relative;
+      padding-left: 3rem;
+    }
+
+    .flow-step::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 20px;
+      bottom: -20px;
+      width: 2px;
+      background: rgba(59, 130, 246, 0.2);
+      transition: height 0.5s;
+    }
+
+    .flow-step:last-child::before {
+      display: none;
+    }
+
+    .flow-step::after {
+      content: '';
+      position: absolute;
+      left: 11px;
+      top: 20px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #0a0f1e;
+      border: 2px solid #3b82f6;
+      z-index: 2;
+      transition: all 0.3s;
+    }
+
+    .flow-step:hover::after {
+      background: #3b82f6;
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+    }
+  </style>
+</head>
+
+<body class="text-slate-800">
+  <!-- Sticky Navigation -->
+  <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-18 items-center py-4">
+        <div class="flex items-center space-x-3">
+          <div
+            class="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center text-white font-bold shadow-md">
+            P
+          </div>
+          <div>
+            <div class="text-xl font-bold tracking-tight text-slate-900">
+              ProcureIQ
+            </div>
+            <div class="text-[10px] font-semibold text-blue-600 uppercase tracking-widest">
+              Intelligent Procurement AI
+            </div>
+          </div>
+        </div>
+        <div class="hidden md:flex space-x-8 items-center">
+          <button onclick="scrollToId('vision')"
+            class="nav-link text-sm font-semibold text-slate-600 hover:text-blue-600">
+            Vision
+          </button>
+          <button onclick="scrollToId('transformation')"
+            class="nav-link text-sm font-semibold text-slate-600 hover:text-blue-600">
+            Transformation
+          </button>
+          <button onclick="scrollToId('journey')"
+            class="nav-link text-sm font-semibold text-slate-600 hover:text-blue-600">
+            Journey
+          </button>
+          <button onclick="scrollToId('architecture')"
+            class="nav-link text-sm font-semibold text-slate-600 hover:text-blue-600">
+            Architecture
+          </button>
+          <button onclick="scrollToId('ai-demo')"
+            class="nav-link text-sm font-semibold text-slate-600 hover:text-blue-600">
+            AI Engine
+          </button>
+          <button onclick="scrollToId('roadmap')"
+            class="nav-link text-sm font-semibold text-slate-600 hover:text-blue-600">
+            Roadmap
+          </button>
+          <button onclick="scrollToId('roi')"
+            class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-blue-700 transition shadow-md">
+            ROI Calculator
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header id="vision" class="hero-gradient text-white py-24 px-4 overflow-hidden">
+    <div class="max-w-7xl mx-auto relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+        <!-- Left Content -->
+        <div class="lg:col-span-7 animate-fade">
+          <div class="mb-8">
+            <span
+              class="inline-flex items-center gap-2 py-2.5 px-5 rounded-full bg-gradient-to-r from-blue-500/30 to-purple-500/30 text-blue-100 text-xs font-bold uppercase tracking-widest border border-blue-400/40 backdrop-blur-md shadow-lg">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M13 7H7v6h6V7z" />
+                <path fill-rule="evenodd"
+                  d="M7 2a1 1 0 012 0v1h2V2a1 1 0 112 0v1h2a2 2 0 012 2v2h1a1 1 0 110 2h-1v2h1a1 1 0 110 2h-1v2a2 2 0 01-2 2h-2v1a1 1 0 11-2 0v-1H9v1a1 1 0 11-2 0v-1H5a2 2 0 01-2-2v-2H2a1 1 0 110-2h1V9H2a1 1 0 010-2h1V5a2 2 0 012-2h2V2zM5 5h10v10H5V5z"
+                  clip-rule="evenodd" />
+              </svg>
+              Intelligent Procurement AI
+            </span>
+          </div>
+
+          <h1 class="text-5xl md:text-7xl lg:text-8xl font-black mb-8 leading-[0.95] tracking-tight">
+            Smart Procurement.
+            <br />
+            <span class="bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+              Smarter Margins.
+            </span>
+          </h1>
+
+          <p class="text-xl md:text-2xl text-slate-200 mb-10 leading-relaxed max-w-2xl font-light">
+            Transform your F&B procurement with AI that
+            <strong class="text-white font-semibold">learns</strong>,
+            <strong class="text-white font-semibold">predicts</strong>, and
+            <strong class="text-white font-semibold">optimizes</strong> every
+            order—automatically.
+          </p>
+
+          <!-- CTA Buttons -->
+          <div class="flex flex-col sm:flex-row gap-4 mb-12">
+            <button onclick="scrollToId('roi')"
+              class="group relative px-8 py-4 bg-white text-slate-900 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 overflow-hidden">
+              <span class="relative z-10 flex items-center justify-center gap-2">
+                Calculate Your Savings
+                <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </span>
+              <div
+                class="absolute inset-0 bg-gradient-to-r from-blue-500 to-cyan-400 opacity-0 group-hover:opacity-10 transition-opacity">
+              </div>
+            </button>
+            <button onclick="scrollToId('ai-demo')"
+              class="px-8 py-4 bg-white/10 text-white rounded-2xl font-semibold text-lg hover:bg-white/20 transition-all duration-300 backdrop-blur-sm border border-white/20 flex items-center justify-center gap-2">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                <path fill-rule="evenodd"
+                  d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                  clip-rule="evenodd" />
+              </svg>
+              See AI in Action
+            </button>
+          </div>
+
+          <!-- Key Metrics -->
+          <div class="grid grid-cols-3 gap-4">
+            <div
+              class="text-center p-4 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all">
+              <div
+                class="text-3xl md:text-4xl font-black bg-gradient-to-br from-blue-300 to-cyan-400 bg-clip-text text-transparent mb-1">
+                12-18%
+              </div>
+              <div class="text-[10px] md:text-xs text-slate-300 font-medium uppercase tracking-wider">
+                Cost Savings
+              </div>
+            </div>
+            <div
+              class="text-center p-4 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all">
+              <div
+                class="text-3xl md:text-4xl font-black bg-gradient-to-br from-emerald-300 to-green-400 bg-clip-text text-transparent mb-1">
+                100%
+              </div>
+              <div class="text-[10px] md:text-xs text-slate-300 font-medium uppercase tracking-wider">
+                Transparency
+              </div>
+            </div>
+            <div
+              class="text-center p-4 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all">
+              <div
+                class="text-3xl md:text-4xl font-black bg-gradient-to-br from-purple-300 to-pink-400 bg-clip-text text-transparent mb-1">
+                24/7
+              </div>
+              <div class="text-[10px] md:text-xs text-slate-300 font-medium uppercase tracking-wider">
+                Automation
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Visual -->
+        <div class="lg:col-span-5">
+          <div class="relative">
+            <!-- Floating Card 1 - Main Dashboard -->
+            <div class="relative bg-white rounded-3xl shadow-2xl p-8 animate-fade">
+              <div class="flex items-center justify-between mb-6">
+                <div>
+                  <div class="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1">
+                    Live Dashboard
+                  </div>
+                  <div class="text-slate-900 text-2xl font-bold">
+                    AED 847,392
+                  </div>
+                </div>
+                <div
+                  class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-2xl shadow-lg">
+                  📊
+                </div>
+              </div>
+
+              <!-- Mini Chart -->
+              <div
+                class="h-32 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl mb-4 flex items-end justify-around p-4 gap-2">
+                <div class="w-full bg-blue-400 rounded-t-lg opacity-60" style="height: 40%"></div>
+                <div class="w-full bg-blue-500 rounded-t-lg opacity-80" style="height: 65%"></div>
+                <div class="w-full bg-blue-600 rounded-t-lg" style="height: 85%"></div>
+                <div class="w-full bg-cyan-500 rounded-t-lg" style="height: 95%"></div>
+                <div class="w-full bg-cyan-600 rounded-t-lg" style="height: 75%"></div>
+              </div>
+
+              <!-- Stats Grid -->
+              <div class="grid grid-cols-2 gap-3">
+                <div class="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl p-3">
+                  <div class="text-emerald-600 text-xs font-semibold mb-1">
+                    Savings
+                  </div>
+                  <div class="text-emerald-900 text-xl font-bold">
+                    +AED 94k
+                  </div>
+                </div>
+                <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-3">
+                  <div class="text-purple-600 text-xs font-semibold mb-1">
+                    Orders
+                  </div>
+                  <div class="text-purple-900 text-xl font-bold">1,247</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Floating Badge 1 -->
+            <div
+              class="absolute -top-6 -right-6 bg-gradient-to-br from-emerald-500 to-emerald-600 text-white px-6 py-3 rounded-2xl shadow-2xl animate-pulse">
+              <div class="text-xs font-semibold uppercase tracking-wider mb-1">
+                AI Active
+              </div>
+              <div class="text-2xl font-black">✓</div>
+            </div>
+
+            <!-- Floating Badge 2 -->
+            <div class="absolute -bottom-4 -left-4 bg-white rounded-2xl shadow-xl p-4 border border-slate-100">
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
+                  🤖
+                </div>
+                <div>
+                  <div class="text-slate-900 font-bold text-sm">
+                    Auto-ordering
+                  </div>
+                  <div class="text-slate-500 text-xs">Processing 24 SKUs</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Feature Pills -->
+      <div class="mt-20 flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
+        <div
+          class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm font-medium">
+          <span class="text-green-400 text-lg">✓</span>
+          Multi-tenant Infrastructure
+        </div>
+        <div
+          class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm font-medium">
+          <span class="text-blue-400 text-lg">✓</span>
+          Agentic AI Workflows
+        </div>
+        <div
+          class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm font-medium">
+          <span class="text-purple-400 text-lg">✓</span>
+          UAE Supplier Benchmarking
+        </div>
+        <div
+          class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm font-medium">
+          <span class="text-cyan-400 text-lg">✓</span>
+          Real-time Analytics
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Transformation Section (Old vs New) -->
+  <section id="transformation" class="py-24 bg-gradient-to-b from-slate-50 to-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <span
+          class="inline-block px-4 py-1.5 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold uppercase tracking-wider mb-4">Transformation</span>
+        <h2 class="text-5xl md:text-6xl font-black text-slate-900 mb-4">
+          From Chaos to
+          <span class="bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">Control</span>
+        </h2>
+        <p class="text-slate-600 text-lg mt-4 max-w-2xl mx-auto">
+          See how ProcureIQ transforms broken supply chains into intelligent,
+          automated systems.
+        </p>
+      </div>
+
+      <div class="flex justify-center mb-12">
+        <div class="bg-white p-1.5 rounded-2xl inline-flex shadow-lg border border-slate-200">
+          <button id="tab-current" onclick="toggleFlow('current')"
+            class="px-8 py-3.5 rounded-xl font-bold text-sm transition-all bg-gradient-to-r from-red-500 to-red-600 text-white shadow-md">
+            <span class="flex items-center gap-2">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                  clip-rule="evenodd" />
+              </svg>
+              Current Chaos
+            </span>
+          </button>
+          <button id="tab-future" onclick="toggleFlow('future')"
+            class="px-8 py-3.5 rounded-xl font-bold text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-all">
+            <span class="flex items-center gap-2">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+                <path fill-rule="evenodd"
+                  d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm9.707 5.707a1 1 0 00-1.414-1.414L9 12.586l-1.293-1.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clip-rule="evenodd" />
+              </svg>
+              AI-Powered Future
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <div id="flow-container" class="bg-slate-50 rounded-[3rem] p-10 border border-slate-200 shadow-inner">
+        <!-- Content will be injected here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Value Pillars Section -->
+  <section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-4">
+          Why ProcureIQ Wins
+        </h2>
+        <p class="text-slate-600 text-lg max-w-2xl mx-auto">
+          Four pillars of procurement intelligence working 24/7 for your
+          business
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <div class="glass-card p-6 rounded-3xl shadow-sm border border-slate-200 interactive-card">
+          <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center text-xl mb-4">
+            🗑️
+          </div>
+          <h3 class="font-bold text-slate-900">Waste Intelligence</h3>
+          <p class="text-xs text-slate-500 mt-2">
+            Flagging variance between POS sales and GRN intake.
+          </p>
+        </div>
+        <div class="glass-card p-6 rounded-3xl shadow-sm border border-slate-200 interactive-card">
+          <div class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-xl mb-4">
+            💰
+          </div>
+          <h3 class="font-bold text-slate-900">Cost Reduction</h3>
+          <p class="text-xs text-slate-500 mt-2">
+            Automated benchmark across UAE supplier network.
+          </p>
+        </div>
+        <div class="glass-card p-6 rounded-3xl shadow-sm border border-slate-200 interactive-card">
+          <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-xl mb-4">
+            🔍
+          </div>
+          <h3 class="font-bold text-slate-900">Real-time Insights</h3>
+          <p class="text-xs text-slate-500 mt-2">
+            Item-level inflation tracking and menu engineering.
+          </p>
+        </div>
+        <div class="glass-card p-6 rounded-3xl shadow-sm border border-slate-200 interactive-card">
+          <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-xl mb-4">
+            ⚡
+          </div>
+          <h3 class="font-bold text-slate-900">Decision Speed</h3>
+          <p class="text-xs text-slate-500 mt-2">
+            PO approval workflows that take seconds, not hours.
+          </p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-[2.5rem] p-10 shadow-sm border border-slate-100">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div class="lg:col-span-7">
+            <h2 class="text-3xl font-bold text-slate-900 mb-6">
+              Unlocking Hidden Margins
+            </h2>
+            <p class="text-slate-600 mb-8 leading-relaxed">
+              ProcureIQ uses a "Theoretical vs Actual" (TvA) model. By
+              connecting your POS and your Procurement, the AI identifies
+              exactly where ingredients go missing—whether it's
+              over-portioning in the kitchen or shrinkage in the store room.
+            </p>
+            <div class="space-y-4">
+              <div
+                class="flex items-center p-5 bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl border border-blue-200 hover:shadow-md transition-all">
+                <span
+                  class="bg-gradient-to-br from-blue-600 to-blue-700 text-white w-8 h-8 rounded-xl flex items-center justify-center text-sm font-bold mr-4 shadow-md">1</span>
+                <span class="text-sm font-semibold text-slate-800">Automatic Price Matching to UAE Market
+                  Averages</span>
+              </div>
+              <div
+                class="flex items-center p-5 bg-gradient-to-r from-purple-50 to-purple-100 rounded-2xl border border-purple-200 hover:shadow-md transition-all">
+                <span
+                  class="bg-gradient-to-br from-purple-600 to-purple-700 text-white w-8 h-8 rounded-xl flex items-center justify-center text-sm font-bold mr-4 shadow-md">2</span>
+                <span class="text-sm font-semibold text-slate-800">Predictive Ordering based on historical traffic
+                  patterns</span>
+              </div>
+              <div
+                class="flex items-center p-5 bg-gradient-to-r from-emerald-50 to-emerald-100 rounded-2xl border border-emerald-200 hover:shadow-md transition-all">
+                <span
+                  class="bg-gradient-to-br from-emerald-600 to-emerald-700 text-white w-8 h-8 rounded-xl flex items-center justify-center text-sm font-bold mr-4 shadow-md">3</span>
+                <span class="text-sm font-semibold text-slate-800">Digital GRN captures weight discrepancies on
+                  delivery</span>
+              </div>
+            </div>
+          </div>
+          <div class="lg:col-span-5 bg-slate-50 p-6 rounded-3xl border border-slate-100">
+            <div class="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">
+              Avg. Impact per Outlet
+            </div>
+            <div class="chart-container">
+              <canvas id="impactChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- User Journey Section (Digital Procurement Manager) - REPLACED -->
+  <section id="journey" class="journey-wrapper py-24">
+    <!-- Background mesh -->
+    <div class="bg-mesh"></div>
+
+    <!-- Phase Timeline Content -->
+    <div class="max-w-7xl mx-auto px-6 relative z-10">
+      <div class="text-center mb-20 reveal">
+        <div
+          class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-semibold uppercase tracking-widest mb-6">
+          The Journey
+        </div>
+        <h2 class="text-4xl md:text-5xl font-black text-white mb-4">The Complete Lifecycle</h2>
+        <p class="text-slate-400 max-w-2xl mx-auto">Click any phase to explore its technical details, data flows,
+          and key actors.</p>
+      </div>
+
+      <!-- Phase Nav Pills -->
+      <div class="flex flex-wrap justify-center gap-2 mb-12 reveal" id="phase-nav"></div>
+
+      <!-- Phase Detail -->
+      <div id="phase-detail" class="glass-bright p-8 md:p-12 min-h-[500px] detail-panel reveal"></div>
+    </div>
+
+    <!-- Data Flows Content -->
+    <div class="max-w-7xl mx-auto px-6 relative z-10 mt-24">
+      <div class="text-center mb-16 reveal">
+        <div
+          class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold uppercase tracking-widest mb-6">
+          Technical Deep-Dive
+        </div>
+        <h2 class="text-4xl md:text-5xl font-black text-white mb-4">Core Data Flows</h2>
+        <p class="text-slate-400 max-w-2xl mx-auto">The three critical pipelines that power the platform.</p>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6" id="flow-cards"></div>
+    </div>
+  </section>
+
+  <!-- Technical Architecture -->
+  <section id="architecture" class="py-20 bg-slate-50 border-y border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold mb-4 text-center">
+        Technical Architecture
+      </h2>
+      <p class="text-slate-500 mb-12 max-w-3xl mx-auto text-center">
+        Built on a three-tier architecture: Experience Layer (Web/Mobile),
+        Intelligence Layer (AI Agent), and Transactional Layer (Medusa.js
+        Core).
+      </p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-10">
+        <div class="space-y-4">
+          <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">
+            Experience
+          </div>
+          <div onclick="showTech('restaurant')" id="t-restaurant"
+            class="arch-block active p-5 bg-white rounded-2xl text-center">
+            <div class="font-bold">Restaurant App</div>
+            <div class="text-xs text-slate-500">Next.js / PWA</div>
+          </div>
+          <div onclick="showTech('supplier')" id="t-supplier" class="arch-block p-5 bg-white rounded-2xl text-center">
+            <div class="font-bold">Supplier Portal</div>
+            <div class="text-xs text-slate-500">React Dashboard</div>
+          </div>
+        </div>
+        <div class="flex flex-col justify-center">
+          <div onclick="showTech('gateway')" id="t-gateway"
+            class="arch-block p-5 bg-indigo-50 border-indigo-200 rounded-2xl text-center h-48 flex flex-col justify-center">
+            <div class="font-bold text-indigo-900">API Gateway</div>
+            <div class="text-xs text-indigo-600">FastAPI / GraphQL</div>
+          </div>
+        </div>
+        <div class="space-y-4">
+          <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">
+            Logic & Intelligence
+          </div>
+          <div onclick="showTech('ai')" id="t-ai"
+            class="arch-block p-5 bg-purple-50 border-purple-200 rounded-2xl text-center">
+            <div class="font-bold text-purple-900">AI Data Engine</div>
+            <div class="text-xs text-purple-600">LangChain / Python</div>
+          </div>
+          <div onclick="showTech('core')" id="t-core"
+            class="arch-block p-5 bg-blue-50 border-blue-200 rounded-2xl text-center">
+            <div class="font-bold text-blue-900">Core Commerce</div>
+            <div class="text-xs text-blue-600">Medusa.js / Node</div>
+          </div>
+        </div>
+        <div class="flex flex-col justify-center">
+          <div onclick="showTech('db')" id="t-db"
+            class="arch-block p-5 bg-slate-900 border-slate-700 rounded-2xl text-center text-white h-48 flex flex-col justify-center">
+            <div class="font-bold">Primary DB</div>
+            <div class="text-xs text-slate-400">PostgreSQL / Vector</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tech-panel" class="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm min-h-[160px]">
+        <!-- Tech detail injected here -->
+      </div>
+
+      <div class="mt-10 bg-white rounded-[2.5rem] p-10 border border-slate-100">
+        <h4 class="font-bold text-slate-900 mb-4">SaaS Multi-tenancy</h4>
+        <p class="text-sm text-slate-500 mb-6 leading-relaxed">
+          Each restaurant group operates in an isolated environment while
+          benefiting from global SKU intelligence and price anonymized
+          benchmarks.
+        </p>
+        <div class="space-y-3">
+          <div class="text-xs font-bold text-slate-400 uppercase tracking-widest">
+            Integrations
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-3 py-1 bg-slate-100 rounded-full text-xs font-bold text-slate-600">Foodics</span>
+            <span class="px-3 py-1 bg-slate-100 rounded-full text-xs font-bold text-slate-600">Xero</span>
+            <span class="px-3 py-1 bg-slate-100 rounded-full text-xs font-bold text-slate-600">Oracle MICROS</span>
+            <span class="px-3 py-1 bg-slate-100 rounded-full text-xs font-bold text-slate-600">WhatsApp API</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI Engine Demo (SKU Normalization) -->
+  <section id="ai-demo"
+    class="py-24 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white relative overflow-hidden">
+    <!-- Background decoration -->
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-500 rounded-full filter blur-3xl"></div>
+      <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500 rounded-full filter blur-3xl"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+        <div class="lg:col-span-5">
+          <span
+            class="inline-block px-4 py-1.5 bg-blue-500/20 text-blue-300 rounded-full text-xs font-semibold uppercase tracking-wider mb-6 border border-blue-400/30">🤖
+            AI Engine</span>
+          <h2 class="text-5xl md:text-6xl font-black mb-6 leading-tight">
+            Smart
+            <span class="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">SKU Mapping</span>
+          </h2>
+          <p class="text-slate-300 text-lg mb-8 leading-relaxed">
+            The silent killer of F&B margins?
+            <strong class="text-white">Inconsistent naming</strong>. One
+            supplier calls it "Tomato 5kg Box", another "Fresh Tomatoes
+            Loose". Our AI instantly normalizes everything.
+          </p>
+          <div class="space-y-4 mb-10">
+            <div class="flex items-start gap-4 bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10">
+              <div
+                class="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-lg">
+                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div>
+                <div class="font-semibold text-white mb-1">
+                  Semantic Understanding
+                </div>
+                <div class="text-sm text-slate-400">
+                  AI reads context, not just keywords. "Tomato" = "Tomatos" =
+                  "Fresh Tomatoes"
+                </div>
+              </div>
+            </div>
+            <div class="flex items-start gap-4 bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10">
+              <div
+                class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center flex-shrink-0 shadow-lg">
+                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div>
+                <div class="font-semibold text-white mb-1">
+                  Unit Normalization
+                </div>
+                <div class="text-sm text-slate-400">
+                  Automatically converts "5kg box" and "loose kg" to
+                  comparable units
+                </div>
+              </div>
+            </div>
+            <div class="flex items-start gap-4 bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10">
+              <div
+                class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center flex-shrink-0 shadow-lg">
+                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div>
+                <div class="font-semibold text-white mb-1">
+                  True Price Comparison
+                </div>
+                <div class="text-sm text-slate-400">
+                  Compare suppliers apples-to-apples for the first time
+                </div>
+              </div>
+            </div>
+          </div>
+          <button onclick="runSim()"
+            class="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-2xl font-bold text-lg transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/50 hover:scale-105 overflow-hidden">
+            <span class="relative z-10 flex items-center gap-2">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                  clip-rule="evenodd" />
+              </svg>
+              Run Live Demo
+            </span>
+            <div
+              class="absolute inset-0 bg-gradient-to-r from-cyan-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity">
+            </div>
+          </button>
+        </div>
+
+        <div class="lg:col-span-7">
+          <div class="bg-slate-800/80 backdrop-blur-xl rounded-3xl p-8 border border-slate-700 shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M13 7H7v6h6V7z" />
+                    <path fill-rule="evenodd"
+                      d="M7 2a1 1 0 012 0v1h2V2a1 1 0 112 0v1h2a2 2 0 012 2v2h1a1 1 0 110 2h-1v2h1a1 1 0 110 2h-1v2a2 2 0 01-2 2h-2v1a1 1 0 11-2 0v-1H9v1a1 1 0 11-2 0v-1H5a2 2 0 01-2-2v-2H2a1 1 0 110-2h1V9H2a1 1 0 010-2h1V5a2 2 0 012-2h2V2zM5 5h10v10H5V5z"
+                      clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div>
+                  <div class="text-white font-bold">
+                    SKU Normalization Engine
+                  </div>
+                  <div class="text-[10px] font-mono text-slate-500 tracking-widest uppercase">
+                    AI-Powered Semantic Matching
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                <span class="text-xs text-green-400 font-semibold">LIVE</span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div class="bg-slate-950/50 p-6 rounded-2xl border border-slate-800">
+                <div class="flex items-center gap-2 mb-4">
+                  <div class="w-6 h-6 rounded bg-red-500/20 flex items-center justify-center">
+                    <svg class="w-3 h-3 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                        clip-rule="evenodd" />
+                    </svg>
+                  </div>
+                  <div class="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">
+                    Raw Supplier Data
+                  </div>
+                </div>
+                <div id="sim-in" class="text-sm font-mono text-red-400 h-40 overflow-y-auto space-y-2">
+                  <div class="text-slate-500">
+                    Click "Run Demo" to start...
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-950/50 p-6 rounded-2xl border border-emerald-800/30">
+                <div class="flex items-center gap-2 mb-4">
+                  <div class="w-6 h-6 rounded bg-emerald-500/20 flex items-center justify-center">
+                    <svg class="w-3 h-3 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clip-rule="evenodd" />
+                    </svg>
+                  </div>
+                  <div class="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">
+                    Normalized Master SKU
+                  </div>
+                </div>
+                <div id="sim-out" class="text-sm font-mono text-emerald-400 h-40 overflow-y-auto">
+                  <div class="text-slate-600">...</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                    <svg class="w-4 h-4 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd"
+                        d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
+                        clip-rule="evenodd" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div id="sim-status" class="text-sm font-semibold text-blue-300">
+                      Ready to process
+                    </div>
+                    <div class="text-[10px] text-slate-500">
+                      LangChain + OpenAI + pgvector
+                    </div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-2xl font-black text-blue-400">
+                    < 0.3s</div>
+                      <div class="text-[10px] text-slate-500 uppercase tracking-wider">
+                        Avg Speed
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+
+  <!-- 6-Sprint Roadmap -->
+  <section id="roadmap" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold mb-10 text-center">
+        Execution Roadmap: 6-Sprint Plan
+      </h2>
+      <p class="text-slate-500 mb-12 text-center max-w-2xl mx-auto">
+        12 weeks from Architecture to Audit Readiness. Each sprint delivers
+        tangible value.
+      </p>
+
+      <div class="flex flex-col lg:flex-row gap-16">
+        <div class="lg:w-1/3">
+          <div class="space-y-3" id="sprint-nav">
+            <!-- Navigation injected via JS -->
+          </div>
+        </div>
+        <div class="lg:w-2/3">
+          <div id="sprint-content" class="bg-slate-50 rounded-[2.5rem] p-10 border border-slate-200 h-full">
+            <!-- Detail injected via JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROI Calculator -->
+  <section id="roi" class="py-20 bg-slate-900 text-white overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold mb-4">SaaS Performance Estimator</h2>
+        <p class="text-slate-400 max-w-2xl mx-auto">
+          See how ProcureIQ scales its value across your entire portfolio.
+          Adjust the sliders to see the impact on your Bottom Line.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div>
+          <div class="space-y-10">
+            <div>
+              <div class="flex justify-between mb-4">
+                <label class="text-sm font-bold text-slate-300 uppercase tracking-widest">Number of Outlets</label>
+                <span id="val-outlets" class="text-blue-400 font-bold text-xl">10</span>
+              </div>
+              <input type="range" id="input-outlets" min="1" max="50" step="1" value="10"
+                class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer" />
+            </div>
+            <div>
+              <div class="flex justify-between mb-4">
+                <label class="text-sm font-bold text-slate-300 uppercase tracking-widest">Avg. Monthly Spend per Outlet
+                  (AED)</label>
+                <span id="val-spend" class="text-blue-400 font-bold text-xl">150,000</span>
+              </div>
+              <input type="range" id="input-spend" min="10000" max="500000" step="10000" value="150000"
+                class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer" />
+            </div>
+          </div>
+        </div>
+
+        <div class="relative">
+          <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl blur opacity-25"></div>
+          <div class="relative bg-slate-800 border border-slate-700 rounded-3xl p-10 shadow-2xl">
+            <div class="text-center mb-10">
+              <span class="text-xs font-bold text-blue-400 uppercase tracking-widest">Estimated Group Yearly
+                Savings</span>
+              <div id="total-savings" class="text-5xl font-black mt-2">
+                AED 1,260,000
+              </div>
+            </div>
+            <div class="space-y-6">
+              <div class="flex justify-between items-center p-4 bg-slate-900/50 rounded-xl border border-slate-700">
+                <div class="flex items-center space-x-3">
+                  <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
+                  <span class="text-sm text-slate-300">Procurement Optimization (4.5%)</span>
+                </div>
+                <span id="save-procure" class="font-bold text-emerald-400">AED 810k</span>
+              </div>
+              <div class="flex justify-between items-center p-4 bg-slate-900/50 rounded-xl border border-slate-700">
+                <div class="flex items-center space-x-3">
+                  <div class="w-2 h-2 rounded-full bg-blue-400"></div>
+                  <span class="text-sm text-slate-300">Waste Reduction (2.5%)</span>
+                </div>
+                <span id="save-waste" class="font-bold text-blue-400">AED 450k</span>
+              </div>
+              <div class="flex justify-between items-center p-4 bg-slate-900/50 rounded-xl border border-slate-700">
+                <div class="flex items-center space-x-3">
+                  <div class="w-2 h-2 rounded-full bg-purple-400"></div>
+                  <span class="text-sm text-slate-300">Admin Efficiency Gains</span>
+                </div>
+                <span id="save-admin" class="font-bold text-purple-400">AED 144k</span>
+              </div>
+            </div>
+            <div class="mt-8">
+              <div class="chart-container">
+                <canvas id="roiChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 py-16 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <div class="flex justify-center space-x-3 mb-6">
+        <div
+          class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-lg">
+          P
+        </div>
+        <div class="text-left">
+          <div class="font-bold text-white text-lg">ProcureIQ</div>
+          <div class="text-blue-300 text-xs font-medium">
+            Intelligent Procurement AI
+          </div>
+        </div>
+      </div>
+      <p class="text-slate-300 text-sm mb-3 max-w-2xl mx-auto">
+        Empowering F&B operators across the UAE with intelligent, autonomous
+        procurement solutions.
+      </p>
+      <p class="text-xs text-slate-500 mb-8">
+        Complete AI Procurement Platform • Built for Modern F&B Operations
+      </p>
+      <div class="flex justify-center items-center space-x-4 text-xs text-slate-400">
+        <span>© 2026 ProcureIQ</span>
+        <span>•</span>
+        <span>All Rights Reserved</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // --- State Management ---
+    let activeChart = null;
+    let roiChart = null;
+
+    // --- Tech Detail Logic ---
+    const techs = {
+      restaurant: {
+        t: "Restaurant PWA",
+        d: "A high-performance mobile-first app for Chefs to receive goods and perform stock-takes. Uses Next.js for SSR and offline-first capabilities with IndexedDB.",
+      },
+      supplier: {
+        t: "Supplier Portal",
+        d: "Web-based dashboard for suppliers to confirm orders, update pricing, and view demand forecasts. React + Tailwind. Must be simple for low-tech adoption.",
+      },
+      gateway: {
+        t: "Unified API Gateway",
+        d: "Central node using FastAPI (Python) or GraphQL to route requests between the frontend apps and the Medusa.js core. Handles security and rate limiting.",
+      },
+      ai: {
+        t: "AI Engine",
+        d: "The 'Brain'. Uses LangChain for SKU normalization, OpenAI for text-to-data parsing, and Prophet for demand forecasting. Vectorizes messy strings for semantic search.",
+      },
+      core: {
+        t: "Medusa.js Core",
+        d: "Headless commerce engine. Handles the 'Transactional' side: Users, Carts, Orders, and Multi-tenant partitioning. Extended with custom procurement modules.",
+      },
+      db: {
+        t: "Persistence Layer",
+        d: "PostgreSQL for relational order data + pgvector for semantic SKU matching and search. ACID compliance for financial transactions.",
+      },
+    };
+
+    function showTech(id) {
+      document
+        .querySelectorAll(".arch-block")
+        .forEach((b) => b.classList.remove("active"));
+      document.getElementById(`t-${id}`).classList.add("active");
+      const data = techs[id];
+      document.getElementById("tech-panel").innerHTML = `
+                <h3 class="text-xl font-bold mb-2">${data.t}</h3>
+                <p class="text-slate-600 leading-relaxed">${data.d}</p>
+            `;
+    }
+
+    // --- Sprint Roadmap Logic ---
+    const sprints = [
+      {
+        id: 1,
+        t: "SaaS Foundation",
+        d: "Multi-tenant logic and Auth core. Setting up the 'Group vs Outlet' hierarchy. Establishing database schemas and user management.",
+        tech: "Medusa.js, PostgreSQL, Auth0",
+      },
+      {
+        id: 2,
+        t: "AI SKU Engine",
+        d: "Normalization logic. Mapping supplier items to Master SKUs using LangChain. Building the semantic search layer for product matching.",
+        tech: "Python, OpenAI, LangChain, pgvector",
+      },
+      {
+        id: 3,
+        t: "Order Flow (LPO)",
+        d: "Digital PO generation and multi-supplier routing engine. Implementing the core ordering workflow with supplier communication.",
+        tech: "Node.js, WhatsApp API, Email",
+      },
+      {
+        id: 4,
+        t: "Mobile Receiver",
+        d: "Digital GRN (Goods Received Note) app for backdoor validation. Offline-first PWA for capturing deliveries in real-time.",
+        tech: "Next.js, PWA, IndexedDB",
+      },
+      {
+        id: 5,
+        t: "Agentic Predictive",
+        d: "Predictive demand forecasting and auto-drafting orders. ML models analyzing POS data to prevent stockouts and overordering.",
+        tech: "Prophet ML, VectorDB, Python",
+      },
+      {
+        id: 6,
+        t: "Audit & Finance",
+        d: "3-Way Matching and Foodics POS real-time sync. Complete financial reconciliation and integration with accounting systems.",
+        tech: "Xero API, Foodics API, Webhooks",
+      },
+    ];
+
+    function showSprint(id) {
+      const s = sprints.find((x) => x.id === id);
+      document
+        .querySelectorAll(".sprint-card")
+        .forEach((b) => b.classList.remove("active"));
+      document.getElementById(`s-${id}`).classList.add("active");
+      document.getElementById("sprint-content").innerHTML = `
+                <div class="flex justify-between items-start mb-6">
+                    <span class="text-blue-600 font-bold uppercase tracking-widest text-xs">Sprint ${s.id}</span>
+                    <span class="text-slate-400 font-mono text-xs">${s.tech}</span>
+                </div>
+                <h3 class="text-3xl font-bold mb-6">${s.t}</h3>
+                <p class="text-lg text-slate-600 leading-relaxed mb-8">${s.d}</p>
+                <div class="p-6 bg-white rounded-2xl border border-slate-100 italic text-sm text-slate-500">
+                    Acceptance Test: "Can the system correctly perform ${s.t.toLowerCase()} for a multi-tenant user?"
+                </div>
+            `;
+    }
+
+    // --- AI Simulation ---
+    async function runSim() {
+      const input = document.getElementById("sim-in");
+      const output = document.getElementById("sim-out");
+      const status = document.getElementById("sim-status");
+
+      const rawExamples = [
+        { text: "Tomato Cherry Box 1KG", color: "text-red-400" },
+        { text: "Fresh Tomatoes (Loose) per kg", color: "text-red-300" },
+        { text: "TOMATOS RED 5KG BOX", color: "text-red-400" },
+        { text: "Organic Tomato - Netherlands 500g", color: "text-red-300" },
+        { text: "Roma Tomatoes Bulk Carton", color: "text-red-400" },
+      ];
+
+      const normalizedOutput = {
+        sku: "VEG-TOM-001",
+        name: "Tomato (Fresh)",
+        category: "Vegetables > Fresh Produce",
+        baseUnit: "KG",
+        confidence: "97.8%",
+        variants: "5 supplier variants detected",
+      };
+
+      input.innerHTML = "";
+      output.innerHTML = "";
+      status.innerHTML =
+        '<span class=\"flex items-center gap-2\"><svg class=\"w-4 h-4 text-blue-400 animate-spin\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><circle class=\"opacity-25\" cx=\"12\" cy=\"12\" r=\"10\" stroke=\"currentColor\" stroke-width=\"4\"></circle><path class=\"opacity-75\" fill=\"currentColor\" d=\"M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z\"></path></svg> Processing semantic matching...</span>';
+
+      // Animate raw inputs
+      for (let item of rawExamples) {
+        await new Promise((r) => setTimeout(r, 400));
+        input.innerHTML += `<div class=\"${item.color} mb-1 pl-2 border-l-2 border-red-500/20\">▸ ${item.text}</div>`;
+      }
+
+      status.innerHTML =
+        '<span class=\"flex items-center gap-2\"><svg class=\"w-4 h-4 text-purple-400 animate-spin\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><circle class=\"opacity-25\" cx=\"12\" cy=\"12\" r=\"10\" stroke=\"currentColor\" stroke-width=\"4\"></circle><path class=\"opacity-75\" fill=\"currentColor\" d=\"M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z\"></path></svg> Normalizing units...</span>';
+      await new Promise((r) => setTimeout(r, 700));
+
+      status.innerHTML =
+        '<span class=\"flex items-center gap-2\"><svg class=\"w-4 h-4 text-cyan-400 animate-spin\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><circle class=\"opacity-25\" cx=\"12\" cy=\"12\" r=\"10\" stroke=\"currentColor\" stroke-width=\"4\"></circle><path class=\"opacity-75\" fill=\"currentColor\" d=\"M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z\"></path></svg> Mapping to Master SKU...</span>';
+      await new Promise((r) => setTimeout(r, 700));
+
+      // Show normalized output
+      output.innerHTML = `
+          <div class=\"space-y-3\">
+            <div class=\"bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-3\">
+              <div class=\"text-[10px] text-emerald-500 uppercase tracking-wider mb-1\">Master SKU</div>
+              <div class=\"text-lg font-bold text-emerald-300\">${normalizedOutput.sku}</div>
+              <div class=\"text-sm text-emerald-400 mt-1\">${normalizedOutput.name}</div>
+            </div>
+            <div class=\"text-xs space-y-1.5 text-slate-400\">
+              <div class=\"flex justify-between\">
+                <span>Category:</span>
+                <span class=\"text-slate-300\">${normalizedOutput.category}</span>
+              </div>
+              <div class=\"flex justify-between\">
+                <span>Base Unit:</span>
+                <span class=\"text-blue-400 font-semibold\">${normalizedOutput.baseUnit}</span>
+              </div>
+              <div class=\"flex justify-between\">
+                <span>Confidence:</span>
+                <span class=\"text-emerald-400 font-bold\">${normalizedOutput.confidence}</span>
+              </div>
+              <div class=\"flex justify-between\">
+                <span>Variants:</span>
+                <span class=\"text-purple-400\">${normalizedOutput.variants}</span>
+              </div>
+            </div>
+          </div>
+        `;
+
+      status.innerHTML =
+        '<span class=\"flex items-center gap-2\"><svg class=\"w-5 h-5 text-emerald-400\" fill=\"currentColor\" viewBox=\"0 0 20 20\"><path fill-rule=\"evenodd\" d=\"M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z\" clip-rule=\"evenodd\"/></svg> <span class=\"font-semibold text-emerald-400\">Mapping Complete</span> <span class=\"text-slate-500\">• Ready for price comparison</span></span>';
+    }
+
+    // --- Charts Implementation ---
+
+
+    // --- ROI Calculator Logic ---
+    function calculateROI() {
+      const outlets = parseInt(
+        document.getElementById("input-outlets").value,
+      );
+      const spend = parseInt(document.getElementById("input-spend").value);
+
+      document.getElementById("val-outlets").innerText = outlets;
+      document.getElementById("val-spend").innerText = spend.toLocaleString();
+
+      const totalSpend = outlets * spend * 12;
+
+      // Estimates based on UAE market averages
+      const procureSave = totalSpend * 0.045; // 4.5% better pricing
+      const wasteSave = totalSpend * 0.025; // 2.5% waste reduction
+      const adminSave = outlets * 12 * 20 * 60; // 20 hours saved/mo per outlet @ 60 AED/hr
+
+      const total = procureSave + wasteSave + adminSave;
+
+      document.getElementById("save-procure").innerText = `AED ${(
+        procureSave / 1000
+      ).toFixed(0)}k`;
+      document.getElementById("save-waste").innerText = `AED ${(
+        wasteSave / 1000
+      ).toFixed(0)}k`;
+      document.getElementById("save-admin").innerText = `AED ${(
+        adminSave / 1000
+      ).toFixed(0)}k`;
+      document.getElementById("total-savings").innerText = `AED ${Math.round(
+        total,
+      ).toLocaleString()}`;
+
+      // Update ROI Chart
+      if (roiChart) {
+        const foodCost = 75;
+        const wastePercent = (wasteSave / totalSpend) * 100;
+        const adminPercent = (adminSave / totalSpend) * 100;
+        const recoveredPercent = (procureSave / totalSpend) * 100;
+
+        roiChart.data.datasets[0].data = [
+          foodCost,
+          wastePercent,
+          adminPercent,
+          recoveredPercent,
+        ];
+        roiChart.update();
+      }
+    }
+
+    // Helpers
+    function scrollToId(id) {
+      document.getElementById(id).scrollIntoView({ behavior: "smooth" });
+    }
+
+    // Init
+    window.onload = () => {
+      showTech("restaurant");
+
+
+      // Render Sprint Nav
+      const nav = document.getElementById("sprint-nav");
+      sprints.forEach((s) => {
+        nav.innerHTML += `
+                    <div onclick="showSprint(${s.id})" id="s-${s.id}" class="sprint-card p-4 rounded-xl">
+                        <div class="text-[10px] font-bold text-slate-400">SPRINT 0${s.id}</div>
+                        <div class="font-bold text-sm">${s.t}</div>
+                    </div>
+                `;
+      });
+      showSprint(1);
+
+      // Initialize Charts
+
+
+      const ctx2 = document.getElementById("roiChart").getContext("2d");
+      roiChart = new Chart(ctx2, {
+        type: "doughnut",
+        data: {
+          labels: [
+            "Food Cost",
+            "Manual Waste",
+            "Admin Labor",
+            "Recovered Margin",
+          ],
+          datasets: [
+            {
+              data: [75, 12, 10, 3],
+              backgroundColor: [
+                "rgba(148, 163, 184, 0.3)",
+                "rgba(248, 113, 113, 0.85)",
+                "rgba(251, 191, 36, 0.85)",
+                "rgba(34, 197, 94, 0.85)",
+              ],
+              borderColor: [
+                "rgba(148, 163, 184, 0.5)",
+                "rgba(239, 68, 68, 1)",
+                "rgba(245, 158, 11, 1)",
+                "rgba(22, 163, 74, 1)",
+              ],
+              borderWidth: 3,
+              hoverOffset: 15,
+              hoverBorderWidth: 4,
+            },
+          ],
+        },
+        options: {
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: "bottom",
+              labels: {
+                boxWidth: 15,
+                font: { size: 12, weight: "600" },
+                padding: 12,
+                usePointStyle: true,
+                pointStyle: "circle",
+              },
+            },
+            tooltip: {
+              backgroundColor: "rgba(0, 0, 0, 0.85)",
+              padding: 14,
+              cornerRadius: 10,
+              titleFont: { size: 14, weight: "bold" },
+              bodyFont: { size: 13 },
+              displayColors: true,
+              callbacks: {
+                label: function (context) {
+                  return context.label + ": " + context.parsed + "%";
+                },
+              },
+            },
+          },
+          cutout: "72%",
+        },
+      });
+
+      calculateROI();
+
+      // Slider listeners
+      document
+        .getElementById("input-outlets")
+        .addEventListener("input", calculateROI);
+      document
+        .getElementById("input-spend")
+        .addEventListener("input", calculateROI);
+    };
+  </script>
+
+  <script>
+    const phases = [
+      {
+        id: 0, num: "00", title: "Onboarding & Setup", icon: "🚀",
+        color: "from-slate-500 to-slate-600", accent: "#64748b",
+        tagline: "Foundation for multi-tenant procurement",
+        actors: ["Restaurant Owner", "Platform Admin", "Chef", "Storekeeper"],
+        description: "Restaurant signs up, configures branches, connects POS (Foodics/Oracle MICROS), imports menu recipes with Bill of Materials, sets par levels and reorder points, and invites suppliers.",
+        steps: [
+          { t: "Organization signup", d: "Create org record, assign org_id, validate TRN for UAE e-invoicing" },
+          { t: "Branch & POS config", d: "Connect Foodics webhook for real-time order.created events" },
+          { t: "Recipe BOM mapping", d: "Each menu item maps to ingredients with exact quantities (e.g. Burger = 150g chicken + 1 bun)" },
+          { t: "Supplier invitations", d: "Invite 3-8 suppliers via Email or Platform Invite. Each gets independent catalog channel" },
+          { t: "RBAC assignment", d: "Chef, Storekeeper, Finance Manager — each persona gets tailored permissions" }
+        ],
+        tech: ["MedusaJS 2.0", "PostgreSQL (RLS)", "SendGrid"]
+      },
+      {
+        id: 1, num: "01", title: "Catalog & SKU Mapping", icon: "🧬",
+        color: "from-blue-500 to-blue-600", accent: "#3b82f6",
+        tagline: "Turning naming chaos into a universal product language",
+        actors: ["Supplier", "LangGraph Agent", "Platform Admin"],
+        description: "Suppliers upload catalogs (CSV, PDF, Direct Upload). The AI pipeline normalizes every product to a universal SKU using vector embeddings and similarity search.",
+        steps: [
+          { t: "ParseRows", d: "Clean text, fix encoding, extract sku_code, product_name, pack, price" },
+          { t: "GenerateEmbeddings", d: "OpenAI text-embedding-ada-002 creates 1536-dim vectors. Batched 100 at a time" },
+          { t: "SimilaritySearch", d: "Weaviate cosine search: >0.90 = auto-match, 0.85-0.90 = review, <0.85 = new SKU" },
+          { t: "ExtractAttributes", d: "GPT-4 extracts category, grade, origin, organic, halal status" },
+          { t: "ParsePack", d: "Regex + LLM: '10x1kg' → {count:10, size:1, unit:'kg'}. Normalize price_per_kg" },
+          { t: "AdminReview (INTERRUPT)", d: "Auto-matched: 90% | Review: 6% | New: 4%. Admin accepts/overrides" }
+        ],
+        tech: ["LangGraph", "Weaviate", "OpenAI", "GPT-4"]
+      },
+      {
+        id: 2, num: "02", title: "Demand Sensing & Smart Cart", icon: "📊",
+        color: "from-indigo-500 to-indigo-600", accent: "#6366f1",
+        tagline: "POS data → inventory depletion → AI-generated reorder",
+        actors: ["POS System", "AI Agent", "Chef"],
+        description: "Every POS sale triggers real-time inventory depletion via recipe BOM. When stock hits reorder point, AutoReorderWorkflow generates an optimized cart using 30-day run rates and lead times.",
+        steps: [
+          { t: "POS webhook fires", d: "order.created → map Foodics product_id to recipe → expand BOM" },
+          { t: "Inventory depletion", d: "Transactional UPDATE: qty_on_hand = qty_on_hand - consumed_qty" },
+          { t: "Low stock detection", d: "IF qty_on_hand < reorder_point → emit inventory.low_stock event" },
+          { t: "AI calculates order", d: "suggested = (par - current) + (run_rate × lead_time) + safety_stock" },
+          { t: "Smart Cart ready", d: "Chef sees pre-built cart at 6 AM. One-tap approve. 30 seconds vs 45 minutes" }
+        ],
+        tech: ["Webhooks", "PostgreSQL", "LangGraph", "Redis"]
+      },
+      {
+        id: 3, num: "03", title: "Supplier Selection & PO Split", icon: "⚡",
+        color: "from-violet-500 to-violet-600", accent: "#8b5cf6",
+        tagline: "AI ranks suppliers and splits purchase orders",
+        actors: ["SourcingAgent", "Multiple Suppliers"],
+        description: "The SourcingAgent evaluates all onboarded suppliers for each cart item using a composite score, applies tiered priority matching (contracted → preferred → marketplace → flash deals), and auto-splits POs across winners.",
+        steps: [
+          { t: "Tier 1: Contracted", d: "If active contract exists → use locked price, no negotiation needed" },
+          { t: "Tier 2: Preferred", d: "Composite score: 40% fill_rate + 25% price + 20% SLA + 15% quality" },
+          { t: "Tier 3: Marketplace", d: "Broadcast RFQ to all qualifying suppliers. Agents compete" },
+          { t: "Tier 4: Flash Deals", d: "Match against distressed inventory. 15-40% discount on near-expiry" },
+          { t: "PO Splitting", d: "Different suppliers win different items → auto-generate separate POs" }
+        ],
+        tech: ["LangGraph", "Composite Scoring", "Redis Sorted Sets"]
+      },
+      {
+        id: 4, num: "04", title: "Autonomous Negotiation", icon: "🤖",
+        color: "from-purple-500 to-purple-600", accent: "#a855f7",
+        tagline: "AI Sales Agent closes deals within supplier guardrails",
+        actors: ["Autonomous Sales Agent", "Supplier Manager"],
+        description: "The Autonomous Sales Agent uses Perceive → Reason (ReAct) → Act to negotiate deals. It has instant-close authority within supplier-configured guardrails: margin floor, discount ceiling, credit limits, and daily volume caps.",
+        steps: [
+          { t: "Perceive", d: "Incoming demand, buyer profile, inventory levels, competitor signals" },
+          { t: "Reason (ReAct)", d: "'Buyer orders 15kg/week. Basket >$200 qualifies for 2% discount'" },
+          { t: "Guardrail check", d: "Margin floor → discount ceiling → credit limit → daily cap. All must pass" },
+          { t: "Act & close", d: "Apply discount, generate quote, send via Portal. Buyer confirms" },
+          { t: "Audit log", d: "Every decision logged: ai_reasoning, guardrails_checked, human_override flag" }
+        ],
+        tech: ["ReAct Pattern", "LangGraph", "WebSockets"]
+      },
+      {
+        id: 5, num: "05", title: "Fulfillment & Digital GRN", icon: "📦",
+        color: "from-teal-500 to-teal-600", accent: "#14b8a6",
+        tagline: "Mobile receiving with quantity/quality verification",
+        actors: ["Storekeeper", "Delivery Driver"],
+        description: "When delivery arrives, Storekeeper opens Mobile GRN Module, scans PO barcode, performs quantity check (weighing), quality inspection (with photo proof), captures signatures, and submits. Inventory updates transactionally.",
+        steps: [
+          { t: "Scan PO barcode", d: "App loads expected items from PO-2026-001" },
+          { t: "Quantity check", d: "Expected: 18kg. Received (weighed): 17.5kg. Flag: SHORT DELIVERY -0.5kg" },
+          { t: "Quality inspection", d: "Condition check + photo upload. Notes: 'Minor packaging wear, product OK'" },
+          { t: "Dual signatures", d: "Driver + Receiver sign on canvas pad with timestamp" },
+          { t: "Transactional commit", d: "INSERT grn, UPDATE inventory (+17.5kg), UPDATE PO status, CREATE claim if short" }
+        ],
+        tech: ["PWA (offline-first)", "IndexedDB", "PostgreSQL"]
+      },
+      {
+        id: 6, num: "06", title: "Invoice & 3-Way Match", icon: "🔍",
+        color: "from-cyan-500 to-cyan-600", accent: "#06b6d4",
+        tagline: "PO = GRN = Invoice. The source of truth.",
+        actors: ["Supplier", "OCR Engine", "Finance Manager"],
+        description: "Supplier uploads PDF invoice → AWS Textract extracts line items → InvoiceValidationAgent maps descriptions to normalized SKUs → 3-way match compares PO vs GRN vs Invoice. Exceptions flagged for Finance Manager.",
+        steps: [
+          { t: "Invoice OCR", d: "AWS Textract AnalyzeExpense: extracts invoice_number, date, line_items, total" },
+          { t: "SKU mapping", d: "InvoiceValidationAgent maps each line description to normalized_sku" },
+          { t: "2-Way match", d: "PO qty/price vs Invoice qty/price. Tolerance: exact match required" },
+          { t: "3-Way match", d: "Add GRN received qty. GRN 17.5kg ≠ Invoice 18kg → EXCEPTION flagged" },
+          { t: "Exception resolution", d: "Finance Manager: Accept adjustment ($-6.32), Dispute, or Override" }
+        ],
+        tech: ["AWS Textract", "LangGraph", "PostgreSQL"]
+      },
+      {
+        id: 7, num: "07", title: "Payment & Compliance", icon: "💳",
+        color: "from-emerald-500 to-emerald-600", accent: "#10b981",
+        tagline: "Scheduled payments with UAE FTA e-invoicing",
+        actors: ["Finance Manager", "Payment Gateway", "FTA"],
+        description: "Approved invoices are scheduled per payment terms (Net 30, COD). Platform auto-generates PINT AE format documents for UAE FTA 5-Corner e-invoicing model with all 6 mandatory blocks.",
+        steps: [
+          { t: "Invoice approved", d: "match_status = 'approved', approved_amount = $206.08" },
+          { t: "Payment scheduling", d: "Net 30: schedule for invoice_date + 30d. COD: process immediately" },
+          { t: "Collections reminders", d: "Automated reminders at D+25, D+28, D+30" },
+          { t: "E-Invoice generation", d: "PINT AE XML/JSON: seller TRN, buyer TRN, tax breakdown (5% VAT)" },
+          { t: "FTA submission", d: "Submit to Accredited Service Provider → FTA clearance. Store audit trail" }
+        ],
+        tech: ["PINT AE (PEPPOL)", "Payment Gateway", "FTA 5-Corner"]
+      },
+      {
+        id: 8, num: "08", title: "Learning & Retention", icon: "🧠",
+        color: "from-amber-500 to-amber-600", accent: "#f59e0b",
+        tagline: "Every cycle makes the platform smarter",
+        actors: ["ML Models", "Engagement Orchestrator"],
+        description: "Every completed cycle feeds back: cart acceptance rate trains AI accuracy, GRN quality scores update supplier rankings, consumption vs forecast trains demand models, and behavioral triggers drive proactive engagement.",
+        steps: [
+          { t: "Cart feedback loop", d: "Acceptance rate, edit patterns, reject reasons → improve AI Cart accuracy" },
+          { t: "Supplier scoring", d: "Delivery accuracy, quality (GRN), price, SLA → composite score updates" },
+          { t: "Demand model training", d: "Consumption vs forecast, waste tracking, seasonal patterns → better predictions" },
+          { t: "Churn detection", d: "Order frequency -30% over 4 weeks → alert + AI sends retention offer" },
+          { t: "Engagement rules", d: "Max 3 notifications/day. No contact during service hours (11-2, 6-10 PM)" }
+        ],
+        tech: ["ML Models", "Event Bus", "WebSockets"]
+      }
+    ];
+
+    const dataFlows = [
+      {
+        title: "SKU Normalization Pipeline",
+        icon: "🧬", color: "blue",
+        nodes: ["Supplier Upload (CSV/PDF)", "ParseRows", "Embeddings (ada-002)", "Weaviate Search", "GPT-4 Attributes", "Admin Review", "Normalized SKU Master"],
+        result: "500 SKUs processed in ~5 minutes. 90% auto-matched."
+      },
+      {
+        title: "POS → AI Cart → PO Pipeline",
+        icon: "📊", color: "purple",
+        nodes: ["POS Sale Event", "Recipe BOM Expand", "Inventory Deplete", "Low Stock Alert", "AI Run-Rate Calc", "Smart Cart Gen", "Chef Approves → PO"],
+        result: "Real-time inventory. Cart ready by 6 AM daily."
+      },
+      {
+        title: "GRN → 3-Way Match → Payment",
+        icon: "🔍", color: "cyan",
+        nodes: ["Delivery Arrives", "Mobile GRN Check", "Invoice OCR (Textract)", "SKU Mapping", "3-Way Match Engine", "Exception/Approve", "Payment Scheduled"],
+        result: "Auto-approve if within tolerance. Full audit trail."
+      }
+    ];
+
+    function renderPhaseNav() {
+      const nav = document.getElementById('phase-nav');
+      nav.innerHTML = phases.map(p => `
+        <button onclick="showPhase(${p.id})" id="phase-btn-${p.id}" 
+          class="px-4 py-2 rounded-full text-xs font-bold transition-all border
+          ${p.id === 0 ? 'bg-white/10 border-white/20 text-white' : 'bg-transparent border-white/5 text-slate-500 hover:text-slate-300 hover:border-white/10'}">
+          ${p.num} ${p.title}
+        </button>
+      `).join('');
+    }
+
+    function showPhase(id) {
+      const p = phases[id];
+      // Update nav
+      document.querySelectorAll('[id^="phase-btn-"]').forEach(btn => {
+        btn.className = 'px-4 py-2 rounded-full text-xs font-bold transition-all border bg-transparent border-white/5 text-slate-500 hover:text-slate-300 hover:border-white/10';
+      });
+      const activeBtn = document.getElementById(`phase-btn-${id}`);
+      activeBtn.className = 'px-4 py-2 rounded-full text-xs font-bold transition-all border bg-white/10 border-white/20 text-white';
+
+      const detail = document.getElementById('phase-detail');
+      detail.style.opacity = '0';
+      detail.style.transform = 'translateY(20px)';
+
+      setTimeout(() => {
+        detail.innerHTML = `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-5">
+              <div class="flex items-center gap-4 mb-6">
+                <div class="text-5xl">${p.icon}</div>
+                <div>
+                  <div class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-1">Phase ${p.num}</div>
+                  <h3 class="text-2xl md:text-3xl font-black text-white">${p.title}</h3>
+                </div>
+              </div>
+              <p class="text-lg text-blue-400 font-semibold mb-4 italic">"${p.tagline}"</p>
+              <p class="text-slate-400 leading-relaxed mb-6">${p.description}</p>
+              <div class="mb-6">
+                <div class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Key Actors</div>
+                <div class="flex flex-wrap gap-2">
+                  ${p.actors.map(a => `<span class="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-slate-300 font-medium">${a}</span>`).join('')}
+                </div>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Technology</div>
+                <div class="flex flex-wrap gap-2">
+                  ${p.tech.map(t => `<span class="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs text-blue-400 font-semibold">${t}</span>`).join('')}
+                </div>
+              </div>
+            </div>
+            <div class="lg:col-span-7">
+              <div class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Step-by-Step Flow</div>
+              <div class="space-y-1">
+                ${p.steps.map((s, i) => `
+                  <div class="flow-step pb-4" style="animation: fadeUp 0.4s ease-out ${i * 0.1}s forwards; opacity:0">
+                    <div class="glass p-4 hover:bg-white/[0.06] transition">
+                      <div class="flex items-start gap-3">
+                        <span class="text-[10px] font-black text-slate-600 bg-white/5 px-2 py-1 rounded mt-0.5">${String(i + 1).padStart(2, '0')}</span>
+                        <div>
+                          <div class="font-bold text-white text-sm mb-1">${s.t}</div>
+                          <div class="text-xs text-slate-400 leading-relaxed">${s.d}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+        detail.style.opacity = '1';
+        detail.style.transform = 'translateY(0)';
+      }, 200);
+    }
+
+    function renderFlowCards() {
+      const container = document.getElementById('flow-cards');
+      const colors = { blue: 'from-blue-500/20 to-blue-600/5 border-blue-500/20', purple: 'from-purple-500/20 to-purple-600/5 border-purple-500/20', cyan: 'from-cyan-500/20 to-cyan-600/5 border-cyan-500/20' };
+      const dots = { blue: 'bg-blue-500', purple: 'bg-purple-500', cyan: 'bg-cyan-500' };
+      const texts = { blue: 'text-blue-400', purple: 'text-purple-400', cyan: 'text-cyan-400' };
+
+      container.innerHTML = dataFlows.map(f => `
+        <div class="glass p-6 reveal hover:bg-white/[0.06] transition-all duration-300 hover:-translate-y-2">
+          <div class="text-4xl mb-4">${f.icon}</div>
+          <h3 class="text-lg font-bold text-white mb-4">${f.title}</h3>
+          <div class="space-y-3 mb-6">
+            ${f.nodes.map((n, i) => `
+              <div class="flex items-center gap-3">
+                <div class="w-6 h-6 rounded-full ${dots[f.color]} bg-opacity-20 flex items-center justify-center flex-shrink-0">
+                  <span class="text-[9px] font-black ${texts[f.color]}">${i + 1}</span>
+                </div>
+                <span class="text-sm text-slate-300">${n}</span>
+              </div>
+              ${i < f.nodes.length - 1 ? '<div class="ml-3 border-l border-dashed border-white/10 h-2"></div>' : ''}
+            `).join('')}
+          </div>
+          <div class="pt-4 border-t border-white/5">
+            <div class="text-xs ${texts[f.color]} font-semibold">✓ ${f.result}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // === Journey Init ===
+    const journeyObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('revealed'); } });
+    }, { threshold: 0.1 });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (typeof renderPhaseNav === 'function') renderPhaseNav();
+      if (typeof showPhase === 'function') showPhase(0);
+      if (typeof renderFlowCards === 'function') renderFlowCards();
+
+      setTimeout(() => {
+        document.querySelectorAll('.journey-wrapper .reveal').forEach(el => journeyObserver.observe(el));
+      }, 100);
+    });
+
+  </script>
+</body>
+
+</html>
