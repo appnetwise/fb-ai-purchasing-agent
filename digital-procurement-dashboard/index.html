@@ -10,9 +10,27 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
     rel="stylesheet" />
   <style>
+    :root {
+      --fg-base: #11181C;
+      --fg-subtle: #687076;
+      --fg-muted: #889096;
+      --fg-on-color: #FFFFFF;
+      --bg-base: #FFFFFF;
+      --bg-subtle: #F8FAFB;
+      --bg-subtle-hover: #F0F2F4;
+      --border-base: #E6E8EB;
+      --border-strong: #DFE3E6;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --shadow-card: 0 1px 2px 0 rgba(0, 0, 0, 0.05), 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+      --shadow-card-hover: 0 4px 12px 0 rgba(0, 0, 0, 0.08), 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+      --shadow-elevated: 0 8px 24px 0 rgba(0, 0, 0, 0.12), 0 2px 8px 0 rgba(0, 0, 0, 0.06);
+    }
+
     body {
       font-family: "Plus Jakarta Sans", sans-serif;
-      background-color: #f8fafc;
+      background-color: var(--bg-base);
+      color: var(--fg-base);
       scroll-behavior: smooth;
     }
 
@@ -21,45 +39,52 @@
       width: 100%;
       height: 280px;
       padding: 20px;
-      background: linear-gradient(135deg,
-          rgba(255, 255, 255, 0.9) 0%,
-          rgba(248, 250, 252, 0.9) 100%);
-      border-radius: 20px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      background: var(--bg-base);
+      border-radius: 12px;
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--border-base);
     }
 
     .nav-link {
       position: relative;
-      transition: color 0.3s;
+      transition: color 0.2s;
+      color: var(--fg-subtle);
+    }
+
+    .nav-link:hover {
+      color: var(--fg-base);
     }
 
     .nav-link::after {
       content: "";
       position: absolute;
       width: 0;
-      height: 2px;
-      bottom: -4px;
-      left: 0;
-      background-color: #3b82f6;
-      transition: width 0.3s;
+      height: 1px;
+      bottom: -2px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--fg-base);
+      transition: width 0.2s;
     }
 
     .nav-link:hover::after {
-      width: 100%;
+      width: 80%;
     }
 
     .glass-card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(226, 232, 240, 0.8);
-      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+      background: var(--bg-base);
+      border: 1px solid var(--border-base);
+      box-shadow: var(--shadow-card);
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+
+    .glass-card:hover {
+      box-shadow: var(--shadow-card-hover);
+      border-color: var(--border-strong);
     }
 
     .hero-gradient {
-      background: linear-gradient(135deg,
-          #0f172a 0%,
-          #1e3a8a 50%,
-          #3b82f6 100%);
+      background: var(--bg-base);
       position: relative;
       overflow: hidden;
     }
@@ -67,14 +92,28 @@
     .hero-gradient::before {
       content: "";
       position: absolute;
-      top: -50%;
-      right: -50%;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle,
-          rgba(59, 130, 246, 0.3) 0%,
+      top: -30%;
+      right: -20%;
+      width: 60%;
+      height: 80%;
+      background: radial-gradient(ellipse,
+          rgba(59, 130, 246, 0.08) 0%,
+          rgba(147, 51, 234, 0.04) 40%,
           transparent 70%);
-      animation: pulse 8s ease-in-out infinite;
+      animation: pulse 12s ease-in-out infinite;
+    }
+
+    .hero-gradient::after {
+      content: "";
+      position: absolute;
+      bottom: -20%;
+      left: -10%;
+      width: 50%;
+      height: 60%;
+      background: radial-gradient(ellipse,
+          rgba(6, 182, 212, 0.06) 0%,
+          transparent 60%);
+      animation: pulse 15s ease-in-out infinite reverse;
     }
 
     @keyframes pulse {
@@ -98,30 +137,36 @@
     .arch-block {
       cursor: pointer;
       transition: all 0.2s;
-      border: 2px solid #e2e8f0;
+      border: 1px solid var(--border-base);
     }
 
     .arch-block:hover {
-      border-color: #3b82f6;
-      background-color: #eff6ff;
-      transform: translateY(-2px);
+      border-color: var(--accent);
+      background-color: rgba(59, 130, 246, 0.04);
+      transform: translateY(-1px);
     }
 
     .arch-block.active {
-      border-color: #2563eb;
-      background-color: #dbeafe;
+      border-color: var(--accent);
+      background-color: rgba(59, 130, 246, 0.06);
     }
 
     .sprint-card {
-      transition: all 0.3s ease;
-      border: 1px solid #e2e8f0;
+      transition: all 0.2s ease;
+      border: 1px solid var(--border-base);
       cursor: pointer;
+      background: var(--bg-base);
+    }
+
+    .sprint-card:hover {
+      border-color: var(--border-strong);
+      background: var(--bg-subtle);
     }
 
     .sprint-card.active {
-      border-color: #2563eb;
-      background-color: #eff6ff;
-      box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.1);
+      border-color: var(--accent);
+      background-color: rgba(59, 130, 246, 0.04);
+      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.1);
     }
 
     @keyframes fadeIn {
@@ -173,28 +218,25 @@
     }
 
     .interactive-card {
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.2s ease;
     }
 
     .interactive-card:hover {
-      transform: translateY(-8px) scale(1.02);
-      box-shadow:
-        0 20px 40px -10px rgba(59, 130, 246, 0.3),
-        0 0 0 1px rgba(59, 130, 246, 0.1);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-card-hover);
+      border-color: var(--border-strong);
     }
 
     .stat-card {
-      background: linear-gradient(135deg,
-          rgba(59, 130, 246, 0.1) 0%,
-          rgba(147, 51, 234, 0.1) 100%);
-      border: 1px solid rgba(59, 130, 246, 0.2);
-      transition: all 0.3s ease;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-base);
+      transition: all 0.2s ease;
     }
 
     .stat-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 15px 30px -5px rgba(59, 130, 246, 0.2);
-      border-color: rgba(59, 130, 246, 0.4);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-card-hover);
+      border-color: var(--border-strong);
     }
 
     /* === Procurement Journey Styles === */
@@ -411,55 +453,77 @@
       background: #3b82f6;
       box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
     }
+
+    /* === Architecture Diagram Styles === */
+    .svg-color-transitions {
+      transition: all 0.3s ease;
+    }
+
+    .arch-layer {
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .arch-nav-item {
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .arch-nav-item.active {
+      color: #1e40af !important;
+    }
+
+    .arch-nav-item:not(.active) {
+      color: #a1a1aa;
+    }
+
+    .arch-connector {
+      transition: all 0.4s ease;
+    }
   </style>
 </head>
 
-<body class="text-slate-800">
+<body>
   <!-- Sticky Navigation -->
-  <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b" style="border-color: var(--border-base);">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between h-18 items-center py-4">
+      <div class="flex justify-between items-center py-3.5">
         <div class="flex items-center space-x-3">
           <div
-            class="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center text-white font-bold shadow-md">
+            class="w-9 h-9 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center text-white font-bold text-sm">
             P
           </div>
           <div>
-            <div class="text-xl font-bold tracking-tight text-slate-900">
+            <div class="text-base font-semibold tracking-tight" style="color: var(--fg-base);">
               ProcureIQ
             </div>
-            <div class="text-[10px] font-semibold text-blue-600 uppercase tracking-widest">
-              Intelligent Procurement AI
+            <div class="text-[9px] font-medium uppercase tracking-widest" style="color: var(--fg-muted);">
+              Intelligent Procurement
             </div>
           </div>
         </div>
-        <div class="hidden md:flex space-x-8 items-center">
-          <button onclick="scrollToId('vision')"
-            class="nav-link text-sm font-semibold text-slate-600 hover:text-blue-600">
+        <div class="hidden md:flex items-center gap-1">
+          <button onclick="scrollToId('vision')" class="nav-link text-sm font-medium px-3 py-1.5">
             Vision
           </button>
-          <button onclick="scrollToId('transformation')"
-            class="nav-link text-sm font-semibold text-slate-600 hover:text-blue-600">
+          <button onclick="scrollToId('transformation')" class="nav-link text-sm font-medium px-3 py-1.5">
             Transformation
           </button>
-          <button onclick="scrollToId('journey')"
-            class="nav-link text-sm font-semibold text-slate-600 hover:text-blue-600">
+          <button onclick="scrollToId('journey')" class="nav-link text-sm font-medium px-3 py-1.5">
             Journey
           </button>
-          <button onclick="scrollToId('architecture')"
-            class="nav-link text-sm font-semibold text-slate-600 hover:text-blue-600">
+          <button onclick="scrollToId('architecture')" class="nav-link text-sm font-medium px-3 py-1.5">
             Architecture
           </button>
-          <button onclick="scrollToId('ai-demo')"
-            class="nav-link text-sm font-semibold text-slate-600 hover:text-blue-600">
+          <button onclick="scrollToId('ai-demo')" class="nav-link text-sm font-medium px-3 py-1.5">
             AI Engine
           </button>
-          <button onclick="scrollToId('roadmap')"
-            class="nav-link text-sm font-semibold text-slate-600 hover:text-blue-600">
+          <button onclick="scrollToId('roadmap')" class="nav-link text-sm font-medium px-3 py-1.5">
             Roadmap
           </button>
           <button onclick="scrollToId('roi')"
-            class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-blue-700 transition shadow-md">
+            class="ml-2 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all"
+            style="background: var(--fg-base);" onmouseover="this.style.opacity='0.85'"
+            onmouseout="this.style.opacity='1'">
             ROI Calculator
           </button>
         </div>
@@ -468,15 +532,16 @@
   </nav>
 
   <!-- Hero Section -->
-  <header id="vision" class="hero-gradient text-white py-24 px-4 overflow-hidden">
+  <header id="vision" class="hero-gradient py-20 md:py-28 px-4 overflow-hidden">
     <div class="max-w-7xl mx-auto relative z-10">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
         <!-- Left Content -->
         <div class="lg:col-span-7 animate-fade">
-          <div class="mb-8">
+          <div class="mb-6">
             <span
-              class="inline-flex items-center gap-2 py-2.5 px-5 rounded-full bg-gradient-to-r from-blue-500/30 to-purple-500/30 text-blue-100 text-xs font-bold uppercase tracking-widest border border-blue-400/40 backdrop-blur-md shadow-lg">
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              class="inline-flex items-center gap-2 py-1.5 px-4 rounded-full text-xs font-semibold uppercase tracking-widest"
+              style="background: rgba(59, 130, 246, 0.08); color: var(--accent); border: 1px solid rgba(59, 130, 246, 0.15);">
+              <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M13 7H7v6h6V7z" />
                 <path fill-rule="evenodd"
                   d="M7 2a1 1 0 012 0v1h2V2a1 1 0 112 0v1h2a2 2 0 012 2v2h1a1 1 0 110 2h-1v2h1a1 1 0 110 2h-1v2a2 2 0 01-2 2h-2v1a1 1 0 11-2 0v-1H9v1a1 1 0 11-2 0v-1H5a2 2 0 01-2-2v-2H2a1 1 0 110-2h1V9H2a1 1 0 010-2h1V5a2 2 0 012-2h2V2zM5 5h10v10H5V5z"
@@ -486,40 +551,43 @@
             </span>
           </div>
 
-          <h1 class="text-5xl md:text-7xl lg:text-8xl font-black mb-8 leading-[0.95] tracking-tight">
+          <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-[0.95] tracking-tight"
+            style="color: var(--fg-base);">
             Smart Procurement.
             <br />
-            <span class="bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+            <span class="bg-gradient-to-r from-blue-500 via-blue-600 to-purple-600 bg-clip-text text-transparent">
               Smarter Margins.
             </span>
           </h1>
 
-          <p class="text-xl md:text-2xl text-slate-200 mb-10 leading-relaxed max-w-2xl font-light">
+          <p class="text-lg md:text-xl mb-8 leading-relaxed max-w-xl font-normal" style="color: var(--fg-subtle);">
             Transform your F&B procurement with AI that
-            <strong class="text-white font-semibold">learns</strong>,
-            <strong class="text-white font-semibold">predicts</strong>, and
-            <strong class="text-white font-semibold">optimizes</strong> every
+            <strong style="color: var(--fg-base);">learns</strong>,
+            <strong style="color: var(--fg-base);">predicts</strong>, and
+            <strong style="color: var(--fg-base);">optimizes</strong> every
             order—automatically.
           </p>
 
           <!-- CTA Buttons -->
-          <div class="flex flex-col sm:flex-row gap-4 mb-12">
+          <div class="flex flex-col sm:flex-row gap-3 mb-10">
             <button onclick="scrollToId('roi')"
-              class="group relative px-8 py-4 bg-white text-slate-900 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 overflow-hidden">
+              class="group relative px-6 py-3 text-white rounded-lg font-semibold text-sm transition-all duration-200 overflow-hidden"
+              style="background: var(--fg-base);" onmouseover="this.style.opacity='0.88'"
+              onmouseout="this.style.opacity='1'">
               <span class="relative z-10 flex items-center justify-center gap-2">
                 Calculate Your Savings
-                <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor"
+                <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor"
                   viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
               </span>
-              <div
-                class="absolute inset-0 bg-gradient-to-r from-blue-500 to-cyan-400 opacity-0 group-hover:opacity-10 transition-opacity">
-              </div>
             </button>
             <button onclick="scrollToId('ai-demo')"
-              class="px-8 py-4 bg-white/10 text-white rounded-2xl font-semibold text-lg hover:bg-white/20 transition-all duration-300 backdrop-blur-sm border border-white/20 flex items-center justify-center gap-2">
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              class="px-6 py-3 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2"
+              style="color: var(--fg-base); border: 1px solid var(--border-base);"
+              onmouseover="this.style.backgroundColor='var(--bg-subtle)'"
+              onmouseout="this.style.backgroundColor='transparent'">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
                 <path fill-rule="evenodd"
                   d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
@@ -530,34 +598,34 @@
           </div>
 
           <!-- Key Metrics -->
-          <div class="grid grid-cols-3 gap-4">
-            <div
-              class="text-center p-4 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all">
+          <div class="grid grid-cols-3 gap-3">
+            <div class="text-center p-4 rounded-xl transition-all"
+              style="background: var(--bg-subtle); border: 1px solid var(--border-base);">
               <div
-                class="text-3xl md:text-4xl font-black bg-gradient-to-br from-blue-300 to-cyan-400 bg-clip-text text-transparent mb-1">
+                class="text-2xl md:text-3xl font-extrabold bg-gradient-to-br from-blue-500 to-cyan-500 bg-clip-text text-transparent mb-1">
                 12-18%
               </div>
-              <div class="text-[10px] md:text-xs text-slate-300 font-medium uppercase tracking-wider">
+              <div class="text-[10px] md:text-xs font-medium uppercase tracking-wider" style="color: var(--fg-muted);">
                 Cost Savings
               </div>
             </div>
-            <div
-              class="text-center p-4 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all">
+            <div class="text-center p-4 rounded-xl transition-all"
+              style="background: var(--bg-subtle); border: 1px solid var(--border-base);">
               <div
-                class="text-3xl md:text-4xl font-black bg-gradient-to-br from-emerald-300 to-green-400 bg-clip-text text-transparent mb-1">
+                class="text-2xl md:text-3xl font-extrabold bg-gradient-to-br from-emerald-500 to-green-500 bg-clip-text text-transparent mb-1">
                 100%
               </div>
-              <div class="text-[10px] md:text-xs text-slate-300 font-medium uppercase tracking-wider">
+              <div class="text-[10px] md:text-xs font-medium uppercase tracking-wider" style="color: var(--fg-muted);">
                 Transparency
               </div>
             </div>
-            <div
-              class="text-center p-4 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all">
+            <div class="text-center p-4 rounded-xl transition-all"
+              style="background: var(--bg-subtle); border: 1px solid var(--border-base);">
               <div
-                class="text-3xl md:text-4xl font-black bg-gradient-to-br from-purple-300 to-pink-400 bg-clip-text text-transparent mb-1">
+                class="text-2xl md:text-3xl font-extrabold bg-gradient-to-br from-purple-500 to-pink-500 bg-clip-text text-transparent mb-1">
                 24/7
               </div>
-              <div class="text-[10px] md:text-xs text-slate-300 font-medium uppercase tracking-wider">
+              <div class="text-[10px] md:text-xs font-medium uppercase tracking-wider" style="color: var(--fg-muted);">
                 Automation
               </div>
             </div>
@@ -566,74 +634,79 @@
 
         <!-- Right Visual -->
         <div class="lg:col-span-5">
-          <div class="relative">
-            <!-- Floating Card 1 - Main Dashboard -->
-            <div class="relative bg-white rounded-3xl shadow-2xl p-8 animate-fade">
-              <div class="flex items-center justify-between mb-6">
+          <div class="relative p-2 rounded-[20px]"
+            style="background: var(--bg-subtle); box-shadow: var(--shadow-elevated);">
+            <!-- Main Dashboard Card -->
+            <div class="relative bg-white rounded-2xl p-6 animate-fade"
+              style="box-shadow: var(--shadow-card); border: 1px solid var(--border-base);">
+              <div class="flex items-center justify-between mb-5">
                 <div>
-                  <div class="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1">
+                  <div class="text-xs font-medium uppercase tracking-wider mb-1" style="color: var(--fg-muted);">
                     Live Dashboard
                   </div>
-                  <div class="text-slate-900 text-2xl font-bold">
+                  <div class="text-2xl font-bold" style="color: var(--fg-base);">
                     AED 847,392
                   </div>
                 </div>
                 <div
-                  class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-2xl shadow-lg">
+                  class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-lg">
                   📊
                 </div>
               </div>
 
               <!-- Mini Chart -->
-              <div
-                class="h-32 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl mb-4 flex items-end justify-around p-4 gap-2">
-                <div class="w-full bg-blue-400 rounded-t-lg opacity-60" style="height: 40%"></div>
-                <div class="w-full bg-blue-500 rounded-t-lg opacity-80" style="height: 65%"></div>
-                <div class="w-full bg-blue-600 rounded-t-lg" style="height: 85%"></div>
-                <div class="w-full bg-cyan-500 rounded-t-lg" style="height: 95%"></div>
-                <div class="w-full bg-cyan-600 rounded-t-lg" style="height: 75%"></div>
+              <div class="h-28 rounded-xl mb-4 flex items-end justify-around p-3 gap-1.5"
+                style="background: var(--bg-subtle);">
+                <div class="w-full bg-blue-300 rounded-t-md opacity-60" style="height: 40%"></div>
+                <div class="w-full bg-blue-400 rounded-t-md opacity-80" style="height: 65%"></div>
+                <div class="w-full bg-blue-500 rounded-t-md" style="height: 85%"></div>
+                <div class="w-full bg-blue-600 rounded-t-md" style="height: 95%"></div>
+                <div class="w-full bg-blue-500 rounded-t-md opacity-70" style="height: 75%"></div>
               </div>
 
               <!-- Stats Grid -->
-              <div class="grid grid-cols-2 gap-3">
-                <div class="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl p-3">
-                  <div class="text-emerald-600 text-xs font-semibold mb-1">
+              <div class="grid grid-cols-2 gap-2">
+                <div class="rounded-lg p-3"
+                  style="background: rgba(16, 185, 129, 0.06); border: 1px solid rgba(16, 185, 129, 0.12);">
+                  <div class="text-emerald-600 text-xs font-medium mb-0.5">
                     Savings
                   </div>
-                  <div class="text-emerald-900 text-xl font-bold">
+                  <div class="text-emerald-700 text-lg font-bold">
                     +AED 94k
                   </div>
                 </div>
-                <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-3">
-                  <div class="text-purple-600 text-xs font-semibold mb-1">
+                <div class="rounded-lg p-3"
+                  style="background: rgba(147, 51, 234, 0.06); border: 1px solid rgba(147, 51, 234, 0.12);">
+                  <div class="text-purple-600 text-xs font-medium mb-0.5">
                     Orders
                   </div>
-                  <div class="text-purple-900 text-xl font-bold">1,247</div>
+                  <div class="text-purple-700 text-lg font-bold">1,247</div>
                 </div>
               </div>
             </div>
 
             <!-- Floating Badge 1 -->
-            <div
-              class="absolute -top-6 -right-6 bg-gradient-to-br from-emerald-500 to-emerald-600 text-white px-6 py-3 rounded-2xl shadow-2xl animate-pulse">
-              <div class="text-xs font-semibold uppercase tracking-wider mb-1">
-                AI Active
+            <div class="absolute -top-4 -right-4 text-white px-4 py-2 rounded-lg"
+              style="background: var(--fg-base); box-shadow: var(--shadow-elevated);">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="text-xs font-semibold">AI Active</span>
               </div>
-              <div class="text-2xl font-black">✓</div>
             </div>
 
             <!-- Floating Badge 2 -->
-            <div class="absolute -bottom-4 -left-4 bg-white rounded-2xl shadow-xl p-4 border border-slate-100">
-              <div class="flex items-center gap-3">
+            <div class="absolute -bottom-3 -left-3 bg-white rounded-xl p-3"
+              style="box-shadow: var(--shadow-elevated); border: 1px solid var(--border-base);">
+              <div class="flex items-center gap-2.5">
                 <div
-                  class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
+                  class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-sm">
                   🤖
                 </div>
                 <div>
-                  <div class="text-slate-900 font-bold text-sm">
+                  <div class="font-semibold text-xs" style="color: var(--fg-base);">
                     Auto-ordering
                   </div>
-                  <div class="text-slate-500 text-xs">Processing 24 SKUs</div>
+                  <div class="text-[10px]" style="color: var(--fg-muted);">Processing 24 SKUs</div>
                 </div>
               </div>
             </div>
@@ -642,51 +715,55 @@
       </div>
 
       <!-- Bottom Feature Pills -->
-      <div class="mt-20 flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
-        <div
-          class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm font-medium">
-          <span class="text-green-400 text-lg">✓</span>
+      <div class="mt-16 flex flex-wrap justify-center gap-3 max-w-4xl mx-auto">
+        <div class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium"
+          style="background: var(--bg-subtle); border: 1px solid var(--border-base); color: var(--fg-subtle);">
+          <span class="text-emerald-500 text-sm">✓</span>
           Multi-tenant Infrastructure
         </div>
-        <div
-          class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm font-medium">
-          <span class="text-blue-400 text-lg">✓</span>
+        <div class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium"
+          style="background: var(--bg-subtle); border: 1px solid var(--border-base); color: var(--fg-subtle);">
+          <span class="text-blue-500 text-sm">✓</span>
           Agentic AI Workflows
         </div>
-        <div
-          class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm font-medium">
-          <span class="text-purple-400 text-lg">✓</span>
+        <div class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium"
+          style="background: var(--bg-subtle); border: 1px solid var(--border-base); color: var(--fg-subtle);">
+          <span class="text-purple-500 text-sm">✓</span>
           UAE Supplier Benchmarking
         </div>
-        <div
-          class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm font-medium">
-          <span class="text-cyan-400 text-lg">✓</span>
+        <div class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium"
+          style="background: var(--bg-subtle); border: 1px solid var(--border-base); color: var(--fg-subtle);">
+          <span class="text-cyan-500 text-sm">✓</span>
           Real-time Analytics
         </div>
       </div>
     </div>
   </header>
+  <!-- Section Divider -->
+  <div style="border-top: 1px solid var(--border-base);"></div>
 
   <!-- Transformation Section (Old vs New) -->
-  <section id="transformation" class="py-24 bg-gradient-to-b from-slate-50 to-white">
+  <section id="transformation" class="py-20 md:py-24" style="background: var(--bg-subtle);">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16">
+      <div class="text-center mb-14">
         <span
-          class="inline-block px-4 py-1.5 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold uppercase tracking-wider mb-4">Transformation</span>
-        <h2 class="text-5xl md:text-6xl font-black text-slate-900 mb-4">
+          class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-widest mb-4"
+          style="background: rgba(59, 130, 246, 0.08); color: var(--accent); border: 1px solid rgba(59, 130, 246, 0.15);">Transformation</span>
+        <h2 class="text-3xl md:text-4xl font-bold mb-3" style="color: var(--fg-base);">
           From Chaos to
           <span class="bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">Control</span>
         </h2>
-        <p class="text-slate-600 text-lg mt-4 max-w-2xl mx-auto">
+        <p class="text-base mt-3 max-w-xl mx-auto" style="color: var(--fg-subtle);">
           See how ProcureIQ transforms broken supply chains into intelligent,
           automated systems.
         </p>
       </div>
 
-      <div class="flex justify-center mb-12">
-        <div class="bg-white p-1.5 rounded-2xl inline-flex shadow-lg border border-slate-200">
+      <div class="flex justify-center mb-10">
+        <div class="p-1 rounded-xl inline-flex"
+          style="background: var(--bg-base); border: 1px solid var(--border-base); box-shadow: var(--shadow-card);">
           <button id="tab-current" onclick="toggleFlow('current')"
-            class="px-8 py-3.5 rounded-xl font-bold text-sm transition-all bg-gradient-to-r from-red-500 to-red-600 text-white shadow-md">
+            class="px-6 py-2.5 rounded-lg font-semibold text-sm transition-all bg-gradient-to-r from-red-500 to-red-600 text-white">
             <span class="flex items-center gap-2">
               <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd"
@@ -697,7 +774,9 @@
             </span>
           </button>
           <button id="tab-future" onclick="toggleFlow('future')"
-            class="px-8 py-3.5 rounded-xl font-bold text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-all">
+            class="px-6 py-2.5 rounded-lg font-semibold text-sm transition-all" style="color: var(--fg-subtle);"
+            onmouseover="if(!this.classList.contains('active-tab'))this.style.backgroundColor='var(--bg-subtle-hover)'"
+            onmouseout="if(!this.classList.contains('active-tab'))this.style.backgroundColor='transparent'">
             <span class="flex items-center gap-2">
               <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
@@ -711,101 +790,116 @@
         </div>
       </div>
 
-      <div id="flow-container" class="bg-slate-50 rounded-[3rem] p-10 border border-slate-200 shadow-inner">
+      <div id="flow-container" class="rounded-2xl p-8 md:p-10"
+        style="background: var(--bg-base); border: 1px solid var(--border-base); box-shadow: var(--shadow-card);">
         <!-- Content will be injected here -->
       </div>
     </div>
   </section>
+  <!-- Section Divider -->
+  <div style="border-top: 1px solid var(--border-base);"></div>
 
   <!-- Value Pillars Section -->
-  <section class="py-20 bg-white">
+  <section class="py-20" style="background: var(--bg-base);">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16">
-        <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-4">
+      <div class="text-center mb-14">
+        <span
+          class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-widest mb-4"
+          style="background: rgba(16, 185, 129, 0.08); color: #059669; border: 1px solid rgba(16, 185, 129, 0.15);">Core
+          Strengths</span>
+        <h2 class="text-3xl md:text-4xl font-bold mb-3" style="color: var(--fg-base);">
           Why ProcureIQ Wins
         </h2>
-        <p class="text-slate-600 text-lg max-w-2xl mx-auto">
+        <p class="text-base max-w-xl mx-auto" style="color: var(--fg-subtle);">
           Four pillars of procurement intelligence working 24/7 for your
           business
         </p>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-        <div class="glass-card p-6 rounded-3xl shadow-sm border border-slate-200 interactive-card">
-          <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center text-xl mb-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-14">
+        <div class="glass-card p-5 rounded-xl interactive-card">
+          <div class="w-9 h-9 rounded-lg flex items-center justify-center text-lg mb-3"
+            style="background: rgba(239, 68, 68, 0.08);">
             🗑️
           </div>
-          <h3 class="font-bold text-slate-900">Waste Intelligence</h3>
-          <p class="text-xs text-slate-500 mt-2">
+          <h3 class="font-semibold text-sm" style="color: var(--fg-base);">Waste Intelligence</h3>
+          <p class="text-xs mt-1.5" style="color: var(--fg-subtle);">
             Flagging variance between POS sales and GRN intake.
           </p>
         </div>
-        <div class="glass-card p-6 rounded-3xl shadow-sm border border-slate-200 interactive-card">
-          <div class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-xl mb-4">
+        <div class="glass-card p-5 rounded-xl interactive-card">
+          <div class="w-9 h-9 rounded-lg flex items-center justify-center text-lg mb-3"
+            style="background: rgba(16, 185, 129, 0.08);">
             💰
           </div>
-          <h3 class="font-bold text-slate-900">Cost Reduction</h3>
-          <p class="text-xs text-slate-500 mt-2">
+          <h3 class="font-semibold text-sm" style="color: var(--fg-base);">Cost Reduction</h3>
+          <p class="text-xs mt-1.5" style="color: var(--fg-subtle);">
             Automated benchmark across UAE supplier network.
           </p>
         </div>
-        <div class="glass-card p-6 rounded-3xl shadow-sm border border-slate-200 interactive-card">
-          <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-xl mb-4">
+        <div class="glass-card p-5 rounded-xl interactive-card">
+          <div class="w-9 h-9 rounded-lg flex items-center justify-center text-lg mb-3"
+            style="background: rgba(59, 130, 246, 0.08);">
             🔍
           </div>
-          <h3 class="font-bold text-slate-900">Real-time Insights</h3>
-          <p class="text-xs text-slate-500 mt-2">
+          <h3 class="font-semibold text-sm" style="color: var(--fg-base);">Real-time Insights</h3>
+          <p class="text-xs mt-1.5" style="color: var(--fg-subtle);">
             Item-level inflation tracking and menu engineering.
           </p>
         </div>
-        <div class="glass-card p-6 rounded-3xl shadow-sm border border-slate-200 interactive-card">
-          <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-xl mb-4">
+        <div class="glass-card p-5 rounded-xl interactive-card">
+          <div class="w-9 h-9 rounded-lg flex items-center justify-center text-lg mb-3"
+            style="background: rgba(147, 51, 234, 0.08);">
             ⚡
           </div>
-          <h3 class="font-bold text-slate-900">Decision Speed</h3>
-          <p class="text-xs text-slate-500 mt-2">
+          <h3 class="font-semibold text-sm" style="color: var(--fg-base);">Decision Speed</h3>
+          <p class="text-xs mt-1.5" style="color: var(--fg-subtle);">
             PO approval workflows that take seconds, not hours.
           </p>
         </div>
       </div>
 
-      <div class="bg-white rounded-[2.5rem] p-10 shadow-sm border border-slate-100">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      <div class="rounded-2xl p-8 md:p-10" style="background: var(--bg-subtle); border: 1px solid var(--border-base);">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           <div class="lg:col-span-7">
-            <h2 class="text-3xl font-bold text-slate-900 mb-6">
+            <h2 class="text-2xl font-bold mb-4" style="color: var(--fg-base);">
               Unlocking Hidden Margins
             </h2>
-            <p class="text-slate-600 mb-8 leading-relaxed">
+            <p class="text-sm mb-6 leading-relaxed" style="color: var(--fg-subtle);">
               ProcureIQ uses a "Theoretical vs Actual" (TvA) model. By
               connecting your POS and your Procurement, the AI identifies
               exactly where ingredients go missing—whether it's
               over-portioning in the kitchen or shrinkage in the store room.
             </p>
-            <div class="space-y-4">
-              <div
-                class="flex items-center p-5 bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl border border-blue-200 hover:shadow-md transition-all">
-                <span
-                  class="bg-gradient-to-br from-blue-600 to-blue-700 text-white w-8 h-8 rounded-xl flex items-center justify-center text-sm font-bold mr-4 shadow-md">1</span>
-                <span class="text-sm font-semibold text-slate-800">Automatic Price Matching to UAE Market
+            <div class="space-y-3">
+              <div class="flex items-center p-4 rounded-xl transition-all"
+                style="background: var(--bg-base); border: 1px solid var(--border-base);">
+                <span class="text-white w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold mr-3"
+                  style="background: var(--accent);">1</span>
+                <span class="text-sm font-medium" style="color: var(--fg-base);">Automatic Price Matching to UAE Market
                   Averages</span>
               </div>
-              <div
-                class="flex items-center p-5 bg-gradient-to-r from-purple-50 to-purple-100 rounded-2xl border border-purple-200 hover:shadow-md transition-all">
-                <span
-                  class="bg-gradient-to-br from-purple-600 to-purple-700 text-white w-8 h-8 rounded-xl flex items-center justify-center text-sm font-bold mr-4 shadow-md">2</span>
-                <span class="text-sm font-semibold text-slate-800">Predictive Ordering based on historical traffic
+              <div class="flex items-center p-4 rounded-xl transition-all"
+                style="background: var(--bg-base); border: 1px solid var(--border-base);">
+                <span class="text-white w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold mr-3"
+                  style="background: #7c3aed;">2</span>
+                <span class="text-sm font-medium" style="color: var(--fg-base);">Predictive Ordering based on historical
+                  traffic
                   patterns</span>
               </div>
-              <div
-                class="flex items-center p-5 bg-gradient-to-r from-emerald-50 to-emerald-100 rounded-2xl border border-emerald-200 hover:shadow-md transition-all">
-                <span
-                  class="bg-gradient-to-br from-emerald-600 to-emerald-700 text-white w-8 h-8 rounded-xl flex items-center justify-center text-sm font-bold mr-4 shadow-md">3</span>
-                <span class="text-sm font-semibold text-slate-800">Digital GRN captures weight discrepancies on
+              <div class="flex items-center p-4 rounded-xl transition-all"
+                style="background: var(--bg-base); border: 1px solid var(--border-base);">
+                <span class="text-white w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold mr-3"
+                  style="background: #059669;">3</span>
+                <span class="text-sm font-medium" style="color: var(--fg-base);">Digital GRN captures weight
+                  discrepancies on
                   delivery</span>
               </div>
             </div>
           </div>
-          <div class="lg:col-span-5 bg-slate-50 p-6 rounded-3xl border border-slate-100">
-            <div class="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">
+          <div class="lg:col-span-5 p-5 rounded-xl"
+            style="background: var(--bg-base); border: 1px solid var(--border-base);">
+            <div class="text-center text-[10px] font-semibold uppercase tracking-widest mb-3"
+              style="color: var(--fg-muted);">
               Avg. Impact per Outlet
             </div>
             <div class="chart-container">
@@ -816,6 +910,8 @@
       </div>
     </div>
   </section>
+  <!-- Section Divider -->
+  <div style="border-top: 1px solid var(--border-base);"></div>
 
   <!-- User Journey Section (Digital Procurement Manager) - REPLACED -->
   <section id="journey" class="journey-wrapper py-24">
@@ -856,87 +952,480 @@
   </section>
 
   <!-- Technical Architecture -->
-  <section id="architecture" class="py-20 bg-slate-50 border-y border-slate-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-3xl font-bold mb-4 text-center">
-        Technical Architecture
-      </h2>
-      <p class="text-slate-500 mb-12 max-w-3xl mx-auto text-center">
-        Built on a three-tier architecture: Experience Layer (Web/Mobile),
-        Intelligence Layer (AI Agent), and Transactional Layer (Medusa.js
-        Core).
-      </p>
+  <section id="architecture" class="relative overflow-hidden"
+    style="background: var(--bg-subtle); border-top: 1px solid var(--border-base); border-bottom: 1px solid var(--border-base);">
+    <div class="px-6 lg:px-16 max-w-[1400px] mx-auto relative z-[1]">
+      <div class="py-20 md:py-28 flex justify-center items-center">
 
-      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-10">
-        <div class="space-y-4">
-          <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">
-            Experience
-          </div>
-          <div onclick="showTech('restaurant')" id="t-restaurant"
-            class="arch-block active p-5 bg-white rounded-2xl text-center">
-            <div class="font-bold">Restaurant App</div>
-            <div class="text-xs text-slate-500">Next.js / PWA</div>
-          </div>
-          <div onclick="showTech('supplier')" id="t-supplier" class="arch-block p-5 bg-white rounded-2xl text-center">
-            <div class="font-bold">Supplier Portal</div>
-            <div class="text-xs text-slate-500">React Dashboard</div>
-          </div>
-        </div>
-        <div class="flex flex-col justify-center">
-          <div onclick="showTech('gateway')" id="t-gateway"
-            class="arch-block p-5 bg-indigo-50 border-indigo-200 rounded-2xl text-center h-48 flex flex-col justify-center">
-            <div class="font-bold text-indigo-900">API Gateway</div>
-            <div class="text-xs text-indigo-600">FastAPI / GraphQL</div>
-          </div>
-        </div>
-        <div class="space-y-4">
-          <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">
-            Logic & Intelligence
-          </div>
-          <div onclick="showTech('ai')" id="t-ai"
-            class="arch-block p-5 bg-purple-50 border-purple-200 rounded-2xl text-center">
-            <div class="font-bold text-purple-900">AI Data Engine</div>
-            <div class="text-xs text-purple-600">LangChain / Python</div>
-          </div>
-          <div onclick="showTech('core')" id="t-core"
-            class="arch-block p-5 bg-blue-50 border-blue-200 rounded-2xl text-center">
-            <div class="font-bold text-blue-900">Core Commerce</div>
-            <div class="text-xs text-blue-600">Medusa.js / Node</div>
-          </div>
-        </div>
-        <div class="flex flex-col justify-center">
-          <div onclick="showTech('db')" id="t-db"
-            class="arch-block p-5 bg-slate-900 border-slate-700 rounded-2xl text-center text-white h-48 flex flex-col justify-center">
-            <div class="font-bold">Primary DB</div>
-            <div class="text-xs text-slate-400">PostgreSQL / Vector</div>
-          </div>
-        </div>
-      </div>
+        <!-- LEFT NAV (Desktop) -->
+        <div class="uppercase hidden md:flex absolute left-6 md:left-16 top-0 bottom-0 justify-center flex-col w-1/2">
 
-      <div id="tech-panel" class="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm min-h-[160px]">
-        <!-- Tech detail injected here -->
-      </div>
-
-      <div class="mt-10 bg-white rounded-[2.5rem] p-10 border border-slate-100">
-        <h4 class="font-bold text-slate-900 mb-4">SaaS Multi-tenancy</h4>
-        <p class="text-sm text-slate-500 mb-6 leading-relaxed">
-          Each restaurant group operates in an isolated environment while
-          benefiting from global SKU intelligence and price anonymized
-          benchmarks.
-        </p>
-        <div class="space-y-3">
-          <div class="text-xs font-bold text-slate-400 uppercase tracking-widest">
-            Integrations
+          <div
+            class="arch-nav-item mb-4 relative w-auto font-mono uppercase flex pointer-events-none items-center gap-3 text-xs text-slate-500"
+            data-layer="0">
+            <a class="pointer-events-auto shrink-0 flex items-start gap-[3px] hover:text-blue-600 transition-colors"
+              href="javascript:void(0)">Starters</a>
+            <div
+              class="arch-connector relative w-full flex items-center justify-end h-[1px] bg-transparent z-50 pointer-events-none"
+              style="margin-right: 150px; transform: none; display: none;">
+              <div class="flex aspect-square bg-transparent border border-transparent absolute right-0 translate-x-full"
+                style="height: 6px;"></div>
+            </div>
           </div>
-          <div class="flex flex-wrap gap-2">
-            <span class="px-3 py-1 bg-slate-100 rounded-full text-xs font-bold text-slate-600">Foodics</span>
-            <span class="px-3 py-1 bg-slate-100 rounded-full text-xs font-bold text-slate-600">Xero</span>
-            <span class="px-3 py-1 bg-slate-100 rounded-full text-xs font-bold text-slate-600">Oracle MICROS</span>
-            <span class="px-3 py-1 bg-slate-100 rounded-full text-xs font-bold text-slate-600">WhatsApp API</span>
+
+          <div
+            class="arch-nav-item mb-4 relative w-auto font-mono uppercase flex pointer-events-none items-center gap-3 text-xs text-slate-400"
+            data-layer="1">
+            <a class="pointer-events-auto shrink-0 flex items-start gap-[3px] hover:text-blue-600 transition-colors"
+              href="javascript:void(0)">Admin</a>
+            <div
+              class="arch-connector relative w-full flex items-center justify-end h-[1px] bg-transparent z-50 pointer-events-none"
+              style="margin-right: 150px; transform: none; display: none;">
+              <div class="flex aspect-square bg-transparent border border-transparent absolute right-0 translate-x-full"
+                style="height: 6px;"></div>
+            </div>
+          </div>
+
+          <div
+            class="arch-nav-item mb-4 relative w-auto font-mono uppercase flex pointer-events-none items-center gap-3 text-xs text-slate-500"
+            data-layer="2">
+            <a class="pointer-events-auto shrink-0 flex items-start gap-[3px] hover:text-blue-600 transition-colors"
+              href="javascript:void(0)">Commerce Modules</a>
+            <div
+              class="arch-connector relative w-full flex items-center justify-end h-[1px] bg-transparent z-50 pointer-events-none"
+              style="margin-right: 150px; transform: none; display: none;">
+              <div class="flex aspect-square bg-transparent border border-transparent absolute right-0 translate-x-full"
+                style="height: 6px;"></div>
+            </div>
+          </div>
+
+          <div
+            class="arch-nav-item mb-4 relative w-auto font-mono uppercase flex pointer-events-none items-center gap-3 text-xs text-slate-500"
+            data-layer="3">
+            <a class="pointer-events-auto shrink-0 flex items-start gap-[3px] hover:text-blue-600 transition-colors"
+              href="javascript:void(0)">Framework</a>
+            <div
+              class="arch-connector relative w-full flex items-center justify-end h-[1px] bg-transparent z-50 pointer-events-none"
+              style="margin-right: 150px; transform: none; display: none;">
+              <div class="flex aspect-square bg-transparent border border-transparent absolute right-0 translate-x-full"
+                style="height: 6px;"></div>
+            </div>
+          </div>
+
+          <div
+            class="arch-nav-item mb-4 relative w-auto font-mono uppercase flex pointer-events-none items-center gap-3 text-xs text-slate-500"
+            data-layer="4">
+            <a class="pointer-events-auto shrink-0 flex items-start gap-[3px] hover:text-blue-600 transition-colors"
+              href="javascript:void(0)">Cloud</a>
+            <div
+              class="arch-connector relative w-full flex items-center justify-end h-[1px] bg-transparent z-50 pointer-events-none"
+              style="margin-right: 150px; transform: none; display: none;">
+              <div class="flex aspect-square bg-transparent border border-transparent absolute right-0 translate-x-full"
+                style="height: 6px;"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Mobile View -->
+        <div class="relative uppercase font-mono md:hidden w-full">
+          <div class="flex flex-col space-y-4 py-8">
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+              <span class="text-xs font-bold text-slate-400 block mb-1">Starters</span>
+              <div class="text-slate-800 font-bold text-sm">Restaurant App (PWA)</div>
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-blue-200 shadow-sm border-l-4 border-l-blue-500">
+              <span class="text-xs font-bold text-blue-500 block mb-1">Admin</span>
+              <div class="text-slate-800 font-bold text-sm">Dashboard & Management</div>
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+              <span class="text-xs font-bold text-slate-400 block mb-1">Commerce Modules</span>
+              <div class="text-slate-800 font-bold text-sm">AI Agent, Auth, Payments</div>
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+              <span class="text-xs font-bold text-slate-400 block mb-1">Framework</span>
+              <div class="text-slate-800 font-bold text-sm">Medusa.js Core</div>
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+              <span class="text-xs font-bold text-slate-400 block mb-1">Cloud</span>
+              <div class="text-slate-800 font-bold text-sm">PostgreSQL + Supabase</div>
+            </div>
           </div>
         </div>
+
+        <!-- ISOMETRIC STACK (Desktop) -->
+        <div class="hidden md:block relative" style="width:460px;height:500px">
+
+          <!-- LAYER 0: Starters (Top) -->
+          <div class="arch-layer absolute pointer-events-none" data-index="0"
+            style="top: 0px; left: 0px; z-index: 5; opacity: 1; transform: translateY(-30px);">
+            <svg width="460" height="300" viewBox="0 0 460 300" fill="none" xmlns="http://www.w3.org/2000/svg"
+              class="svg-color-transitions" style="pointer-events: none;">
+              <g style="pointer-events: auto;">
+                <!-- Shadow/depth rect -->
+                <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.537 21.2224)" fill="#e4e4e7"></rect>
+                <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.537 21.2224)" stroke="#a1a1aa"></rect>
+                <!-- Main face rect -->
+                <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.537 17.2224)" fill="#fafafa"></rect>
+                <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.537 17.2224)" stroke="#a1a1aa"></rect>
+                <!-- Detailed content -->
+                <rect width="308" height="182" rx="10"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 169.725 29.7753)" fill="#eff6ff"></rect>
+                <rect x="-0.00285524" y="0.495269" width="10" height="10" rx="5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 87.2427 96.4148)" stroke="#60a5fa"></rect>
+                <rect x="-0.00285524" y="0.495269" width="23" height="4" rx="1.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 278.293 109.403)" fill="#bfdbfe"></rect>
+                <rect x="-0.00285524" y="0.495269" width="23" height="4" rx="1.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 278.293 109.403)" stroke="#3b82f6"></rect>
+                <rect x="-0.00285524" y="0.495269" width="63" height="4" rx="2"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 121.234 77.2945)" fill="#bfdbfe"></rect>
+                <rect x="-0.00285524" y="0.495269" width="63" height="4" rx="2"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 121.234 77.2945)" stroke="#3b82f6"></rect>
+                <rect x="-0.00285524" y="0.495269" width="95" height="4" rx="2"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 129.95 72.3919)" fill="#bfdbfe"></rect>
+                <rect x="-0.00285524" y="0.495269" width="95" height="4" rx="2"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 129.95 72.3919)" stroke="#3b82f6"></rect>
+                <rect x="-0.00285524" y="0.495269" width="84" height="7" rx="2.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 141.28 66.0185)" fill="#bfdbfe"></rect>
+                <rect x="-0.00285524" y="0.495269" width="84" height="7" rx="2.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 141.28 66.0185)" stroke="#3b82f6"></rect>
+                <rect x="-0.00285524" y="0.495269" width="133" height="118" rx="7.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 266.022 128.153)" fill="#93c5fd"></rect>
+                <rect x="-0.00285524" y="0.495269" width="133" height="118" rx="7.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 266.022 128.153)" stroke="#3b82f6"></rect>
+                <rect x="-0.00285524" y="0.495269" width="133" height="118" rx="7.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 266.022 124.153)" fill="#dbeafe"></rect>
+                <rect x="-0.00285524" y="0.495269" width="133" height="118" rx="7.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 266.022 124.153)" stroke="#3b82f6"></rect>
+                <!-- Tag buttons -->
+                <rect width="28" height="12" rx="4"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 66.7652 107.437)" fill="#93c5fd"></rect>
+                <rect width="16" height="2" rx="1"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 67.6025 112.89)" fill="#60a5fa"></rect>
+                <rect x="-0.00285524" y="0.495269" width="27" height="11" rx="3.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 67.1965 107.691)" stroke="#3b82f6"></rect>
+                <rect width="28" height="12" rx="4"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 96.2046 124.446)" fill="#93c5fd"></rect>
+                <rect width="16" height="2" rx="1"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 97.0419 129.899)" fill="#60a5fa"></rect>
+                <rect x="-0.00285524" y="0.495269" width="27" height="11" rx="3.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 96.6359 124.7)" stroke="#3b82f6"></rect>
+                <rect width="28" height="12" rx="4"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 66.7653 105.437)" fill="#bfdbfe"></rect>
+                <rect width="16" height="2" rx="1"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 67.6026 110.89)" fill="#60a5fa"></rect>
+                <rect x="-0.00285524" y="0.495269" width="27" height="11" rx="3.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 67.1965 105.691)" stroke="#3b82f6"></rect>
+                <rect width="28" height="12" rx="4"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 96.2046 122.446)" fill="#eff6ff"></rect>
+                <rect width="16" height="2" rx="1"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 97.0419 127.899)" fill="#60a5fa"></rect>
+                <rect x="-0.00285524" y="0.495269" width="27" height="11" rx="3.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 96.6359 122.7)" stroke="#3b82f6"></rect>
+                <!-- Small detail rects -->
+                <rect x="-0.00285524" y="0.495269" width="15" height="4" rx="1.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 259.244 98.3969)" fill="#bfdbfe"></rect>
+                <rect x="-0.00285524" y="0.495269" width="15" height="4" rx="1.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 259.244 98.3969)" stroke="#3b82f6"></rect>
+                <rect x="-0.00285524" y="0.495269" width="15" height="4" rx="1.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 183.913 54.8728)" fill="#bfdbfe"></rect>
+                <rect x="-0.00285524" y="0.495269" width="15" height="4" rx="1.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 183.913 54.8728)" stroke="#3b82f6"></rect>
+                <rect x="-0.00285524" y="0.495269" width="15" height="4" rx="1.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 304.269 124.411)" fill="#bfdbfe"></rect>
+                <rect x="-0.00285524" y="0.495269" width="15" height="4" rx="1.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 304.269 124.411)" stroke="#3b82f6"></rect>
+                <rect x="-0.00285524" y="0.495269" width="23" height="4" rx="1.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 383.928 170.437)" fill="#bfdbfe"></rect>
+                <rect x="-0.00285524" y="0.495269" width="23" height="4" rx="1.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 383.928 170.437)" stroke="#3b82f6"></rect>
+                <rect x="-0.00285524" y="0.495269" width="6" height="6" rx="1.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 173.529 47.8789)" fill="#dbeafe"></rect>
+                <rect x="-0.00285524" y="0.495269" width="6" height="6" rx="1.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 173.529 47.8789)" stroke="#3b82f6"></rect>
+                <!-- Dots -->
+                <rect width="7" height="7" rx="3.5" transform="matrix(0.865865 0.500278 -0.871576 0.490261 86.8 98.142)"
+                  fill="#3b82f6"></rect>
+                <rect width="7" height="7" rx="3.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 96.3246 103.645)" fill="#93c5fd"></rect>
+                <rect width="7" height="7" rx="3.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 105.849 109.148)" fill="#93c5fd"></rect>
+                <rect width="7" height="7" rx="3.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 115.374 114.651)" fill="#93c5fd"></rect>
+                <!-- S.gg text path -->
+                <path
+                  d="M100.25 92.0896L109.758 86.7413L110.363 87.0909L100.855 92.4392L100.25 92.0896ZM108.702 89.4938C109.014 89.2732 109.124 89.0262 109.032 88.7527C108.942 88.4778 108.681 88.2153 108.248 87.9652C107.938 87.7861 107.62 87.659 107.295 87.584C106.972 87.5076 106.663 87.4812 106.366 87.5048C106.075 87.5284 105.821 87.6008 105.606 87.722C105.425 87.8237 105.311 87.9356 105.264 88.0577C105.218 88.1813 105.22 88.3079 105.269 88.4377C105.322 88.5674 105.399 88.6952 105.5 88.821C105.603 88.9454 105.709 89.0607 105.82 89.1669L106.365 89.7019C106.546 89.8746 106.713 90.0627 106.865 90.2662C107.017 90.4697 107.118 90.6806 107.169 90.899C107.219 91.1174 107.188 91.3339 107.076 91.5485C106.966 91.7646 106.74 91.9687 106.399 92.1609C105.968 92.4033 105.475 92.5545 104.919 92.6146C104.366 92.6762 103.783 92.6404 103.172 92.5075C102.563 92.3759 101.964 92.1396 101.373 91.7985C100.808 91.4716 100.408 91.1379 100.176 90.7975C99.9434 90.4571 99.8762 90.126 99.9744 89.8044C100.075 89.4813 100.342 89.1838 100.775 88.912L101.919 89.5728C101.667 89.7402 101.526 89.9202 101.498 90.1128C101.474 90.3055 101.54 90.4972 101.694 90.6881C101.854 90.8789 102.08 91.0589 102.372 91.2281C102.695 91.4142 103.032 91.5513 103.384 91.6391C103.742 91.727 104.085 91.7614 104.413 91.7421C104.744 91.7215 105.033 91.6416 105.281 91.5023C105.506 91.3756 105.627 91.2349 105.642 91.0802C105.66 90.9269 105.608 90.7613 105.486 90.5833C105.366 90.4067 105.207 90.2201 105.008 90.0233L104.36 89.3695C103.921 88.9266 103.685 88.5123 103.653 88.1265C103.623 87.7422 103.873 87.4011 104.403 87.103C104.841 86.8565 105.342 86.7095 105.905 86.6621C106.468 86.6147 107.041 86.6567 107.625 86.7881C108.212 86.9181 108.759 87.1295 109.265 87.4223C109.777 87.7179 110.138 88.0295 110.348 88.3572C110.561 88.6863 110.622 89.0053 110.532 89.3144C110.444 89.622 110.2 89.8936 109.801 90.1291L108.702 89.4938ZM116.029 91.4487L108.423 95.7274L107.279 95.0665L113.734 91.4355L113.69 91.4099L110.693 91.0338L111.792 90.4154L114.918 90.807L116.029 91.4487ZM110.721 97.0555L120.586 95.2677L120.642 95.2364L116.827 93.032L117.811 92.4784L122.807 95.365L121.789 95.9374L111.913 97.7441L110.721 97.0555ZM126.605 97.441C126.94 97.6371 127.21 97.8638 127.416 98.1211C127.622 98.3783 127.719 98.6603 127.707 98.967C127.698 99.2751 127.538 99.6062 127.228 99.9604C126.922 100.315 126.424 100.687 125.733 101.079C125.067 101.454 124.408 101.749 123.755 101.964C123.104 102.179 122.477 102.314 121.872 102.371C121.269 102.43 120.699 102.41 120.162 102.311C119.624 102.212 119.135 102.036 118.695 101.781C118.245 101.521 117.934 101.24 117.763 100.938C117.592 100.636 117.555 100.333 117.65 100.03C117.748 99.7249 117.976 99.4413 118.332 99.1789L119.458 99.8291C119.205 100.056 119.09 100.291 119.113 100.536C119.141 100.781 119.336 101.008 119.698 101.217C120.251 101.537 120.926 101.65 121.721 101.556C122.519 101.461 123.356 101.168 124.232 100.678L124.173 100.644C123.832 100.689 123.489 100.7 123.144 100.676C122.801 100.652 122.469 100.596 122.149 100.507C121.829 100.418 121.534 100.296 121.266 100.141C120.831 99.8898 120.543 99.6004 120.401 99.2731C120.26 98.9458 120.272 98.6153 120.437 98.2813C120.602 97.9474 120.925 97.6446 121.408 97.373C121.889 97.1028 122.433 96.9202 123.04 96.8252C123.65 96.7317 124.265 96.7338 124.884 96.8317C125.508 96.9295 126.082 97.1326 126.605 97.441ZM125.644 97.9863C125.356 97.82 125.024 97.7105 124.65 97.6577C124.28 97.6049 123.907 97.6084 123.531 97.6681C123.158 97.7265 122.825 97.8385 122.53 98.0042C122.235 98.17 122.032 98.3574 121.92 98.5664C121.812 98.7754 121.8 98.9843 121.883 99.193C121.97 99.4017 122.159 99.59 122.45 99.7577C122.666 99.8827 122.91 99.9756 123.181 100.036C123.452 100.097 123.732 100.126 124.021 100.123C124.312 100.119 124.592 100.087 124.862 100.025C125.131 99.9631 125.371 99.873 125.581 99.7546C125.861 99.5972 126.055 99.4126 126.162 99.2008C126.272 98.9904 126.286 98.778 126.203 98.5636C126.123 98.3479 125.936 98.1554 125.644 97.9863ZM123.385 104.453C123.183 104.336 123.082 104.196 123.08 104.031C123.081 103.865 123.184 103.724 123.39 103.609C123.593 103.494 123.839 103.439 124.128 103.442C124.419 103.444 124.665 103.503 124.867 103.619C125.069 103.736 125.169 103.877 125.168 104.043C125.17 104.208 125.069 104.347 124.866 104.461C124.73 104.538 124.57 104.588 124.387 104.613C124.209 104.637 124.032 104.636 123.854 104.61C123.677 104.583 123.52 104.531 123.385 104.453ZM135.788 102.747C136.123 102.943 136.393 103.169 136.599 103.427C136.805 103.684 136.902 103.966 136.89 104.273C136.881 104.581 136.721 104.912 136.411 105.266C136.105 105.62 135.607 105.993 134.916 106.385C134.25 106.759 133.59 107.054 132.938 107.27C132.287 107.484 131.66 107.62 131.055 107.677C130.452 107.736 129.882 107.715 129.345 107.617C128.807 107.518 128.318 107.341 127.878 107.087C127.428 106.827 127.117 106.546 126.946 106.244C126.775 105.942 126.737 105.639 126.833 105.335C126.931 105.031 127.158 104.747 127.515 104.485L128.641 105.135C128.388 105.361 128.273 105.597 128.296 105.842C128.324 106.087 128.519 106.314 128.881 106.523C129.434 106.843 130.109 106.956 130.904 106.862C131.702 106.766 132.539 106.474 133.415 105.983L133.356 105.949C133.015 105.995 132.672 106.006 132.327 105.981C131.984 105.958 131.652 105.902 131.332 105.813C131.012 105.724 130.717 105.602 130.449 105.447C130.014 105.195 129.726 104.906 129.584 104.579C129.443 104.252 129.455 103.921 129.62 103.587C129.784 103.253 130.108 102.95 130.591 102.679C131.071 102.409 131.615 102.226 132.223 102.131C132.833 102.037 133.448 102.039 134.067 102.137C134.691 102.235 135.264 102.438 135.788 102.747ZM134.826 103.292C134.539 103.126 134.207 103.016 133.832 102.963C133.463 102.911 133.09 102.914 132.714 102.974C132.341 103.032 132.008 103.144 131.713 103.31C131.418 103.476 131.215 103.663 131.103 103.872C130.995 104.081 130.983 104.29 131.066 104.499C131.153 104.707 131.342 104.896 131.632 105.063C131.849 105.188 132.093 105.281 132.364 105.342C132.635 105.403 132.915 105.432 133.204 105.429C133.495 105.425 133.775 105.392 134.045 105.331C134.314 105.269 134.554 105.179 134.764 105.06C135.044 104.903 135.238 104.718 135.345 104.506C135.455 104.296 135.468 104.084 135.386 103.869C135.306 103.654 135.119 103.461 134.826 103.292ZM142.394 106.563C142.729 106.759 142.999 106.986 143.205 107.243C143.41 107.501 143.507 107.783 143.496 108.089C143.487 108.397 143.327 108.728 143.016 109.083C142.711 109.437 142.212 109.81 141.522 110.201C140.855 110.576 140.196 110.871 139.543 111.087C138.893 111.301 138.265 111.437 137.66 111.494C137.058 111.552 136.488 111.532 135.95 111.433C135.413 111.334 134.924 111.158 134.484 110.903C134.033 110.643 133.723 110.362 133.552 110.06C133.381 109.758 133.343 109.455 133.439 109.152C133.537 108.847 133.764 108.564 134.121 108.301L135.246 108.951C134.993 109.178 134.878 109.414 134.902 109.658C134.93 109.903 135.125 110.13 135.486 110.339C136.04 110.659 136.714 110.772 137.509 110.678C138.307 110.583 139.144 110.29 140.021 109.8L139.962 109.766C139.621 109.812 139.278 109.822 138.932 109.798C138.59 109.775 138.258 109.719 137.938 109.63C137.617 109.54 137.323 109.418 137.055 109.264C136.619 109.012 136.331 108.723 136.19 108.395C136.049 108.068 136.06 107.738 136.225 107.404C136.39 107.07 136.714 106.767 137.197 106.495C137.677 106.225 138.221 106.042 138.829 105.947C139.439 105.854 140.053 105.856 140.672 105.954C141.296 106.052 141.87 106.255 142.394 106.563ZM141.432 107.109C141.144 106.942 140.813 106.833 140.438 106.78C140.068 106.727 139.695 106.731 139.32 106.79C138.947 106.849 138.613 106.961 138.318 107.126C138.024 107.292 137.82 107.48 137.708 107.689C137.601 107.898 137.588 108.107 137.671 108.315C137.759 108.524 137.948 108.712 138.238 108.88C138.455 109.005 138.698 109.098 138.969 109.159C139.241 109.219 139.521 109.248 139.809 109.246C140.101 109.242 140.381 109.209 140.65 109.147C140.92 109.085 141.16 108.995 141.37 108.877C141.65 108.719 141.843 108.535 141.951 108.323C142.061 108.113 142.074 107.9 141.991 107.686C141.911 107.47 141.725 107.278 141.432 107.109Z"
+                  fill="#3b82f6"></path>
+              </g>
+            </svg>
+          </div>
+
+          <!-- LAYER 1: Admin -->
+          <div class="arch-layer absolute pointer-events-none" data-index="1"
+            style="top: 0px; left: 0px; z-index: 4; opacity: 1; transform: translateY(40px);">
+            <svg width="460" height="300" viewBox="0 0 460 300" fill="none" xmlns="http://www.w3.org/2000/svg"
+              class="svg-color-transitions" style="pointer-events: none;">
+              <g style="pointer-events: auto;">
+                <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.537 21.2224)" fill="#93c5fd"></rect>
+                <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.537 21.2224)" stroke="#3b82f6"></rect>
+                <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.537 17.2224)" fill="#bfdbfe"></rect>
+                <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.537 17.2224)" stroke="#3b82f6"></rect>
+                <rect x="-0.00285524" y="0.495269" width="55" height="195" rx="9.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.502 23.1656)" fill="#93c5fd"></rect>
+                <rect x="-0.00285524" y="0.495269" width="55" height="195" rx="9.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.502 23.1656)" stroke="#3b82f6"></rect>
+                <g clip-path="url(#clip0_admin_main)">
+                  <rect width="56" height="196" rx="10"
+                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.071 18.9116)" fill="#eff6ff"></rect>
+                  <rect x="-0.00285524" y="0.495269" width="7" height="7" rx="1.5"
+                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 176.373 27.55)" fill="#bfdbfe"
+                    stroke="#3b82f6"></rect>
+                  <rect x="-0.00285524" y="0.495269" width="30" height="5" rx="1.5"
+                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 185.026 33.5433)" fill="#bfdbfe"
+                    stroke="#3b82f6"></rect>
+                  <rect x="-0.00285524" y="0.495269" width="27" height="4" rx="1.5"
+                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 158.942 37.3553)" fill="#bfdbfe"
+                    stroke="#3b82f6"></rect>
+                  <rect x="-0.00285524" y="0.495269" width="21" height="4" rx="1.5"
+                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 150.226 42.2579)" fill="#bfdbfe"
+                    stroke="#3b82f6"></rect>
+                  <rect x="-0.00285524" y="0.495269" width="33" height="4" rx="1.5"
+                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 141.51 47.1605)" fill="#bfdbfe"
+                    stroke="#3b82f6"></rect>
+                  <rect x="-0.00285524" y="0.495269" width="33" height="4" rx="1.5"
+                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 124.078 56.9657)" fill="#bfdbfe"
+                    stroke="#3b82f6"></rect>
+                  <rect x="-0.00285524" y="0.495269" width="25" height="4" rx="1.5"
+                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 132.794 52.0631)" fill="#bfdbfe"
+                    stroke="#3b82f6"></rect>
+                </g>
+                <rect x="-0.00285524" y="0.495269" width="55" height="195" rx="9.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.503 19.1655)" stroke="#3b82f6"></rect>
+                <rect x="-0.00285524" y="0.495269" width="245" height="94" rx="9.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 236.186 54.1828)" fill="#93c5fd"
+                  stroke="#3b82f6"></rect>
+                <rect x="-0.00285524" y="0.495269" width="160" height="94" rx="9.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 148.157 103.699)" fill="#93c5fd"
+                  stroke="#3b82f6"></rect>
+                <rect x="-0.00285524" y="0.495269" width="78" height="94" rx="9.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 292.756 187.246)" fill="#93c5fd"
+                  stroke="#3b82f6"></rect>
+                <rect x="-0.00285524" y="0.495269" width="245" height="94" rx="9.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 236.186 50.1828)" fill="#eff6ff"
+                  stroke="#3b82f6"></rect>
+                <rect x="-0.00285524" y="0.495269" width="160" height="94" rx="9.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 148.157 99.6992)" fill="#eff6ff"
+                  stroke="#3b82f6"></rect>
+                <rect x="-0.00285524" y="0.495269" width="78" height="94" rx="9.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 292.756 183.246)" fill="#eff6ff"
+                  stroke="#3b82f6"></rect>
+                <defs>
+                  <clipPath id="clip0_admin_main">
+                    <rect width="56" height="196" rx="10"
+                      transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.071 18.9116)" fill="white"></rect>
+                  </clipPath>
+                </defs>
+              </g>
+            </svg>
+          </div>
+
+          <!-- LAYER 2: Commerce Modules -->
+          <div class="arch-layer absolute pointer-events-none" data-index="2"
+            style="top: 0px; left: 0px; z-index: 3; opacity: 1; transform: translateY(80px);">
+            <svg width="460" height="300" viewBox="0 0 460 300" fill="none" xmlns="http://www.w3.org/2000/svg"
+              class="svg-color-transitions" style="pointer-events: none;">
+              <g style="pointer-events: auto;">
+                <g clip-path="url(#clip0_modules_main)">
+                  <rect width="320" height="208" rx="16"
+                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.105 20.9684)" fill="#e4e4e7"></rect>
+                  <path
+                    d="M296.672 190.521L277.622 179.515C285.324 175.183 285.365 168.087 277.714 163.667C270.063 159.246 257.617 159.174 249.915 163.506L230 152L201.238 168.179C208.889 172.599 208.848 179.695 201.147 184.027C193.445 188.359 180.999 188.288 173.348 183.867L144.586 200.046L211.257 238.567L240.019 222.388C232.368 217.968 232.409 210.872 240.11 206.54C247.812 202.207 260.258 202.279 267.91 206.7L296.672 190.521Z"
+                    fill="#ffffff" stroke="#a1a1aa"></path>
+                  <path
+                    d="M315.414 103.954L190.73 31.9144C185.948 29.1514 178.169 29.1066 173.355 31.8142L96.6567 74.9572L115.706 85.9633C108.004 90.2955 107.963 97.3912 115.614 101.812C123.266 106.233 135.712 106.304 143.413 101.972L182.377 124.485C190.079 120.152 202.525 120.224 210.176 124.645C217.828 129.066 217.787 136.161 210.085 140.494L230 152L258.762 135.821C266.413 140.242 278.859 140.314 286.561 135.982C294.263 131.649 294.304 124.554 286.652 120.133L315.414 103.954Z"
+                    fill="#ffffff" stroke="#a1a1aa"></path>
+                  <path
+                    d="M210.176 124.645C217.828 129.066 217.787 136.161 210.085 140.494L230 152L201.238 168.179C208.889 172.599 208.848 179.695 201.147 184.027C193.445 188.359 180.999 188.288 173.347 183.867L144.586 200.046L19.9009 128.006C15.1189 125.243 15.1445 120.808 19.958 118.1L96.6567 74.9572L115.706 85.9633C108.004 90.2955 107.963 97.3912 115.614 101.812C123.266 106.233 135.712 106.304 143.413 101.972L182.377 124.485C190.079 120.152 202.525 120.224 210.176 124.645Z"
+                    fill="#ffffff" stroke="#a1a1aa"></path>
+                  <path
+                    d="M440.042 185.9C444.855 183.192 444.881 178.757 440.099 175.994L315.414 103.954L286.652 120.133C294.304 124.554 294.263 131.649 286.561 135.982C278.859 140.314 266.413 140.242 258.762 135.821L230 152L249.915 163.506C257.617 159.174 270.063 159.246 277.714 163.667C285.365 168.087 285.324 175.183 277.622 179.515L316.586 202.028C308.885 206.36 308.844 213.456 316.495 217.876C324.146 222.297 336.592 222.369 344.294 218.037L363.343 229.043L440.042 185.9Z"
+                    fill="#ffffff" stroke="#a1a1aa"></path>
+                  <path
+                    d="M344.294 218.037C336.592 222.369 324.146 222.297 316.495 217.876C308.844 213.456 308.885 206.36 316.586 202.028L296.672 190.521L267.91 206.7C260.258 202.279 247.812 202.207 240.11 206.54C232.409 210.872 232.368 217.968 240.019 222.388L211.257 238.567L269.27 272.085C274.052 274.848 281.831 274.893 286.644 272.186L363.343 229.043L344.294 218.037Z"
+                    fill="#ffffff" stroke="#a1a1aa"></path>
+                </g>
+                <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.537 21.2223)" stroke="#a1a1aa"></rect>
+                <g clip-path="url(#clip1_modules_main)">
+                  <rect width="320" height="208" rx="16"
+                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.105 16.9684)" fill="#fafafa"></rect>
+                  <path
+                    d="M296.672 186.521L277.623 175.515C285.324 171.183 285.365 164.087 277.714 159.667C270.063 155.246 257.617 155.174 249.915 159.506L230 148L201.238 164.179C208.889 168.599 208.848 175.695 201.147 180.027C193.445 184.36 180.999 184.288 173.348 179.867L144.586 196.046L211.257 234.567L240.019 218.388C232.368 213.968 232.409 206.872 240.111 202.54C247.812 198.208 260.258 198.279 267.91 202.7L296.672 186.521Z"
+                    fill="#D4D4D8" stroke="#a1a1aa"></path>
+                  <path
+                    d="M315.414 99.9544L190.73 27.9144C185.948 25.1514 178.169 25.1066 173.355 27.8142L96.6568 70.9572L115.706 81.9633C108.004 86.2955 107.963 93.3912 115.614 97.8119C123.266 102.233 135.712 102.304 143.413 97.9722L182.377 120.485C190.079 116.152 202.525 116.224 210.176 120.645C217.828 125.066 217.787 132.161 210.085 136.494L230 148L258.762 131.821C266.413 136.242 278.859 136.314 286.561 131.982C294.263 127.649 294.304 120.554 286.652 116.133L315.414 99.9544Z"
+                    fill="#e4e4e7" stroke="#a1a1aa"></path>
+                  <path
+                    d="M210.176 120.645C217.828 125.066 217.787 132.161 210.085 136.494L230 148L201.238 164.179C208.889 168.599 208.848 175.695 201.147 180.027C193.445 184.359 180.999 184.288 173.348 179.867L144.586 196.046L19.901 124.006C15.119 121.243 15.1445 116.808 19.9581 114.1L96.6568 70.9572L115.706 81.9633C108.004 86.2955 107.963 93.3912 115.614 97.8119C123.266 102.233 135.712 102.304 143.413 97.9722L182.377 120.485C190.079 116.152 202.525 116.224 210.176 120.645Z"
+                    fill="#e4e4e7" stroke="#a1a1aa"></path>
+                  <path
+                    d="M440.042 181.9C444.855 179.192 444.881 174.757 440.099 171.994L315.414 99.9543L286.652 116.133C294.303 120.554 294.263 127.649 286.561 131.982C278.859 136.314 266.413 136.242 258.762 131.821L230 148L249.915 159.506C257.616 155.174 270.062 155.246 277.714 159.667C285.365 164.087 285.324 171.183 277.622 175.515L316.586 198.028C308.885 202.36 308.844 209.456 316.495 213.876C324.146 218.297 336.592 218.369 344.294 214.037L363.343 225.043L440.042 181.9Z"
+                    fill="#e4e4e7" stroke="#a1a1aa"></path>
+                  <path
+                    d="M344.294 214.037C336.593 218.369 324.146 218.297 316.495 213.876C308.844 209.456 308.885 202.36 316.587 198.028L296.672 186.521L267.91 202.7C260.258 198.279 247.812 198.208 240.111 202.54C232.409 206.872 232.368 213.968 240.019 218.388L211.257 234.567L269.27 268.086C274.052 270.849 281.831 270.893 286.645 268.186L363.343 225.043L344.294 214.037Z"
+                    fill="#e4e4e7" stroke="#a1a1aa"></path>
+                </g>
+                <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.537 17.2223)" stroke="#a1a1aa"></rect>
+                <defs>
+                  <clipPath id="clip0_modules_main">
+                    <rect width="320" height="208" rx="16"
+                      transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.105 20.9684)" fill="white"></rect>
+                  </clipPath>
+                  <clipPath id="clip1_modules_main">
+                    <rect width="320" height="208" rx="16"
+                      transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.105 16.9684)" fill="white"></rect>
+                  </clipPath>
+                </defs>
+              </g>
+            </svg>
+          </div>
+
+          <!-- LAYER 3: Framework -->
+          <div class="arch-layer absolute pointer-events-none" data-index="3"
+            style="top: 0px; left: 0px; z-index: 2; opacity: 1; transform: translateY(115px);">
+            <svg width="460" height="300" viewBox="0 0 460 300" fill="none" xmlns="http://www.w3.org/2000/svg"
+              class="svg-color-transitions" style="pointer-events: none;">
+              <g style="pointer-events: auto;">
+                <g clip-path="url(#clip0_framework_main)">
+                  <rect width="320" height="208" rx="16"
+                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.105 20.9684)" fill="#e4e4e7"></rect>
+                  <rect x="-0.00285524" y="0.495269" width="307" height="94" rx="9.5"
+                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.502 27.1655)" fill="#e4e4e7"
+                    stroke="#a1a1aa"></rect>
+                  <rect x="-0.00285524" y="0.495269" width="307" height="94" rx="9.5"
+                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 94.4734 76.6819)" fill="#e4e4e7"
+                    stroke="#a1a1aa"></rect>
+                </g>
+                <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.537 21.2223)" stroke="#a1a1aa"></rect>
+                <g clip-path="url(#clip1_framework_main)">
+                  <rect width="320" height="208" rx="16"
+                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.105 16.9684)" fill="#fafafa"></rect>
+                  <rect x="-0.00285524" y="0.495269" width="307" height="94" rx="9.5"
+                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.502 23.1655)" fill="#e4e4e7"
+                    stroke="#a1a1aa"></rect>
+                  <rect x="-0.00285524" y="0.495269" width="307" height="94" rx="9.5"
+                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 94.4734 72.6819)" fill="#e4e4e7"
+                    stroke="#a1a1aa"></rect>
+                </g>
+                <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.537 17.2223)" stroke="#a1a1aa"></rect>
+                <defs>
+                  <clipPath id="clip0_framework_main">
+                    <rect width="320" height="208" rx="16"
+                      transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.105 20.9684)" fill="white"></rect>
+                  </clipPath>
+                  <clipPath id="clip1_framework_main">
+                    <rect width="320" height="208" rx="16"
+                      transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.105 16.9684)" fill="white"></rect>
+                  </clipPath>
+                </defs>
+              </g>
+            </svg>
+          </div>
+
+          <!-- LAYER 4: Cloud (Bottom) -->
+          <div class="arch-layer absolute pointer-events-none" data-index="4"
+            style="top: 0px; left: 0px; z-index: 1; opacity: 1; transform: translateY(150px);">
+            <svg width="460" height="300" viewBox="0 0 460 300" fill="none" xmlns="http://www.w3.org/2000/svg"
+              class="svg-color-transitions" style="pointer-events:none">
+              <g style="pointer-events:auto">
+                <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.537 27.2224)" fill="#e4e4e7"
+                  stroke="#a1a1aa"></rect>
+                <rect x="9.07227" y="115.314" width="8.50049" height="13.0286" fill="#e4e4e7"></rect>
+                <line x1="9.48145" y1="128.85" x2="9.48145" y2="111.85" stroke="#a1a1aa"></line>
+                <circle cx="17.9814" cy="128.109" r="8" fill="#e4e4e7"></circle>
+                <line x1="14.3179" y1="135.984" x2="14.3179" y2="118.984" stroke="#a1a1aa"></line>
+                <circle cx="441.981" cy="186.136" r="8" fill="#e4e4e7"></circle>
+                <rect x="443.774" y="173.07" width="6.25879" height="12.8606" fill="#e4e4e7"></rect>
+                <line x1="450.535" y1="187.25" x2="450.535" y2="170.25" stroke="#a1a1aa"></line>
+                <line x1="445.291" y1="194.431" x2="445.291" y2="177.431" stroke="#a1a1aa"></line>
+                <g clip-path="url(#clip0_cloud_main)">
+                  <rect width="320" height="208" rx="16"
+                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.105 10.9685)" fill="#ffffff"></rect>
+                  <path
+                    d="M267.32 145.001L267.037 145.188L267.254 145.403C272.754 150.884 271.48 157.941 263.28 162.554C253.493 168.059 237.675 167.968 227.952 162.35L190.672 140.81C182.94 136.343 182.981 129.174 190.764 124.797C198.337 120.537 210.434 120.525 218.202 124.654L218.744 124.942L219.139 124.588C220.344 123.504 221.707 122.475 223.361 121.545C235.153 114.912 254.213 115.022 265.928 121.79C277.059 128.222 277.426 138.316 267.32 145.001Z"
+                    fill="#e4e4e7" stroke="#a1a1aa"></path>
+                  <path
+                    d="M267.32 143.001L267.037 143.188L267.254 143.403C272.754 148.884 271.48 155.941 263.28 160.554C253.493 166.059 237.675 165.968 227.952 160.35L190.672 138.81C182.94 134.343 182.981 127.174 190.764 122.797C198.337 118.537 210.434 118.525 218.202 122.654L218.744 122.942L219.139 122.588C220.344 121.504 221.707 120.475 223.361 119.545C235.153 112.912 254.213 113.022 265.928 119.79C277.059 126.222 277.426 136.316 267.32 143.001Z"
+                    fill="#f4f4f5" stroke="#a1a1aa"></path>
+                  <g clip-path="url(#clip1_cloud_main)">
+                    <rect width="48" height="6" transform="matrix(0.865865 0.500278 -0.871576 0.490261 176.971 148.133)"
+                      fill="#fafafa"></rect>
+                    <rect width="32" height="6" transform="matrix(0.865865 0.500278 -0.871576 0.490261 176.971 148.133)"
+                      fill="#D4D4D8"></rect>
+                  </g>
+                  <rect x="-0.00285524" y="0.495269" width="47" height="5"
+                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 177.402 148.387)" stroke="#a1a1aa"></rect>
+                  <circle cx="3" cy="3" r="2.5" transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.037 22.855)"
+                    fill="#e4e4e7" stroke="#a1a1aa"></circle>
+                  <circle cx="3" cy="3" r="2.5" transform="matrix(0.865865 0.500278 -0.871576 0.490261 433.138 167.936)"
+                    fill="#e4e4e7" stroke="#a1a1aa"></circle>
+                  <circle cx="3" cy="3" r="2.5" transform="matrix(0.865865 0.500278 -0.871576 0.490261 26.8965 110.122)"
+                    fill="#e4e4e7" stroke="#a1a1aa"></circle>
+                  <circle cx="3" cy="3" r="2.5" transform="matrix(0.865865 0.500278 -0.871576 0.490261 277.998 255.202)"
+                    fill="#e4e4e7" stroke="#a1a1aa"></circle>
+                  <circle cx="3" cy="3" r="2.5" transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.037 21.855)"
+                    fill="#f4f4f5" stroke="#a1a1aa"></circle>
+                  <circle cx="3" cy="3" r="2.5" transform="matrix(0.865865 0.500278 -0.871576 0.490261 433.138 166.935)"
+                    fill="#f4f4f5" stroke="#a1a1aa"></circle>
+                  <circle cx="3" cy="3" r="2.5" transform="matrix(0.865865 0.500278 -0.871576 0.490261 26.8965 109.122)"
+                    fill="#f4f4f5" stroke="#a1a1aa"></circle>
+                  <circle cx="3" cy="3" r="2.5" transform="matrix(0.865865 0.500278 -0.871576 0.490261 277.998 254.202)"
+                    fill="#f4f4f5" stroke="#a1a1aa"></circle>
+                </g>
+                <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                  transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.537 11.2224)" stroke="#a1a1aa"></rect>
+                <defs>
+                  <clipPath id="clip0_cloud_main">
+                    <rect width="320" height="208" rx="16"
+                      transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.105 10.9685)" fill="white"></rect>
+                  </clipPath>
+                  <clipPath id="clip1_cloud_main">
+                    <rect width="48" height="6" transform="matrix(0.865865 0.500278 -0.871576 0.490261 176.971 148.133)"
+                      fill="white"></rect>
+                  </clipPath>
+                </defs>
+              </g>
+            </svg>
+          </div>
+
+        </div>
+
+        <!-- RIGHT SIDE TEXT (Desktop) -->
+        <div
+          class="hidden md:flex absolute right-6 sm:right-0 lg:right-16 top-0 bottom-0 items-center justify-end w-1/2 pointer-events-none">
+          <ul id="arch-right-text"
+            class="z-20 absolute grow whitespace-nowrap flex flex-col gap-3 font-mono uppercase text-right text-xs text-slate-500">
+            <li>STARTERS FOR DTC AND B2B</li>
+            <li>FAST AND RESPONSIVE STOREFRONTS</li>
+            <li>PRE-BUILT FEATURES AND INTEGRATIONS</li>
+          </ul>
+        </div>
+
       </div>
     </div>
+    <div class="border-t border-slate-200 w-full h-[2px] bg-white absolute bottom-0 z-[1]"></div>
   </section>
 
   <!-- AI Engine Demo (SKU Normalization) -->
@@ -1140,25 +1629,35 @@
       </div>
   </section>
 
-  <!-- 6-Sprint Roadmap -->
-  <section id="roadmap" class="py-20 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-3xl font-bold mb-10 text-center">
-        Execution Roadmap: 6-Sprint Plan
-      </h2>
-      <p class="text-slate-500 mb-12 text-center max-w-2xl mx-auto">
-        12 weeks from Architecture to Audit Readiness. Each sprint delivers
-        tangible value.
-      </p>
+  <!-- Section Divider -->
+  <div style="border-top: 1px solid var(--border-base);"></div>
 
-      <div class="flex flex-col lg:flex-row gap-16">
+  <!-- 6-Sprint Roadmap -->
+  <section id="roadmap" class="py-20" style="background: var(--bg-base);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <span
+          class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-widest mb-4"
+          style="background: rgba(147, 51, 234, 0.08); color: #7c3aed; border: 1px solid rgba(147, 51, 234, 0.15);">Delivery
+          Plan</span>
+        <h2 class="text-3xl md:text-4xl font-bold mb-3" style="color: var(--fg-base);">
+          Execution Roadmap: 6-Sprint Plan
+        </h2>
+        <p class="text-base max-w-xl mx-auto" style="color: var(--fg-subtle);">
+          12 weeks from Architecture to Audit Readiness. Each sprint delivers
+          tangible value.
+        </p>
+      </div>
+
+      <div class="flex flex-col lg:flex-row gap-12">
         <div class="lg:w-1/3">
-          <div class="space-y-3" id="sprint-nav">
+          <div class="space-y-2" id="sprint-nav">
             <!-- Navigation injected via JS -->
           </div>
         </div>
         <div class="lg:w-2/3">
-          <div id="sprint-content" class="bg-slate-50 rounded-[2.5rem] p-10 border border-slate-200 h-full">
+          <div id="sprint-content" class="rounded-2xl p-8 md:p-10 h-full"
+            style="background: var(--bg-subtle); border: 1px solid var(--border-base);">
             <!-- Detail injected via JS -->
           </div>
         </div>
@@ -1280,44 +1779,7 @@
     let roiChart = null;
 
     // --- Tech Detail Logic ---
-    const techs = {
-      restaurant: {
-        t: "Restaurant PWA",
-        d: "A high-performance mobile-first app for Chefs to receive goods and perform stock-takes. Uses Next.js for SSR and offline-first capabilities with IndexedDB.",
-      },
-      supplier: {
-        t: "Supplier Portal",
-        d: "Web-based dashboard for suppliers to confirm orders, update pricing, and view demand forecasts. React + Tailwind. Must be simple for low-tech adoption.",
-      },
-      gateway: {
-        t: "Unified API Gateway",
-        d: "Central node using FastAPI (Python) or GraphQL to route requests between the frontend apps and the Medusa.js core. Handles security and rate limiting.",
-      },
-      ai: {
-        t: "AI Engine",
-        d: "The 'Brain'. Uses LangChain for SKU normalization, OpenAI for text-to-data parsing, and Prophet for demand forecasting. Vectorizes messy strings for semantic search.",
-      },
-      core: {
-        t: "Medusa.js Core",
-        d: "Headless commerce engine. Handles the 'Transactional' side: Users, Carts, Orders, and Multi-tenant partitioning. Extended with custom procurement modules.",
-      },
-      db: {
-        t: "Persistence Layer",
-        d: "PostgreSQL for relational order data + pgvector for semantic SKU matching and search. ACID compliance for financial transactions.",
-      },
-    };
 
-    function showTech(id) {
-      document
-        .querySelectorAll(".arch-block")
-        .forEach((b) => b.classList.remove("active"));
-      document.getElementById(`t-${id}`).classList.add("active");
-      const data = techs[id];
-      document.getElementById("tech-panel").innerHTML = `
-                <h3 class="text-xl font-bold mb-2">${data.t}</h3>
-                <p class="text-slate-600 leading-relaxed">${data.d}</p>
-            `;
-    }
 
     // --- Sprint Roadmap Logic ---
     const sprints = [
@@ -1457,6 +1919,80 @@
 
 
     // --- ROI Calculator Logic ---
+    const flows = {
+      current: `
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center text-center relative">
+           <div class="glass-card p-6 rounded-xl border border-red-100 bg-red-50/30">
+              <div class="text-4xl mb-4">📝</div>
+              <h4 class="font-bold text-slate-900 mb-1">Manual Orders</h4>
+              <p class="text-xs text-slate-500">Chef writes on paper / WhatsApp. No approval workflow.</p>
+           </div>
+           <div class="text-slate-300 text-2xl hidden md:block">→</div>
+           <div class="glass-card p-6 rounded-xl border border-orange-100 bg-orange-50/30">
+              <div class="text-4xl mb-4">📞</div>
+              <h4 class="font-bold text-slate-900 mb-1">Phone Calls</h4>
+              <p class="text-xs text-slate-500">Supplier misses items. Price changes unverified.</p>
+           </div>
+           <div class="text-slate-300 text-2xl hidden md:block">→</div>
+           <div class="glass-card p-6 rounded-xl border border-red-100 bg-red-50/30">
+              <div class="text-4xl mb-4">📉</div>
+              <h4 class="font-bold text-slate-900 mb-1">Margin Leak</h4>
+              <p class="text-xs text-slate-500">Overpaying 12-18%. Waste tracking is non-existent.</p>
+           </div>
+        </div>
+      `,
+      future: `
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center text-center relative">
+           <div class="glass-card p-6 rounded-xl border border-blue-100 bg-blue-50/30 ring-1 ring-blue-500/20">
+              <div class="text-4xl mb-4">🤖</div>
+              <h4 class="font-bold text-slate-900 mb-1">AI Prediction</h4>
+              <p class="text-xs text-slate-500">Auto-drafts accurate orders based on consumption.</p>
+           </div>
+           <div class="text-blue-200 text-2xl hidden md:block">→</div>
+           <div class="glass-card p-6 rounded-xl border border-blue-100 bg-blue-50/30 ring-1 ring-blue-500/20">
+              <div class="text-4xl mb-4">⚡</div>
+              <h4 class="font-bold text-slate-900 mb-1">Instant PO</h4>
+              <p class="text-xs text-slate-500">One-tap approval. Digital trail for every item.</p>
+           </div>
+           <div class="text-blue-200 text-2xl hidden md:block">→</div>
+           <div class="glass-card p-6 rounded-xl border border-emerald-100 bg-emerald-50/30 ring-1 ring-emerald-500/20">
+              <div class="text-4xl mb-4">📈</div>
+              <h4 class="font-bold text-slate-900 mb-1">Profit Boost</h4>
+              <p class="text-xs text-slate-500">12% cost reduction. 100% invoice matching.</p>
+           </div>
+        </div>
+      `
+    };
+
+    function toggleFlow(mode) {
+      const container = document.getElementById('flow-container');
+      if (!container) return;
+
+      container.innerHTML = flows[mode];
+
+      const btnCurrent = document.getElementById('tab-current');
+      const btnFuture = document.getElementById('tab-future');
+
+      if (mode === 'current') {
+        btnCurrent.className = "px-6 py-2.5 rounded-lg font-semibold text-sm transition-all bg-gradient-to-r from-red-500 to-red-600 text-white shadow-md active-tab";
+
+        btnFuture.className = "px-6 py-2.5 rounded-lg font-semibold text-sm transition-all text-slate-500 hover:text-slate-700";
+        btnFuture.style.backgroundColor = 'transparent';
+        btnFuture.style.color = 'var(--fg-subtle)';
+      } else {
+        btnCurrent.className = "px-6 py-2.5 rounded-lg font-semibold text-sm transition-all text-slate-500 hover:text-red-600";
+        btnCurrent.style.backgroundColor = 'transparent';
+        btnCurrent.style.color = 'var(--fg-subtle)';
+
+        btnFuture.className = "px-6 py-2.5 rounded-lg font-semibold text-sm transition-all bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-md active-tab";
+      }
+    }
+
+    // Initialize flow
+    document.addEventListener('DOMContentLoaded', () => {
+      if (document.getElementById('flow-container')) toggleFlow('current');
+    });
+
     function calculateROI() {
       const outlets = parseInt(
         document.getElementById("input-outlets").value,
@@ -1512,7 +2048,7 @@
 
     // Init
     window.onload = () => {
-      showTech("restaurant");
+
 
 
       // Render Sprint Nav
@@ -1528,6 +2064,68 @@
       showSprint(1);
 
       // Initialize Charts
+      const ctxImpact = document.getElementById("impactChart").getContext("2d");
+      new Chart(ctxImpact, {
+        type: "bar",
+        data: {
+          labels: ["Waste", "Cost", "Speed", "Admin"],
+          datasets: [
+            {
+              label: "Before",
+              data: [100, 100, 100, 100],
+              backgroundColor: "rgba(148, 163, 184, 0.5)",
+              borderRadius: 4,
+              barPercentage: 0.6,
+            },
+            {
+              label: "With ProcureIQ",
+              data: [30, 85, 20, 10],
+              backgroundColor: [
+                "rgba(239, 68, 68, 0.8)",
+                "rgba(16, 185, 129, 0.8)",
+                "rgba(59, 130, 246, 0.8)",
+                "rgba(139, 92, 246, 0.8)",
+              ],
+              borderRadius: 4,
+              barPercentage: 0.6,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: "rgba(0, 0, 0, 0.85)",
+              padding: 10,
+              cornerRadius: 8,
+              titleFont: { size: 12, weight: "bold" },
+              bodyFont: { size: 11 },
+              callbacks: {
+                label: function (context) {
+                  return context.dataset.label + ": " + context.parsed.y + "%";
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              display: false,
+              grid: { display: false },
+              beginAtZero: true,
+              max: 120
+            },
+            x: {
+              grid: { display: false },
+              ticks: {
+                font: { size: 10, weight: "600" },
+                color: "#64748b"
+              }
+            }
+          },
+        },
+      });
 
 
       const ctx2 = document.getElementById("roiChart").getContext("2d");
@@ -1883,6 +2481,208 @@
       }, 100);
     });
 
+  </script>
+  <script>
+    // --- Architecture Diagram Interaction (Layer Spreading) ---
+    (function () {
+      const defaultPositions = [-30, 40, 80, 115, 150];
+      const layerTexts = [
+        ['STARTERS FOR DTC AND B2B', 'FAST AND RESPONSIVE STOREFRONTS', 'PRE-BUILT FEATURES AND INTEGRATIONS'],
+        ['ADMIN DASHBOARD', 'FULL CONTROL OVER YOUR STORE', 'REAL-TIME ANALYTICS AND INSIGHTS'],
+        ['MODULAR COMMERCE ENGINE', 'PLUG AND PLAY ARCHITECTURE', 'AI AGENT, AUTH, PAYMENTS'],
+        ['MEDUSA.JS CORE FRAMEWORK', 'EXTENSIBLE API LAYER', 'HEADLESS COMMERCE ENGINE'],
+        ['CLOUD INFRASTRUCTURE', 'POSTGRESQL + SUPABASE', 'AUTO-SCALING AND SECURITY']
+      ];
+
+      // Color maps
+      const BLUE = {
+        fill: ['#93c5fd', '#bfdbfe', '#eff6ff', '#dbeafe'],
+        stroke: '#3b82f6',
+        pathFill: ['#dbeafe', '#bfdbfe', '#93c5fd'],
+        pathStroke: '#3b82f6',
+        circleFill: ['#bfdbfe', '#dbeafe'],
+        circleStroke: '#3b82f6',
+      };
+      const GREY = {
+        fill: ['#e4e4e7', '#fafafa', '#ffffff', '#f4f4f5'],
+        stroke: '#a1a1aa',
+        pathFill: ['#ffffff', '#e4e4e7', '#D4D4D8'],
+        pathStroke: '#a1a1aa',
+        circleFill: ['#e4e4e7', '#f4f4f5'],
+        circleStroke: '#a1a1aa',
+      };
+
+      const navItems = document.querySelectorAll('.arch-nav-item');
+      const layers = document.querySelectorAll('.arch-layer');
+      const rightText = document.getElementById('arch-right-text');
+
+      function colorizeLayer(layer, palette) {
+        const svg = layer.querySelector('svg');
+        if (!svg) return;
+
+        // Color all rects
+        svg.querySelectorAll('rect').forEach(rect => {
+          const currentFill = rect.getAttribute('fill');
+          const currentStroke = rect.getAttribute('stroke');
+
+          // Skip white fill rects used in clipPaths (defs)
+          if (rect.closest('defs')) return;
+
+          if (currentFill && currentFill !== 'none') {
+            // Map grey tones to blue tones and vice versa
+            if (palette === BLUE) {
+              if (currentFill === '#e4e4e7' || currentFill === '#E4E4E7') rect.setAttribute('fill', '#93c5fd');
+              else if (currentFill === '#fafafa' || currentFill === '#FAFAFA') rect.setAttribute('fill', '#dbeafe');
+              else if (currentFill === '#ffffff') rect.setAttribute('fill', '#eff6ff');
+              else if (currentFill === '#D4D4D8' || currentFill === '#d4d4d8') rect.setAttribute('fill', '#bfdbfe');
+              else if (currentFill === '#f4f4f5') rect.setAttribute('fill', '#dbeafe');
+              else if (currentFill === '#a1a1aa' || currentFill === '#A1A1AA') rect.setAttribute('fill', '#60a5fa');
+            } else {
+              if (currentFill === '#93c5fd') rect.setAttribute('fill', '#e4e4e7');
+              else if (currentFill === '#dbeafe') rect.setAttribute('fill', '#fafafa');
+              else if (currentFill === '#eff6ff') rect.setAttribute('fill', '#ffffff');
+              else if (currentFill === '#bfdbfe') rect.setAttribute('fill', '#D4D4D8');
+              else if (currentFill === '#60a5fa') rect.setAttribute('fill', '#a1a1aa');
+            }
+          }
+          if (currentStroke && currentStroke !== 'none') {
+            rect.setAttribute('stroke', palette.stroke);
+          }
+        });
+
+        // Color all paths
+        svg.querySelectorAll('path').forEach(path => {
+          if (path.closest('defs')) return;
+          const currentFill = path.getAttribute('fill');
+          const currentStroke = path.getAttribute('stroke');
+          if (currentFill && currentFill !== 'none') {
+            if (palette === BLUE) {
+              if (currentFill === '#ffffff') path.setAttribute('fill', '#eff6ff');
+              else if (currentFill === '#e4e4e7' || currentFill === '#E4E4E7') path.setAttribute('fill', '#bfdbfe');
+              else if (currentFill === '#D4D4D8' || currentFill === '#d4d4d8') path.setAttribute('fill', '#93c5fd');
+              else if (currentFill === '#f4f4f5') path.setAttribute('fill', '#dbeafe');
+              else if (currentFill === '#fafafa') path.setAttribute('fill', '#dbeafe');
+              else if (currentFill === '#a1a1aa' || currentFill === '#A1A1AA') path.setAttribute('fill', '#3b82f6');
+            } else {
+              if (currentFill === '#eff6ff') path.setAttribute('fill', '#ffffff');
+              else if (currentFill === '#bfdbfe') path.setAttribute('fill', '#e4e4e7');
+              else if (currentFill === '#93c5fd') path.setAttribute('fill', '#D4D4D8');
+              else if (currentFill === '#dbeafe') path.setAttribute('fill', '#f4f4f5');
+              else if (currentFill === '#3b82f6') path.setAttribute('fill', '#a1a1aa');
+            }
+          }
+          if (currentStroke && currentStroke !== 'none') {
+            path.setAttribute('stroke', palette.stroke);
+          }
+        });
+
+        // Color all circles
+        svg.querySelectorAll('circle').forEach(circle => {
+          if (circle.closest('defs')) return;
+          const currentFill = circle.getAttribute('fill');
+          const currentStroke = circle.getAttribute('stroke');
+          if (currentFill && currentFill !== 'none') {
+            if (palette === BLUE) {
+              if (currentFill === '#e4e4e7' || currentFill === '#E4E4E7') circle.setAttribute('fill', '#93c5fd');
+              else if (currentFill === '#f4f4f5') circle.setAttribute('fill', '#dbeafe');
+            } else {
+              if (currentFill === '#93c5fd') circle.setAttribute('fill', '#e4e4e7');
+              else if (currentFill === '#dbeafe') circle.setAttribute('fill', '#f4f4f5');
+            }
+          }
+          if (currentStroke && currentStroke !== 'none') {
+            circle.setAttribute('stroke', palette.stroke);
+          }
+        });
+
+        // Color all lines
+        svg.querySelectorAll('line').forEach(line => {
+          if (line.closest('defs')) return;
+          const currentStroke = line.getAttribute('stroke');
+          if (currentStroke) line.setAttribute('stroke', palette.stroke);
+        });
+
+        // Fix opacity on the starters layer inner g — always visible, outer div handles opacity
+        const innerG = svg.querySelector('g > g[opacity]');
+        if (innerG) {
+          innerG.setAttribute('opacity', '1');
+        }
+      }
+
+      function activateArchLayer(activeIndex) {
+        // Update nav items
+        navItems.forEach((nav, i) => {
+          const connector = nav.querySelector('.arch-connector');
+          if (i === activeIndex) {
+            nav.classList.add('active');
+            if (connector) {
+              connector.style.display = 'flex';
+              connector.querySelector('div').style.borderColor = '#94a3b8';
+              connector.style.backgroundColor = '#94a3b8';
+            }
+          } else {
+            nav.classList.remove('active');
+            if (connector) {
+              connector.style.display = 'none';
+            }
+          }
+        });
+
+        // Calculate spread positions — layers spread away from active
+        const spreadGap = 25;
+        layers.forEach((layer, i) => {
+          let newY;
+          if (i < activeIndex) {
+            newY = defaultPositions[i] - (activeIndex - i) * spreadGap;
+          } else if (i === activeIndex) {
+            newY = defaultPositions[i];
+          } else {
+            newY = defaultPositions[i] + (i - activeIndex) * spreadGap;
+          }
+          layer.style.transform = 'translateY(' + newY + 'px)';
+
+          if (i < activeIndex) {
+            // Layers ABOVE active → transparent/faded
+            layer.style.opacity = '0.15';
+            colorizeLayer(layer, GREY);
+          } else if (i === activeIndex) {
+            // Active layer → blue, full opacity
+            layer.style.opacity = '1';
+            colorizeLayer(layer, BLUE);
+          } else {
+            // Layers BELOW active → grey, full opacity
+            layer.style.opacity = '1';
+            colorizeLayer(layer, GREY);
+          }
+        });
+
+        // Update right text
+        if (rightText && layerTexts[activeIndex]) {
+          const lis = rightText.querySelectorAll('li');
+          layerTexts[activeIndex].forEach((text, idx) => {
+            if (lis[idx]) lis[idx].textContent = text;
+          });
+        }
+      }
+
+      // Add hover events on nav links
+      navItems.forEach((nav, i) => {
+        const link = nav.querySelector('a');
+        if (link) {
+          link.addEventListener('mouseenter', () => activateArchLayer(i));
+          link.addEventListener('click', (e) => { e.preventDefault(); activateArchLayer(i); });
+        }
+      });
+
+      // Add hover events on SVG layers
+      layers.forEach((layer, i) => {
+        layer.style.pointerEvents = 'auto';
+        layer.addEventListener('mouseenter', () => activateArchLayer(i));
+      });
+
+      // Default: Starters active
+      activateArchLayer(0);
+    })();
   </script>
 </body>
 

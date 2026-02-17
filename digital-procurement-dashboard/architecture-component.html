@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architecture Diagram</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: #f8fafc;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+
+        .svg-color-transitions {
+            transition: all 0.3s ease;
+        }
+
+        .arch-layer {
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .arch-nav-item {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .arch-nav-item.active {
+            color: #1e40af;
+        }
+
+        .arch-nav-item:not(.active) {
+            color: #a1a1aa;
+        }
+
+        .arch-connector {
+            transition: all 0.4s ease;
+        }
+
+        .arch-right-text li {
+            transition: all 0.4s ease;
+        }
+    </style>
+</head>
+
+<body>
+
+    <section id="architecture" class="relative bg-slate-50 border-y border-slate-200">
+        <div class="px-6 lg:px-16 max-w-[1400px] mx-auto relative z-[1]">
+            <div class="py-20 md:py-28 flex justify-center items-center">
+
+                <!-- LEFT NAV (Desktop) -->
+                <div
+                    class="uppercase hidden md:flex absolute left-6 md:left-16 top-0 bottom-0 justify-center flex-col w-1/2">
+
+                    <div class="arch-nav-item mb-4 relative w-auto font-mono uppercase flex pointer-events-none items-center gap-3 text-xs"
+                        data-layer="0">
+                        <a class="pointer-events-auto shrink-0 flex items-start gap-[3px]"
+                            href="javascript:void(0)">Starters</a>
+                        <div class="arch-connector relative w-full flex items-center justify-end h-[1px] bg-transparent z-50 pointer-events-none"
+                            style="margin-right: 150px;">
+                            <div class="flex aspect-square bg-transparent border border-transparent absolute right-0 translate-x-full"
+                                style="height: 6px;"></div>
+                        </div>
+                    </div>
+
+                    <div class="arch-nav-item active mb-4 relative w-auto font-mono uppercase flex pointer-events-none items-center gap-3 text-xs"
+                        data-layer="1">
+                        <a class="pointer-events-auto shrink-0 flex items-start gap-[3px]"
+                            href="javascript:void(0)">Admin</a>
+                        <div class="arch-connector relative w-full flex items-center justify-end h-[1px] bg-slate-400 z-50 pointer-events-none"
+                            style="margin-right: 150px; transform: none;">
+                            <div class="flex aspect-square bg-transparent border border-slate-400 absolute right-0 translate-x-full"
+                                style="height: 6px;"></div>
+                        </div>
+                    </div>
+
+                    <div class="arch-nav-item mb-4 relative w-auto font-mono uppercase flex pointer-events-none items-center gap-3 text-xs"
+                        data-layer="2">
+                        <a class="pointer-events-auto shrink-0 flex items-start gap-[3px]"
+                            href="javascript:void(0)">Commerce Modules</a>
+                    </div>
+
+                    <div class="arch-nav-item mb-4 relative w-auto font-mono uppercase flex pointer-events-none items-center gap-3 text-xs"
+                        data-layer="3">
+                        <a class="pointer-events-auto shrink-0 flex items-start gap-[3px]"
+                            href="javascript:void(0)">Framework</a>
+                    </div>
+
+                    <div class="arch-nav-item mb-4 relative w-auto font-mono uppercase flex pointer-events-none items-center gap-3 text-xs"
+                        data-layer="4">
+                        <a class="pointer-events-auto shrink-0 flex items-start gap-[3px]"
+                            href="javascript:void(0)">Cloud</a>
+                    </div>
+
+                </div>
+
+                <!-- ISOMETRIC STACK (Desktop) -->
+                <div class="hidden md:block relative" style="width:460px;height:470px">
+
+                    <!-- LAYER 0: Starters (Top) -->
+                    <div class="arch-layer absolute pointer-events-none" data-index="0"
+                        style="top: 0px; left: 0px; z-index: 5; opacity: 1; transform: translateY(-100px);">
+                        <svg width="460" height="300" viewBox="0 0 460 300" fill="none"
+                            xmlns="http://www.w3.org/2000/svg" class="svg-color-transitions cursor-pointer"
+                            style="pointer-events: none;">
+                            <g style="pointer-events: auto;">
+                                <g opacity="0.4">
+                                    <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.681 21.2223)"
+                                        fill="#E4E4E7"></rect>
+                                    <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.681 21.2223)"
+                                        stroke="#A1A1AA"></rect>
+                                    <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.393 17.2223)"
+                                        fill="#FAFAFA"></rect>
+                                    <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.393 17.2223)"
+                                        stroke="#A1A1AA"></rect>
+                                </g>
+                            </g>
+                        </svg>
+                    </div>
+
+                    <!-- LAYER 1: Admin -->
+                    <div class="arch-layer absolute pointer-events-none" data-index="1"
+                        style="top: 0px; left: 0px; z-index: 4; opacity: 1; transform: translateY(34px);">
+                        <svg width="460" height="300" viewBox="0 0 460 300" fill="none"
+                            xmlns="http://www.w3.org/2000/svg" class="svg-color-transitions cursor-pointer"
+                            style="pointer-events: none;">
+                            <g style="pointer-events: auto;">
+                                <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.537 21.2224)"
+                                    fill="#93c5fd"></rect>
+                                <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.537 21.2224)"
+                                    stroke="#3b82f6"></rect>
+                                <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.537 17.2224)"
+                                    fill="#bfdbfe"></rect>
+                                <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.537 17.2224)"
+                                    stroke="#3b82f6"></rect>
+                                <rect x="-0.00285524" y="0.495269" width="55" height="195" rx="9.5"
+                                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.502 23.1656)"
+                                    fill="#93c5fd"></rect>
+                                <rect x="-0.00285524" y="0.495269" width="55" height="195" rx="9.5"
+                                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.502 23.1656)"
+                                    stroke="#3b82f6"></rect>
+                                <g clip-path="url(#clip0_admin)">
+                                    <rect width="56" height="196" rx="10"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.071 18.9116)"
+                                        fill="#eff6ff"></rect>
+                                    <rect x="-0.00285524" y="0.495269" width="7" height="7" rx="1.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 176.373 27.55)"
+                                        fill="#bfdbfe"></rect>
+                                    <rect x="-0.00285524" y="0.495269" width="7" height="7" rx="1.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 176.373 27.55)"
+                                        stroke="#3b82f6"></rect>
+                                    <rect x="-0.00285524" y="0.495269" width="30" height="5" rx="1.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 185.026 33.5433)"
+                                        fill="#bfdbfe"></rect>
+                                    <rect x="-0.00285524" y="0.495269" width="30" height="5" rx="1.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 185.026 33.5433)"
+                                        stroke="#3b82f6"></rect>
+                                    <rect x="-0.00285524" y="0.495269" width="27" height="4" rx="1.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 158.942 37.3553)"
+                                        fill="#bfdbfe"></rect>
+                                    <rect x="-0.00285524" y="0.495269" width="27" height="4" rx="1.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 158.942 37.3553)"
+                                        stroke="#3b82f6"></rect>
+                                    <rect x="-0.00285524" y="0.495269" width="21" height="4" rx="1.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 150.226 42.2579)"
+                                        fill="#bfdbfe"></rect>
+                                    <rect x="-0.00285524" y="0.495269" width="21" height="4" rx="1.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 150.226 42.2579)"
+                                        stroke="#3b82f6"></rect>
+                                    <rect x="-0.00285524" y="0.495269" width="33" height="4" rx="1.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 141.51 47.1605)"
+                                        fill="#bfdbfe"></rect>
+                                    <rect x="-0.00285524" y="0.495269" width="33" height="4" rx="1.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 141.51 47.1605)"
+                                        stroke="#3b82f6"></rect>
+                                    <rect x="-0.00285524" y="0.495269" width="33" height="4" rx="1.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 124.078 56.9657)"
+                                        fill="#bfdbfe"></rect>
+                                    <rect x="-0.00285524" y="0.495269" width="33" height="4" rx="1.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 124.078 56.9657)"
+                                        stroke="#3b82f6"></rect>
+                                    <rect x="-0.00285524" y="0.495269" width="25" height="4" rx="1.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 132.794 52.0631)"
+                                        fill="#bfdbfe"></rect>
+                                    <rect x="-0.00285524" y="0.495269" width="25" height="4" rx="1.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 132.794 52.0631)"
+                                        stroke="#3b82f6"></rect>
+                                </g>
+                                <rect x="-0.00285524" y="0.495269" width="55" height="195" rx="9.5"
+                                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.503 19.1655)"
+                                    stroke="#3b82f6"></rect>
+                                <rect x="-0.00285524" y="0.495269" width="245" height="94" rx="9.5"
+                                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 236.186 54.1828)"
+                                    fill="#93c5fd"></rect>
+                                <rect x="-0.00285524" y="0.495269" width="245" height="94" rx="9.5"
+                                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 236.186 54.1828)"
+                                    stroke="#3b82f6"></rect>
+                                <rect x="-0.00285524" y="0.495269" width="160" height="94" rx="9.5"
+                                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 148.157 103.699)"
+                                    fill="#93c5fd"></rect>
+                                <rect x="-0.00285524" y="0.495269" width="160" height="94" rx="9.5"
+                                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 148.157 103.699)"
+                                    stroke="#3b82f6"></rect>
+                                <rect x="-0.00285524" y="0.495269" width="78" height="94" rx="9.5"
+                                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 292.756 187.246)"
+                                    fill="#93c5fd"></rect>
+                                <rect x="-0.00285524" y="0.495269" width="78" height="94" rx="9.5"
+                                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 292.756 187.246)"
+                                    stroke="#3b82f6"></rect>
+                                <rect x="-0.00285524" y="0.495269" width="245" height="94" rx="9.5"
+                                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 236.186 50.1828)"
+                                    fill="#eff6ff"></rect>
+                                <rect x="-0.00285524" y="0.495269" width="245" height="94" rx="9.5"
+                                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 236.186 50.1828)"
+                                    stroke="#3b82f6"></rect>
+                                <rect x="-0.00285524" y="0.495269" width="160" height="94" rx="9.5"
+                                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 148.157 99.6992)"
+                                    fill="#eff6ff"></rect>
+                                <rect x="-0.00285524" y="0.495269" width="160" height="94" rx="9.5"
+                                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 148.157 99.6992)"
+                                    stroke="#3b82f6"></rect>
+                                <rect x="-0.00285524" y="0.495269" width="78" height="94" rx="9.5"
+                                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 292.756 183.246)"
+                                    fill="#eff6ff"></rect>
+                                <rect x="-0.00285524" y="0.495269" width="78" height="94" rx="9.5"
+                                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 292.756 183.246)"
+                                    stroke="#3b82f6"></rect>
+                                <defs>
+                                    <clipPath id="clip0_admin">
+                                        <rect width="56" height="196" rx="10"
+                                            transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.071 18.9116)"
+                                            fill="white"></rect>
+                                    </clipPath>
+                                </defs>
+                            </g>
+                        </svg>
+                    </div>
+
+                    <!-- LAYER 2: Commerce Modules -->
+                    <div class="arch-layer absolute pointer-events-none" data-index="2"
+                        style="top: 0px; left: 0px; z-index: 3; opacity: 1; transform: translateY(118px);">
+                        <svg width="460" height="300" viewBox="0 0 460 300" fill="none"
+                            xmlns="http://www.w3.org/2000/svg" class="svg-color-transitions cursor-pointer"
+                            style="pointer-events: none;">
+                            <g style="pointer-events: auto;">
+                                <g clip-path="url(#clip0_modules)">
+                                    <rect width="320" height="208" rx="16"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.105 20.9684)"
+                                        fill="#e4e4e7"></rect>
+                                    <path
+                                        d="M296.672 190.521L277.622 179.515C285.324 175.183 285.365 168.087 277.714 163.667C270.063 159.246 257.617 159.174 249.915 163.506L230 152L201.238 168.179C208.889 172.599 208.848 179.695 201.147 184.027C193.445 188.359 180.999 188.288 173.348 183.867L144.586 200.046L211.257 238.567L240.019 222.388C232.368 217.968 232.409 210.872 240.11 206.54C247.812 202.207 260.258 202.279 267.91 206.7L296.672 190.521Z"
+                                        fill="#ffffff" stroke="#a1a1aa"></path>
+                                    <path
+                                        d="M315.414 103.954L190.73 31.9144C185.948 29.1514 178.169 29.1066 173.355 31.8142L96.6567 74.9572L115.706 85.9633C108.004 90.2955 107.963 97.3912 115.614 101.812C123.266 106.233 135.712 106.304 143.413 101.972L182.377 124.485C190.079 120.152 202.525 120.224 210.176 124.645C217.828 129.066 217.787 136.161 210.085 140.494L230 152L258.762 135.821C266.413 140.242 278.859 140.314 286.561 135.982C294.263 131.649 294.304 124.554 286.652 120.133L315.414 103.954Z"
+                                        fill="#ffffff" stroke="#a1a1aa"></path>
+                                    <path
+                                        d="M210.176 124.645C217.828 129.066 217.787 136.161 210.085 140.494L230 152L201.238 168.179C208.889 172.599 208.848 179.695 201.147 184.027C193.445 188.359 180.999 188.288 173.347 183.867L144.586 200.046L19.9009 128.006C15.1189 125.243 15.1445 120.808 19.958 118.1L96.6567 74.9572L115.706 85.9633C108.004 90.2955 107.963 97.3912 115.614 101.812C123.266 106.233 135.712 106.304 143.413 101.972L182.377 124.485C190.079 120.152 202.525 120.224 210.176 124.645Z"
+                                        fill="#ffffff" stroke="#a1a1aa"></path>
+                                    <path
+                                        d="M440.042 185.9C444.855 183.192 444.881 178.757 440.099 175.994L315.414 103.954L286.652 120.133C294.304 124.554 294.263 131.649 286.561 135.982C278.859 140.314 266.413 140.242 258.762 135.821L230 152L249.915 163.506C257.617 159.174 270.063 159.246 277.714 163.667C285.365 168.087 285.324 175.183 277.622 179.515L316.586 202.028C308.885 206.36 308.844 213.456 316.495 217.876C324.146 222.297 336.592 222.369 344.294 218.037L363.343 229.043L440.042 185.9Z"
+                                        fill="#ffffff" stroke="#a1a1aa"></path>
+                                    <path
+                                        d="M344.294 218.037C336.592 222.369 324.146 222.297 316.495 217.876C308.844 213.456 308.885 206.36 316.586 202.028L296.672 190.521L267.91 206.7C260.258 202.279 247.812 202.207 240.11 206.54C232.409 210.872 232.368 217.968 240.019 222.388L211.257 238.567L269.27 272.085C274.052 274.848 281.831 274.893 286.644 272.186L363.343 229.043L344.294 218.037Z"
+                                        fill="#ffffff" stroke="#a1a1aa"></path>
+                                </g>
+                                <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.537 21.2223)"
+                                    stroke="#a1a1aa"></rect>
+                                <g clip-path="url(#clip1_modules)">
+                                    <rect width="320" height="208" rx="16"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.105 16.9684)"
+                                        fill="#fafafa"></rect>
+                                    <path
+                                        d="M296.672 186.521L277.623 175.515C285.324 171.183 285.365 164.087 277.714 159.667C270.063 155.246 257.617 155.174 249.915 159.506L230 148L201.238 164.179C208.889 168.599 208.848 175.695 201.147 180.027C193.445 184.36 180.999 184.288 173.348 179.867L144.586 196.046L211.257 234.567L240.019 218.388C232.368 213.968 232.409 206.872 240.111 202.54C247.812 198.208 260.258 198.279 267.91 202.7L296.672 186.521Z"
+                                        fill="#D4D4D8" stroke="#a1a1aa"></path>
+                                    <path
+                                        d="M315.414 99.9544L190.73 27.9144C185.948 25.1514 178.169 25.1066 173.355 27.8142L96.6568 70.9572L115.706 81.9633C108.004 86.2955 107.963 93.3912 115.614 97.8119C123.266 102.233 135.712 102.304 143.413 97.9722L182.377 120.485C190.079 116.152 202.525 116.224 210.176 120.645C217.828 125.066 217.787 132.161 210.085 136.494L230 148L258.762 131.821C266.413 136.242 278.859 136.314 286.561 131.982C294.263 127.649 294.304 120.554 286.652 116.133L315.414 99.9544Z"
+                                        fill="#e4e4e7" stroke="#a1a1aa"></path>
+                                    <path
+                                        d="M210.176 120.645C217.828 125.066 217.787 132.161 210.085 136.494L230 148L201.238 164.179C208.889 168.599 208.848 175.695 201.147 180.027C193.445 184.359 180.999 184.288 173.348 179.867L144.586 196.046L19.901 124.006C15.119 121.243 15.1445 116.808 19.9581 114.1L96.6568 70.9572L115.706 81.9633C108.004 86.2955 107.963 93.3912 115.614 97.8119C123.266 102.233 135.712 102.304 143.413 97.9722L182.377 120.485C190.079 116.152 202.525 116.224 210.176 120.645Z"
+                                        fill="#e4e4e7" stroke="#a1a1aa"></path>
+                                    <path
+                                        d="M440.042 181.9C444.855 179.192 444.881 174.757 440.099 171.994L315.414 99.9543L286.652 116.133C294.303 120.554 294.263 127.649 286.561 131.982C278.859 136.314 266.413 136.242 258.762 131.821L230 148L249.915 159.506C257.616 155.174 270.062 155.246 277.714 159.667C285.365 164.087 285.324 171.183 277.622 175.515L316.586 198.028C308.885 202.36 308.844 209.456 316.495 213.876C324.146 218.297 336.592 218.369 344.294 214.037L363.343 225.043L440.042 181.9Z"
+                                        fill="#e4e4e7" stroke="#a1a1aa"></path>
+                                    <path
+                                        d="M344.294 214.037C336.593 218.369 324.146 218.297 316.495 213.876C308.844 209.456 308.885 202.36 316.587 198.028L296.672 186.521L267.91 202.7C260.258 198.279 247.812 198.208 240.111 202.54C232.409 206.872 232.368 213.968 240.019 218.388L211.257 234.567L269.27 268.086C274.052 270.849 281.831 270.893 286.645 268.186L363.343 225.043L344.294 214.037Z"
+                                        fill="#e4e4e7" stroke="#a1a1aa"></path>
+                                </g>
+                                <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.537 17.2223)"
+                                    stroke="#a1a1aa"></rect>
+                                <defs>
+                                    <clipPath id="clip0_modules">
+                                        <rect width="320" height="208" rx="16"
+                                            transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.105 20.9684)"
+                                            fill="white"></rect>
+                                    </clipPath>
+                                    <clipPath id="clip1_modules">
+                                        <rect width="320" height="208" rx="16"
+                                            transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.105 16.9684)"
+                                            fill="white"></rect>
+                                    </clipPath>
+                                </defs>
+                            </g>
+                        </svg>
+                    </div>
+
+                    <!-- LAYER 3: Framework -->
+                    <div class="arch-layer absolute pointer-events-none" data-index="3"
+                        style="top: 0px; left: 0px; z-index: 2; opacity: 1; transform: translateY(152px);">
+                        <svg width="460" height="300" viewBox="0 0 460 300" fill="none"
+                            xmlns="http://www.w3.org/2000/svg" class="svg-color-transitions cursor-pointer"
+                            style="pointer-events: none;">
+                            <g style="pointer-events: auto;">
+                                <g clip-path="url(#clip0_framework)">
+                                    <rect width="320" height="208" rx="16"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.105 20.9684)"
+                                        fill="#e4e4e7"></rect>
+                                    <rect x="-0.00285524" y="0.495269" width="307" height="94" rx="9.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.502 27.1655)"
+                                        fill="#e4e4e7"></rect>
+                                    <rect x="-0.00285524" y="0.495269" width="307" height="94" rx="9.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.502 27.1655)"
+                                        stroke="#a1a1aa"></rect>
+                                    <rect x="-0.00285524" y="0.495269" width="307" height="94" rx="9.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 94.4734 76.6819)"
+                                        fill="#e4e4e7"></rect>
+                                    <rect x="-0.00285524" y="0.495269" width="307" height="94" rx="9.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 94.4734 76.6819)"
+                                        stroke="#a1a1aa"></rect>
+                                </g>
+                                <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.537 21.2223)"
+                                    stroke="#a1a1aa"></rect>
+                                <g clip-path="url(#clip1_framework)">
+                                    <rect width="320" height="208" rx="16"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.105 16.9684)"
+                                        fill="#fafafa"></rect>
+                                    <rect x="-0.00285524" y="0.495269" width="307" height="94" rx="9.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.502 23.1655)"
+                                        fill="#e4e4e7"></rect>
+                                    <rect x="-0.00285524" y="0.495269" width="307" height="94" rx="9.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.502 23.1655)"
+                                        stroke="#a1a1aa"></rect>
+                                    <rect x="-0.00285524" y="0.495269" width="307" height="94" rx="9.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 94.4734 72.6819)"
+                                        fill="#e4e4e7"></rect>
+                                    <rect x="-0.00285524" y="0.495269" width="307" height="94" rx="9.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 94.4734 72.6819)"
+                                        stroke="#a1a1aa"></rect>
+                                </g>
+                                <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.537 17.2223)"
+                                    stroke="#a1a1aa"></rect>
+                                <defs>
+                                    <clipPath id="clip0_framework">
+                                        <rect width="320" height="208" rx="16"
+                                            transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.105 20.9684)"
+                                            fill="white"></rect>
+                                    </clipPath>
+                                    <clipPath id="clip1_framework">
+                                        <rect width="320" height="208" rx="16"
+                                            transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.105 16.9684)"
+                                            fill="white"></rect>
+                                    </clipPath>
+                                </defs>
+                            </g>
+                        </svg>
+                    </div>
+
+                    <!-- LAYER 4: Cloud (Bottom) -->
+                    <div class="arch-layer absolute pointer-events-none" data-index="4"
+                        style="top: 0px; left: 0px; z-index: 1; opacity: 1; transform: translateY(186px);">
+                        <svg width="460" height="300" viewBox="0 0 460 300" fill="none"
+                            xmlns="http://www.w3.org/2000/svg" class="svg-color-transitions cursor-pointer"
+                            style="pointer-events:none">
+                            <g style="pointer-events:auto">
+                                <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.537 27.2224)"
+                                    fill="#e4e4e7"></rect>
+                                <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.537 27.2224)"
+                                    stroke="#a1a1aa"></rect>
+                                <rect x="9.07227" y="115.314" width="8.50049" height="13.0286" fill="#e4e4e7"></rect>
+                                <line x1="9.48145" y1="128.85" x2="9.48145" y2="111.85" stroke="#a1a1aa"></line>
+                                <circle cx="17.9814" cy="128.109" r="8" fill="#e4e4e7"></circle>
+                                <line x1="14.3179" y1="135.984" x2="14.3179" y2="118.984" stroke="#a1a1aa"></line>
+                                <circle cx="441.981" cy="186.136" r="8" fill="#e4e4e7"></circle>
+                                <rect x="443.774" y="173.07" width="6.25879" height="12.8606" fill="#e4e4e7"></rect>
+                                <line x1="450.535" y1="187.25" x2="450.535" y2="170.25" stroke="#a1a1aa"></line>
+                                <line x1="445.291" y1="194.431" x2="445.291" y2="177.431" stroke="#a1a1aa"></line>
+                                <g clip-path="url(#clip0_cloud)">
+                                    <rect width="320" height="208" rx="16"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.105 10.9685)"
+                                        fill="#ffffff"></rect>
+                                    <path
+                                        d="M267.32 145.001L267.037 145.188L267.254 145.403C272.754 150.884 271.48 157.941 263.28 162.554C253.493 168.059 237.675 167.968 227.952 162.35L190.672 140.81C182.94 136.343 182.981 129.174 190.764 124.797C198.337 120.537 210.434 120.525 218.202 124.654L218.744 124.942L219.139 124.588C220.344 123.504 221.707 122.475 223.361 121.545C235.153 114.912 254.213 115.022 265.928 121.79C277.059 128.222 277.426 138.316 267.32 145.001Z"
+                                        fill="#e4e4e7" stroke="#a1a1aa"></path>
+                                    <path
+                                        d="M267.32 143.001L267.037 143.188L267.254 143.403C272.754 148.884 271.48 155.941 263.28 160.554C253.493 166.059 237.675 165.968 227.952 160.35L190.672 138.81C182.94 134.343 182.981 127.174 190.764 122.797C198.337 118.537 210.434 118.525 218.202 122.654L218.744 122.942L219.139 122.588C220.344 121.504 221.707 120.475 223.361 119.545C235.153 112.912 254.213 113.022 265.928 119.79C277.059 126.222 277.426 136.316 267.32 143.001Z"
+                                        fill="#f4f4f5" stroke="#a1a1aa"></path>
+                                    <g clip-path="url(#clip1_cloud)">
+                                        <rect width="48" height="6"
+                                            transform="matrix(0.865865 0.500278 -0.871576 0.490261 176.971 148.133)"
+                                            fill="#fafafa"></rect>
+                                        <rect width="32" height="6"
+                                            transform="matrix(0.865865 0.500278 -0.871576 0.490261 176.971 148.133)"
+                                            fill="#D4D4D8"></rect>
+                                    </g>
+                                    <rect x="-0.00285524" y="0.495269" width="47" height="5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 177.402 148.387)"
+                                        stroke="#a1a1aa"></rect>
+                                    <circle cx="3" cy="3" r="2.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.037 22.855)"
+                                        fill="#e4e4e7" stroke="#a1a1aa"></circle>
+                                    <circle cx="3" cy="3" r="2.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 433.138 167.936)"
+                                        fill="#e4e4e7" stroke="#a1a1aa"></circle>
+                                    <circle cx="3" cy="3" r="2.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 26.8965 110.122)"
+                                        fill="#e4e4e7" stroke="#a1a1aa"></circle>
+                                    <circle cx="3" cy="3" r="2.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 277.998 255.202)"
+                                        fill="#e4e4e7" stroke="#a1a1aa"></circle>
+                                    <circle cx="3" cy="3" r="2.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.037 21.855)"
+                                        fill="#f4f4f5" stroke="#a1a1aa"></circle>
+                                    <circle cx="3" cy="3" r="2.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 433.138 166.935)"
+                                        fill="#f4f4f5" stroke="#a1a1aa"></circle>
+                                    <circle cx="3" cy="3" r="2.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 26.8965 109.122)"
+                                        fill="#f4f4f5" stroke="#a1a1aa"></circle>
+                                    <circle cx="3" cy="3" r="2.5"
+                                        transform="matrix(0.865865 0.500278 -0.871576 0.490261 277.998 254.202)"
+                                        fill="#f4f4f5" stroke="#a1a1aa"></circle>
+                                </g>
+                                <rect x="-0.00285524" y="0.495269" width="319" height="207" rx="15.5"
+                                    transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.537 11.2224)"
+                                    stroke="#a1a1aa"></rect>
+                                <defs>
+                                    <clipPath id="clip0_cloud">
+                                        <rect width="320" height="208" rx="16"
+                                            transform="matrix(0.865865 0.500278 -0.871576 0.490261 182.105 10.9685)"
+                                            fill="white"></rect>
+                                    </clipPath>
+                                    <clipPath id="clip1_cloud">
+                                        <rect width="48" height="6"
+                                            transform="matrix(0.865865 0.500278 -0.871576 0.490261 176.971 148.133)"
+                                            fill="white"></rect>
+                                    </clipPath>
+                                </defs>
+                            </g>
+                        </svg>
+                    </div>
+
+                </div>
+
+                <!-- RIGHT SIDE TEXT (Desktop) -->
+                <div
+                    class="hidden md:flex absolute right-6 sm:right-0 lg:right-16 top-0 bottom-0 items-center justify-end w-1/2 pointer-events-none">
+                    <ul id="arch-right-text"
+                        class="z-20 absolute grow whitespace-nowrap flex flex-col gap-3 font-mono uppercase text-right text-xs text-slate-500">
+                        <li style="opacity: 1;">STARTERS FOR DTC AND B2B</li>
+                        <li style="opacity: 1;">FAST AND RESPONSIVE STOREFRONTS</li>
+                        <li style="opacity: 1;">PRE-BUILT FEATURES AND INTEGRATIONS</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+        <div class="border-t border-slate-200 w-full h-[2px] bg-white absolute bottom-0 z-[1]"></div>
+    </section>
+
+    <script>
+        (function () {
+            // Layer positions: default Y offsets for each layer (index 0=top to 4=bottom)
+            const defaultPositions = [-100, 34, 118, 152, 186];
+
+            // Text content for each layer
+            const layerTexts = [
+                ['STARTERS FOR DTC AND B2B', 'FAST AND RESPONSIVE STOREFRONTS', 'PRE-BUILT FEATURES AND INTEGRATIONS'],
+                ['LINKED TO GITHUB', 'INSTANT PREVIEW ENVIRONMENTS', 'PUSH TO DEPLOY'],
+                ['LINKED TO GITHUB', 'INSTANT PREVIEW ENVIRONMENTS', 'PUSH TO DEPLOY'],
+                ['LINKED TO GITHUB', 'INSTANT PREVIEW ENVIRONMENTS', 'PUSH TO DEPLOY'],
+                ['LINKED TO GITHUB', 'INSTANT PREVIEW ENVIRONMENTS', 'PUSH TO DEPLOY']
+            ];
+
+            const navItems = document.querySelectorAll('.arch-nav-item');
+            const layers = document.querySelectorAll('.arch-layer');
+            const rightText = document.getElementById('arch-right-text');
+
+            function activateLayer(activeIndex) {
+                // Update nav items
+                navItems.forEach((nav, i) => {
+                    const connector = nav.querySelector('.arch-connector');
+                    if (i === activeIndex) {
+                        nav.classList.add('active');
+                        nav.classList.remove('text-slate-400');
+                        if (connector) {
+                            connector.classList.remove('bg-transparent');
+                            connector.classList.add('bg-slate-400');
+                            const dot = connector.querySelector('div');
+                            if (dot) {
+                                dot.classList.remove('border-transparent');
+                                dot.classList.add('border-slate-400');
+                            }
+                        }
+                    } else {
+                        nav.classList.remove('active');
+                        if (connector) {
+                            connector.classList.add('bg-transparent');
+                            connector.classList.remove('bg-slate-400');
+                            const dot = connector.querySelector('div');
+                            if (dot) {
+                                dot.classList.add('border-transparent');
+                                dot.classList.remove('border-slate-400');
+                            }
+                        }
+                    }
+                });
+
+                // Calculate spread positions  
+                const spreadGap = 50; // How much extra spread between layers
+                layers.forEach((layer, i) => {
+                    let newY;
+                    if (i < activeIndex) {
+                        // Layers above: push up
+                        newY = defaultPositions[i] - (activeIndex - i) * spreadGap;
+                    } else if (i === activeIndex) {
+                        // Active layer: stays roughly in place
+                        newY = defaultPositions[i];
+                    } else {
+                        // Layers below: push down
+                        newY = defaultPositions[i] + (i - activeIndex) * spreadGap;
+                    }
+
+                    layer.style.transform = `translateY(${newY}px)`;
+                    layer.style.opacity = i === activeIndex ? '1' : '1';
+                });
+
+                // Update right text
+                if (rightText && layerTexts[activeIndex]) {
+                    const lis = rightText.querySelectorAll('li');
+                    layerTexts[activeIndex].forEach((text, i) => {
+                        if (lis[i]) lis[i].textContent = text;
+                    });
+                }
+            }
+
+            // Add hover events 
+            navItems.forEach((nav, i) => {
+                nav.querySelector('a').addEventListener('mouseenter', () => activateLayer(i));
+                nav.querySelector('a').addEventListener('click', (e) => { e.preventDefault(); activateLayer(i); });
+            });
+
+            // Also add hover events on the SVG layers themselves
+            layers.forEach((layer, i) => {
+                layer.style.pointerEvents = 'auto';
+                layer.addEventListener('mouseenter', () => activateLayer(i));
+            });
+
+            // Default: Admin active
+            activateLayer(1);
+        })();
+    </script>
+
+</body>
+
+</html>
