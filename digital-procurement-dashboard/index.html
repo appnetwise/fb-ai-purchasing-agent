@@ -964,7 +964,7 @@
             class="arch-nav-item mb-4 relative w-auto font-mono uppercase flex pointer-events-none items-center gap-3 text-xs text-slate-500"
             data-layer="0">
             <a class="pointer-events-auto shrink-0 flex items-start gap-[3px] hover:text-blue-600 transition-colors"
-              href="javascript:void(0)">Starters</a>
+              href="javascript:void(0)">Ordering App</a>
             <div
               class="arch-connector relative w-full flex items-center justify-end h-[1px] bg-transparent z-50 pointer-events-none"
               style="margin-right: 150px; transform: none; display: none;">
@@ -977,7 +977,7 @@
             class="arch-nav-item mb-4 relative w-auto font-mono uppercase flex pointer-events-none items-center gap-3 text-xs text-slate-400"
             data-layer="1">
             <a class="pointer-events-auto shrink-0 flex items-start gap-[3px] hover:text-blue-600 transition-colors"
-              href="javascript:void(0)">Admin</a>
+              href="javascript:void(0)">Procurement Dashboard</a>
             <div
               class="arch-connector relative w-full flex items-center justify-end h-[1px] bg-transparent z-50 pointer-events-none"
               style="margin-right: 150px; transform: none; display: none;">
@@ -990,7 +990,7 @@
             class="arch-nav-item mb-4 relative w-auto font-mono uppercase flex pointer-events-none items-center gap-3 text-xs text-slate-500"
             data-layer="2">
             <a class="pointer-events-auto shrink-0 flex items-start gap-[3px] hover:text-blue-600 transition-colors"
-              href="javascript:void(0)">Commerce Modules</a>
+              href="javascript:void(0)">AI Modules</a>
             <div
               class="arch-connector relative w-full flex items-center justify-end h-[1px] bg-transparent z-50 pointer-events-none"
               style="margin-right: 150px; transform: none; display: none;">
@@ -1003,7 +1003,7 @@
             class="arch-nav-item mb-4 relative w-auto font-mono uppercase flex pointer-events-none items-center gap-3 text-xs text-slate-500"
             data-layer="3">
             <a class="pointer-events-auto shrink-0 flex items-start gap-[3px] hover:text-blue-600 transition-colors"
-              href="javascript:void(0)">Framework</a>
+              href="javascript:void(0)">MedusaJS Core</a>
             <div
               class="arch-connector relative w-full flex items-center justify-end h-[1px] bg-transparent z-50 pointer-events-none"
               style="margin-right: 150px; transform: none; display: none;">
@@ -1031,24 +1031,24 @@
         <div class="relative uppercase font-mono md:hidden w-full">
           <div class="flex flex-col space-y-4 py-8">
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-              <span class="text-xs font-bold text-slate-400 block mb-1">Starters</span>
-              <div class="text-slate-800 font-bold text-sm">Restaurant App (PWA)</div>
+              <span class="text-xs font-bold text-slate-400 block mb-1">Ordering App</span>
+              <div class="text-slate-800 font-bold text-sm">Restaurant PWA</div>
             </div>
             <div class="bg-white p-4 rounded-xl border border-blue-200 shadow-sm border-l-4 border-l-blue-500">
-              <span class="text-xs font-bold text-blue-500 block mb-1">Admin</span>
-              <div class="text-slate-800 font-bold text-sm">Dashboard & Management</div>
+              <span class="text-xs font-bold text-blue-500 block mb-1">Procurement Dashboard</span>
+              <div class="text-slate-800 font-bold text-sm">Analytics & Management</div>
             </div>
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-              <span class="text-xs font-bold text-slate-400 block mb-1">Commerce Modules</span>
-              <div class="text-slate-800 font-bold text-sm">AI Agent, Auth, Payments</div>
+              <span class="text-xs font-bold text-slate-400 block mb-1">AI Modules</span>
+              <div class="text-slate-800 font-bold text-sm">Ordering Agent, GRN, Pricing</div>
             </div>
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-              <span class="text-xs font-bold text-slate-400 block mb-1">Framework</span>
-              <div class="text-slate-800 font-bold text-sm">Medusa.js Core</div>
+              <span class="text-xs font-bold text-slate-400 block mb-1">MedusaJS Core</span>
+              <div class="text-slate-800 font-bold text-sm">Workflow Engine</div>
             </div>
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
               <span class="text-xs font-bold text-slate-400 block mb-1">Cloud</span>
-              <div class="text-slate-800 font-bold text-sm">PostgreSQL + Supabase</div>
+              <div class="text-slate-800 font-bold text-sm">Supabase + PostgreSQL</div>
             </div>
           </div>
         </div>
@@ -1921,44 +1921,52 @@
     // --- ROI Calculator Logic ---
     const flows = {
       current: `
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center text-center relative">
-           <div class="glass-card p-6 rounded-xl border border-red-100 bg-red-50/30">
-              <div class="text-4xl mb-4">📝</div>
-              <h4 class="font-bold text-slate-900 mb-1">Manual Orders</h4>
-              <p class="text-xs text-slate-500">Chef writes on paper / WhatsApp. No approval workflow.</p>
+        <h3 class="text-lg font-semibold text-center mb-8" style="color: var(--fg-base);">Manual Chaos (Old Way)</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
+           <div class="bg-white p-5 md:p-6 rounded-2xl text-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1" style="border: 1px solid var(--border-base); box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+              <div class="w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center text-2xl" style="background: rgba(239, 68, 68, 0.06);">📝</div>
+              <h4 class="font-bold text-sm mb-1.5" style="color: var(--fg-base);">Manual Orders</h4>
+              <p class="text-xs leading-relaxed" style="color: var(--fg-subtle);">Chef writes on paper / WhatsApp. No approval workflow.</p>
            </div>
-           <div class="text-slate-300 text-2xl hidden md:block">→</div>
-           <div class="glass-card p-6 rounded-xl border border-orange-100 bg-orange-50/30">
-              <div class="text-4xl mb-4">📞</div>
-              <h4 class="font-bold text-slate-900 mb-1">Phone Calls</h4>
-              <p class="text-xs text-slate-500">Supplier misses items. Price changes unverified.</p>
+           <div class="bg-white p-5 md:p-6 rounded-2xl text-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1" style="border: 1px solid var(--border-base); box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+              <div class="w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center text-2xl" style="background: rgba(249, 115, 22, 0.06);">📞</div>
+              <h4 class="font-bold text-sm mb-1.5" style="color: var(--fg-base);">Phone Calls</h4>
+              <p class="text-xs leading-relaxed" style="color: var(--fg-subtle);">Supplier misses items. Price changes unverified.</p>
            </div>
-           <div class="text-slate-300 text-2xl hidden md:block">→</div>
-           <div class="glass-card p-6 rounded-xl border border-red-100 bg-red-50/30">
-              <div class="text-4xl mb-4">📉</div>
-              <h4 class="font-bold text-slate-900 mb-1">Margin Leak</h4>
-              <p class="text-xs text-slate-500">Overpaying 12-18%. Waste tracking is non-existent.</p>
+           <div class="bg-white p-5 md:p-6 rounded-2xl text-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1" style="border: 1px solid var(--border-base); box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+              <div class="w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center text-2xl" style="background: rgba(234, 179, 8, 0.06);">📋</div>
+              <h4 class="font-bold text-sm mb-1.5" style="color: var(--fg-base);">Paper GRN</h4>
+              <p class="text-xs leading-relaxed" style="color: var(--fg-subtle);">Driver drops boxes. Invoice is hand-written.</p>
+           </div>
+           <div class="bg-white p-5 md:p-6 rounded-2xl text-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1" style="border: 1px solid var(--border-base); box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+              <div class="w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center text-2xl" style="background: rgba(239, 68, 68, 0.06);">📉</div>
+              <h4 class="font-bold text-sm mb-1.5" style="color: var(--fg-base);">Margin Leak</h4>
+              <p class="text-xs leading-relaxed" style="color: var(--fg-subtle);">Overpaying 12–18%. Waste tracking is non-existent.</p>
            </div>
         </div>
       `,
       future: `
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center text-center relative">
-           <div class="glass-card p-6 rounded-xl border border-blue-100 bg-blue-50/30 ring-1 ring-blue-500/20">
-              <div class="text-4xl mb-4">🤖</div>
-              <h4 class="font-bold text-slate-900 mb-1">AI Prediction</h4>
-              <p class="text-xs text-slate-500">Auto-drafts accurate orders based on consumption.</p>
+        <h3 class="text-lg font-semibold text-center mb-8" style="color: var(--fg-base);">AI-Powered Procurement</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
+           <div class="bg-white p-5 md:p-6 rounded-2xl text-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1" style="border: 1px solid rgba(59, 130, 246, 0.15); box-shadow: 0 1px 3px rgba(59, 130, 246, 0.06);">
+              <div class="w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center text-2xl" style="background: rgba(59, 130, 246, 0.08);">🤖</div>
+              <h4 class="font-bold text-sm mb-1.5" style="color: var(--fg-base);">AI Prediction</h4>
+              <p class="text-xs leading-relaxed" style="color: var(--fg-subtle);">Auto-drafts accurate orders based on consumption.</p>
            </div>
-           <div class="text-blue-200 text-2xl hidden md:block">→</div>
-           <div class="glass-card p-6 rounded-xl border border-blue-100 bg-blue-50/30 ring-1 ring-blue-500/20">
-              <div class="text-4xl mb-4">⚡</div>
-              <h4 class="font-bold text-slate-900 mb-1">Instant PO</h4>
-              <p class="text-xs text-slate-500">One-tap approval. Digital trail for every item.</p>
+           <div class="bg-white p-5 md:p-6 rounded-2xl text-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1" style="border: 1px solid rgba(59, 130, 246, 0.15); box-shadow: 0 1px 3px rgba(59, 130, 246, 0.06);">
+              <div class="w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center text-2xl" style="background: rgba(59, 130, 246, 0.08);">⚡</div>
+              <h4 class="font-bold text-sm mb-1.5" style="color: var(--fg-base);">Instant PO</h4>
+              <p class="text-xs leading-relaxed" style="color: var(--fg-subtle);">One-tap approval. Digital trail for every item.</p>
            </div>
-           <div class="text-blue-200 text-2xl hidden md:block">→</div>
-           <div class="glass-card p-6 rounded-xl border border-emerald-100 bg-emerald-50/30 ring-1 ring-emerald-500/20">
-              <div class="text-4xl mb-4">📈</div>
-              <h4 class="font-bold text-slate-900 mb-1">Profit Boost</h4>
-              <p class="text-xs text-slate-500">12% cost reduction. 100% invoice matching.</p>
+           <div class="bg-white p-5 md:p-6 rounded-2xl text-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1" style="border: 1px solid rgba(59, 130, 246, 0.15); box-shadow: 0 1px 3px rgba(59, 130, 246, 0.06);">
+              <div class="w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center text-2xl" style="background: rgba(16, 185, 129, 0.08);">✅</div>
+              <h4 class="font-bold text-sm mb-1.5" style="color: var(--fg-base);">Smart GRN</h4>
+              <p class="text-xs leading-relaxed" style="color: var(--fg-subtle);">Digital receiving with weight verification on delivery.</p>
+           </div>
+           <div class="bg-white p-5 md:p-6 rounded-2xl text-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1" style="border: 1px solid rgba(16, 185, 129, 0.15); box-shadow: 0 1px 3px rgba(16, 185, 129, 0.06);">
+              <div class="w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center text-2xl" style="background: rgba(16, 185, 129, 0.08);">📈</div>
+              <h4 class="font-bold text-sm mb-1.5" style="color: var(--fg-base);">Profit Boost</h4>
+              <p class="text-xs leading-relaxed" style="color: var(--fg-subtle);">12% cost reduction. 100% invoice matching.</p>
            </div>
         </div>
       `
