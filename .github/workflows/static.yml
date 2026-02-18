@@ -1,4 +1,4 @@
-# Deploy static content to GitHub Pages with Jekyll build
+# Deploy static content to GitHub Pages
 name: Deploy static content to Pages
 
 on:
@@ -28,46 +28,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.1'
-          bundler-cache: true
-
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
 
-      - name: Build with Jekyll
+      - name: Copy Dashboard Files
         run: |
-          cd docs
-          bundle install
-          bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}" -d _site
-        env:
-          JEKYLL_ENV: production
+          echo "📦 Preparing dashboard for deployment..."
+          mkdir -p _site
+          cp -v digital-procurement-dashboard/* _site/
+          echo "✅ Dashboard files ready"
 
-      - name: Copy Dashboard to Build
+      - name: Verify deployment structure
         run: |
-          echo "📦 Copying dashboard assets to Jekyll build output..."
-          mkdir -p docs/_site/dashboard
-          cp -v digital-procurement-dashboard/index.html docs/_site/dashboard/index.html
-          cp -v digital-procurement-dashboard/*.js docs/_site/dashboard/
-          cp -v digital-procurement-dashboard/*.css docs/_site/dashboard/
-          cp -v digital-procurement-dashboard/architecture-component.html docs/_site/dashboard/
-          echo "✅ Dashboard files copied successfully"
-
-      - name: Verify build structure
-        run: |
-          echo "🔍 Verifying deployment structure..."
-          echo "📄 HTML files in _site:"
-          ls -lh docs/_site/*.html 2>/dev/null | wc -l && echo "files found" || echo "No HTML files"
-          echo "📊 Dashboard directory:"
-          ls -lh docs/_site/dashboard/ | head -10
+          echo "🔍 Verifying files to be deployed..."
+          ls -lh _site/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'docs/_site'
+          path: '_site'
 
   # Deploy job
   deploy:
