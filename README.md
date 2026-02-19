@@ -4,7 +4,7 @@ Prototype for normalizing fragmented supplier catalogs, converting units/pack si
 
 ## 📖 Documentation Website
 
-**🌐 Live Site:** [https://appnetwise.github.io/fb-ai-purchasing-agent/](https://appnetwise.github.io/fb-ai-purchasing-agent/)
+**🌐 Live Site:** [https://procureiq.appnetwise.com/](https://procureiq.appnetwise.com/)
 
 Complete documentation with interactive guides, architecture diagrams, and implementation details.
 
