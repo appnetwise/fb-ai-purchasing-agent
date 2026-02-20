@@ -1,829 +1,584 @@
-# Detailed Data Flows
+# Detailed Data Flows (Web-Only)
 
-## Flow 1: Supplier Catalog Upload → SKU Normalization
+> **Authority:** Aligned with the Stakeholder Document and B2B Commerce Network positioning.
+> **Interface:** All flows terminate in Web Dashboard, Supplier Portal, or Mobile App.
+
+---
+
+## Table of Contents
+
+1. [SKU Normalization Flow](#1-sku-normalization-flow)
+2. [Smart Cart Generation Flow](#2-smart-cart-generation-flow)
+3. [Quote & Negotiation Flow](#3-quote--negotiation-flow)
+4. [3-Way Invoice Matching Flow](#4-3-way-invoice-matching-flow)
+5. [Flash Deal Flow](#5-flash-deal-flow)
+6. [Smart Collections Flow](#6-smart-collections-flow)
+7. [Sales Attribution Flow](#7-sales-attribution-flow)
+8. [Delivery Tracking Flow](#8-delivery-tracking-flow)
+9. [Waste & Variance Logging Flow](#9-waste--variance-logging-flow)
+10. [Restaurant-Initiated RFQ Flow](#10-restaurant-initiated-rfq-flow)
+11. [Forecasting & Prep Plan Flow](#11-forecasting--prep-plan-flow)
+
+---
+
+## 1. SKU Normalization Flow
+
+**Trigger:** Supplier uploads CSV or PDF via Supplier Portal drag-and-drop.
 
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│                     Supplier Portal                              │
-│  Supplier uploads CSV catalog with 500 products                  │
-│  Columns: SKU, Name, Pack, Unit Price, Currency                  │
-└────────────────────────────┬─────────────────────────────────────┘
-                             │
-                             ▼
-                    POST /admin/catalog/upload
-                             │
-                             ▼
-┌──────────────────────────────────────────────────────────────────┐
-│                   MedusaJS API Layer                             │
-│  - Validate CSV format                                           │
-│  - Store raw CSV in S3: catalogs/{supplier_id}/{timestamp}.csv   │
-│  - Emit event: catalog.uploaded                                  │
-└────────────────────────────┬─────────────────────────────────────┘
-                             │
-                             ▼
-┌──────────────────────────────────────────────────────────────────┐
-│              Event Subscriber: CatalogNormalizationSubscriber    │
-│  Listen for: catalog.uploaded                                    │
-│  Action: Trigger LangGraph workflow                              │
-└────────────────────────────┬─────────────────────────────────────┘
-                             │
-                             ▼
-┌──────────────────────────────────────────────────────────────────┐
-│         LangGraph: CatalogNormalizationWorkflow                  │
-│                                                                  │
-│  State: {                                                        │
-│    catalog_id: "uuid",                                           │
-│    supplier_id: "supplier-001",                                  │
-│    rows: [...],                                                  │
-│    processed: 0,                                                 │
-│    matched: 0,                                                   │
-│    new_skus: 0                                                   │
-│  }                                                               │
-│                                                                  │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  Node: ParseRows                                           │ │
-│  │  For each row in CSV:                                      │ │
-│  │    - Extract: sku, name, pack, price                       │ │
-│  │    - Clean: trim whitespace, fix encoding                  │ │
-│  │    - Validate: required fields present                     │ │
-│  │    - Output: {parsed_rows: [...]}                          │ │
-│  └─────────────────────┬──────────────────────────────────────┘ │
-│                        │                                          │
-│                        ▼                                          │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  Node: GenerateEmbeddings                                  │ │
-│  │  For each parsed row:                                      │ │
-│  │    - Combine: name + pack → "Apples Granny Smith 10x1kg"  │ │
-│  │    - Call: OpenAI embeddings API (text-embedding-ada-002)  │ │
-│  │    - Store: {row_id, embedding: [0.123, ...]}             │ │
-│  │    - Batch: 100 rows at a time for efficiency             │ │
-│  └─────────────────────┬──────────────────────────────────────┘ │
-│                        │                                          │
-│                        ▼                                          │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  Node: SimilaritySearch                                    │ │
-│  │  For each embedding:                                       │ │
-│  │    - Query Weaviate:                                       │ │
-│  │        GET /v1/objects?                                    │ │
-│  │        class=NormalizedSKU&                                │ │
-│  │        nearVector={embedding}&                             │ │
-│  │        limit=3&                                            │ │
-│  │        certainty=0.85                                      │ │
-│  │    - Results:                                              │ │
-│  │      [                                                      │ │
-│  │        {id: "norm-001", name: "Apples Granny Smith",       │ │
-│  │         certainty: 0.92},                                  │ │
-│  │        {id: "norm-002", name: "Green Apples",              │ │
-│  │         certainty: 0.87},                                  │ │
-│  │        ...                                                  │ │
-│  │      ]                                                      │ │
-│  │    - If certainty > 0.90: auto-match                       │ │
-│  │    - If 0.85-0.90: suggest for review                      │ │
-│  │    - If < 0.85: mark as new SKU                            │ │
-│  └─────────────────────┬──────────────────────────────────────┘ │
-│                        │                                          │
-│                        ▼                                          │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  Node: ExtractAttributes (LLM)                             │ │
-│  │  For rows with no match (new SKUs):                        │ │
-│  │    - Prompt GPT-4:                                         │ │
-│  │      "Extract structured attributes from:                  │ │
-│  │       'Fresh Apples Granny Smith 10x1kg Grade A UAE'       │ │
-│  │       Return JSON: {                                       │ │
-│  │         category: string,                                  │ │
-│  │         grade: string,                                     │ │
-│  │         origin: string,                                    │ │
-│  │         organic: bool,                                     │ │
-│  │         pack_count: int,                                   │ │
-│  │         pack_size: float,                                  │ │
-│  │         pack_unit: string                                  │ │
-│  │       }"                                                    │ │
-│  │    - Output: structured attributes                         │ │
-│  └─────────────────────┬──────────────────────────────────────┘ │
-│                        │                                          │
-│                        ▼                                          │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  Node: ParsePack                                           │ │
-│  │  For each row:                                             │ │
-│  │    - Input: "10 x 1kg"                                     │ │
-│  │    - Regex patterns:                                       │ │
-│  │      (\d+)\s*[xX]\s*([\d\.\/]+)\s*(kg|g|lb|oz)             │ │
-│  │    - Output: {count: 10, size: 1, unit: "kilogram"}       │ │
-│  │    - Calculate total_weight_kg: 10 × 1 = 10kg             │ │
-│  └─────────────────────┬──────────────────────────────────────┘ │
-│                        │                                          │
-│                        ▼                                          │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  Node: CalculatePricePerKg                                 │ │
-│  │  For each row:                                             │ │
-│  │    - unit_price: $38.00                                    │ │
-│  │    - total_weight_kg: 10kg                                 │ │
-│  │    - price_per_kg = $38 / 10 = $3.80/kg                    │ │
-│  │    - Store normalized price                                │ │
-│  └─────────────────────┬──────────────────────────────────────┘ │
-│                        │                                          │
-│                        ▼                                          │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  Node: UpsertDatabase                                      │ │
-│  │  For each row:                                             │ │
-│  │    - If matched: link supplier_catalog → normalized_sku    │ │
-│  │    - If new: create new normalized_sku entry              │ │
-│  │    - Insert into Weaviate with embedding                   │ │
-│  │    - Insert into PostgreSQL (audit trail)                  │ │
-│  └─────────────────────┬──────────────────────────────────────┘ │
-│                        │                                          │
-│                        ▼                                          │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  Node: AdminReview (INTERRUPT)                             │ │
-│  │  - Show summary:                                           │ │
-│  │    Auto-matched: 450 (90%)                                 │ │
-│  │    Needs review: 30 (6%)                                   │ │
-│  │    New SKUs: 20 (4%)                                       │ │
-│  │  - Provide UI to:                                          │ │
-│  │    - Accept suggestions                                    │ │
-│  │    - Override matches                                      │ │
-│  │    - Merge duplicates                                      │ │
-│  │  - Wait for admin approval                                 │ │
-│  └─────────────────────┬──────────────────────────────────────┘ │
-│                        │                                          │
-│                        ▼                                          │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  Node: FinalizeNormalization                               │ │
-│  │  - Apply admin edits                                       │ │
-│  │  - Update equivalence groups                               │ │
-│  │  - Emit event: catalog.normalized                          │ │
-│  │  - Mark workflow complete                                  │ │
-│  └────────────────────────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────────────────┘
-                             │
-                             ▼
-                    Normalization Complete
-                    500 SKUs processed in ~5 minutes
+ STEP-BY-STEP: SKU NORMALIZATION
+ ═══════════════════════════════════════════════════
+
+ ① Supplier drags CSV/PDF onto Portal upload zone
+    │
+    ▼
+ ② Parser Router identifies format
+    │  CSV → Column mapper  
+    │  PDF → AWS Textract OCR
+    │
+    ▼
+ ③ Raw items extracted as JSON array
+    │  Example: {"name": "Fresh Salmon Fillet, Norwegian, 1kg pack"}
+    │
+    ▼
+ ④ Cleaning Agent (GPT-4o-mini)
+    │  - Remove marketing text
+    │  - Fix unit aliases ("kilo" → "kg")
+    │  - Standardize formatting
+    │
+    ▼
+ ⑤ Attribute Extraction (GPT-4)
+    │  Input: "Fresh Salmon Fillet, Norwegian, 1kg pack"
+    │  Output: {
+    │    "product": "Salmon Fillet",
+    │    "brand": null,
+    │    "origin": "Norway",
+    │    "unit": "kg",
+    │    "weight": 1.0,
+    │    "grade": "Fresh",
+    │    "pack_size": "1kg"
+    │  }
+    │
+    ▼
+ ⑥ Embedding Generation (ada-002)
+    │  "Salmon Fillet Norway Fresh 1kg" → [0.023, -0.118, ..., 0.045] (1536-dim)
+    │
+    ▼
+ ⑦ Weaviate Vector Search
+    │  Search top-5 nearest neighbors:
+    │
+    │  cosine > 0.92  → AUTO-MATCH to existing SKU
+    │  0.80-0.92      → FLAG for human review (Supplier Portal card)
+    │  < 0.80         → CREATE new normalized SKU
+    │
+    ▼
+ ⑧ Result displayed on Supplier Portal:
+    ┌───────────────────────────────────────────────────────────┐
+    │  CATALOG UPLOAD RESULTS                                   │
+    │                                                           │
+    │  ✅ 45 items auto-matched to existing SKUs                │
+    │  ⚠️  8 items need your review (click to resolve)         │
+    │  🆕 3 new SKUs created                                    │
+    │                                                           │
+    │  [ View Details ] [ Approve All Matches ]                 │
+    └───────────────────────────────────────────────────────────┘
+```
+
+### Extracted Attributes Schema
+
+| Attribute | Type | Example | Source |
+|:---|:---|:---|:---|
+| `product` | string | "Salmon Fillet" | GPT-4 extraction |
+| `brand` | string / null | "Royal Greenland" | GPT-4 extraction |
+| `origin` | string / null | "Norway" | GPT-4 extraction |
+| `unit` | enum | "kg", "ltr", "pc", "tin", "case" | Standardized |
+| `weight` | float | 1.0 | GPT-4 extraction |
+| `grade` | string / null | "Fresh", "Frozen", "Grade A" | GPT-4 extraction |
+| `pack_size` | string | "1kg", "6x500g" | GPT-4 extraction |
+
+---
+
+## 2. Smart Cart Generation Flow
+
+**Trigger:** Cron schedule (daily, 5:00 AM) or POS webhook (`sale.completed`).
+
+```
+ STEP-BY-STEP: SMART CART GENERATION
+ ═══════════════════════════════════════════════════
+
+ ① POS data webhook fires (sale.completed)
+    │  Payload: { restaurant_id, items_sold, timestamp }
+    │
+    ▼
+ ② Consumption Engine processes sale
+    │  - Map sold menu items → raw ingredient BOM
+    │  - Calculate: "2x Margherita = -600g Mozzarella, -400g Flour..."
+    │  - Update run-rate: "Mozzarella: 15kg/day average"
+    │
+    ▼
+ ③ Inventory Agent checks stock levels
+    │  For each ingredient:
+    │    current_stock vs par_level vs run_rate
+    │  Flag items where: current < par_level OR days_of_stock < lead_time + buffer
+    │
+    ▼
+ ④ Sourcing Agent compares suppliers
+    │  For each required SKU:
+    │  - Find all suppliers offering this normalized SKU
+    │  - Get current prices + historical trends
+    │  - Check delivery windows
+    │  - Score: price (40%) + lead_time (25%) + quality (20%) + reliability (15%)
+    │
+    ▼
+ ⑤ Purchasing Agent builds optimized cart
+    │  - Group items by best supplier
+    │  - Check MOQ for each supplier
+    │  - Consolidate deliveries
+    │  - Calculate total cost
+    │
+    ▼
+ ⑥ Pydantic Validation
+    │  ┌──────────────────────────────────────────┐
+    │  │ CartDraft                                │
+    │  │   restaurant_id: str ✓                   │
+    │  │   items: List[CartItem] ✓                │
+    │  │     each: qty > 0, supplier valid        │
+    │  │   total: Decimal ✓                       │
+    │  │   reasoning: str ✓ (non-empty)           │
+    │  │   budget_check: within_limit ✓           │
+    │  └──────────────────────────────────────────┘
+    │
+    ▼
+ ⑦ Emit to Web Dashboard
+    │  Event: "cart.draft_ready"
+    │  → Notification badge appears on Dashboard
+    │  → Chef clicks → sees cart with "Why this?" on each item
+    │
+    ▼
+ ⑧ Chef Reviews on Dashboard
+    │  ┌───────────────────────────────────────────────────────┐
+    │  │  🛒 SMART CART — Tuesday Feb 20                       │
+    │  │                                                       │
+    │  │  ┌─ Supplier A (Al Rawdah) ───────────────────────┐  │
+    │  │  │  Flour 50kg     AED 150   ⓘ "Par: 40, stock: 5" │  │
+    │  │  │  Sugar 25kg     AED 75    ⓘ "3-day run-rate"     │  │
+    │  │  │  Subtotal:      AED 225                          │  │
+    │  │  └────────────────────────────────────────────────┘  │
+    │  │                                                       │
+    │  │  ┌─ Supplier B (Fresh Foods) ─────────────────────┐  │
+    │  │  │  Salmon 20kg    AED 800   ⓘ "Cheapest offer"   │  │
+    │  │  │  Subtotal:      AED 800                          │  │
+    │  │  └────────────────────────────────────────────────┘  │
+    │  │                                                       │
+    │  │  Total: AED 1,025                                     │
+    │  │  [ ✓ Approve All ] [ ✏️ Edit ] [ ✗ Skip ]            │
+    │  └───────────────────────────────────────────────────────┘
+    │
+    ▼
+ ⑨ Chef clicks [Approve All]
+    │  → System creates PO per supplier
+    │  → POs emitted to Supplier Portal as incoming orders
+    │  → Sales Agent starts processing on supplier side
 ```
 
 ---
 
-## Flow 2: POS Sales → Inventory Depletion → Low Stock Alert → AI Cart
+## 3. Quote & Negotiation Flow
+
+**Trigger:** Restaurant requests a quote via Dashboard, or Sourcing Agent triggers RFQ.
 
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│                     Restaurant POS (Foodics)                     │
-│  Customer orders:                                                │
-│  - 2x Chicken Burger ($15 each)                                  │
-│  - 1x Caesar Salad ($12)                                         │
-│  Total: $42                                                      │
-└────────────────────────────┬─────────────────────────────────────┘
-                             │
-                             ▼
-                    Foodics Webhook: order.created
-                    POST https://your-app.com/webhooks/foodics
-                             │
-                             ▼
-┌──────────────────────────────────────────────────────────────────┐
-│               MedusaJS Webhook Handler                           │
-│  {                                                               │
-│    event: "order.created",                                       │
-│    order_id: "foodics-order-12345",                              │
-│    items: [                                                      │
-│      {product_id: "food-001", name: "Chicken Burger", qty: 2},   │
-│      {product_id: "food-002", name: "Caesar Salad", qty: 1}      │
-│    ]                                                             │
-│  }                                                               │
-│                                                                  │
-│  Actions:                                                        │
-│  1. Map Foodics product_id → internal recipe_id                 │
-│  2. Fetch recipe BOM (Bill of Materials)                         │
-│  3. Deplete inventory                                            │
-└────────────────────────────┬─────────────────────────────────────┘
-                             │
-                             ▼
-┌──────────────────────────────────────────────────────────────────┐
-│                    Recipe BOM Expansion                          │
-│                                                                  │
-│  Recipe: Chicken Burger (food-001)                               │
-│  Ingredients:                                                    │
-│  - Chicken Breast: 150g (norm-sku: "chicken_breast_boneless")   │
-│  - Burger Bun: 1 unit (norm-sku: "bun_burger_white")            │
-│  - Lettuce: 20g (norm-sku: "lettuce_iceberg")                   │
-│  - Tomato: 30g (norm-sku: "tomato_fresh")                       │
-│  - Sauce: 15ml (norm-sku: "mayo_regular")                       │
-│                                                                  │
-│  For 2 burgers:                                                  │
-│  - Chicken Breast: 300g                                          │
-│  - Burger Bun: 2 units                                           │
-│  - Lettuce: 40g                                                  │
-│  - Tomato: 60g                                                   │
-│  - Sauce: 30ml                                                   │
-└────────────────────────────┬─────────────────────────────────────┘
-                             │
-                             ▼
-┌──────────────────────────────────────────────────────────────────┐
-│                  Inventory Depletion (Transactional)             │
-│                                                                  │
-│  BEGIN TRANSACTION;                                              │
-│                                                                  │
-│  UPDATE inventory                                                │
-│  SET qty_on_hand = qty_on_hand - 0.3  -- 300g = 0.3kg           │
-│  WHERE normalized_sku_id = 'chicken_breast_boneless'             │
-│    AND branch_id = 'branch-001';                                 │
-│                                                                  │
-│  UPDATE inventory                                                │
-│  SET qty_on_hand = qty_on_hand - 2                              │
-│  WHERE normalized_sku_id = 'bun_burger_white'                    │
-│    AND branch_id = 'branch-001';                                 │
-│                                                                  │
-│  ... (repeat for all ingredients)                                │
-│                                                                  │
-│  INSERT INTO inventory_logs (normalized_sku_id, change_qty,      │
-│    reason, created_at)                                           │
-│  VALUES ('chicken_breast_boneless', -0.3, 'POS sale', NOW());    │
-│                                                                  │
-│  COMMIT;                                                         │
-│                                                                  │
-│  After update:                                                   │
-│  - Chicken Breast: 5.2kg → 4.9kg                                 │
-│  - Par level: 10kg                                               │
-│  - Status: BELOW PAR (4.9kg < 10kg)                              │
-└────────────────────────────┬─────────────────────────────────────┘
-                             │
-                             ▼
-┌──────────────────────────────────────────────────────────────────┐
-│             Low Stock Detection (Trigger Check)                  │
-│                                                                  │
-│  IF qty_on_hand < reorder_point THEN                             │
-│    Emit event: inventory.low_stock                               │
-│                                                                  │
-│  Event payload:                                                  │
-│  {                                                               │
-│    event: "inventory.low_stock",                                 │
-│    branch_id: "branch-001",                                      │
-│    normalized_sku_id: "chicken_breast_boneless",                 │
-│    current_qty: 4.9,                                             │
-│    par_level: 10.0,                                              │
-│    reorder_point: 6.0,                                           │
-│    unit: "kg",                                                   │
-│    lead_time_days: 2                                             │
-│  }                                                               │
-└────────────────────────────┬─────────────────────────────────────┘
-                             │
-                             ▼
-┌──────────────────────────────────────────────────────────────────┐
-│        Event Subscriber: AutoReorderSubscriber                   │
-│  Listen for: inventory.low_stock                                 │
-│  Action: Trigger LangGraph AutoReorderWorkflow                   │
-└────────────────────────────┬─────────────────────────────────────┘
-                             │
-                             ▼
-┌──────────────────────────────────────────────────────────────────┐
-│            LangGraph: AutoReorderWorkflow                        │
-│                                                                  │
-│  State: {                                                        │
-│    branch_id: "branch-001",                                      │
-│    low_stock_items: [                                            │
-│      {sku: "chicken_breast_boneless", qty: 4.9kg, par: 10kg}    │
-│    ],                                                            │
-│    suggested_cart: null,                                         │
-│    approval_status: "pending"                                    │
-│  }                                                               │
-│                                                                  │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  Node: ProcurementAgent                                    │ │
-│  │  Tools:                                                    │ │
-│  │  - fetch_sales_history(sku, days=30)                       │ │
-│  │  - calc_run_rate(sales_history)                            │ │
-│  │  - get_lead_time(sku)                                      │ │
-│  │                                                             │ │
-│  │  Execution:                                                 │ │
-│  │  sales = fetch_sales_history("chicken_breast", 30)         │ │
-│  │  # Returns: 180kg sold in 30 days                          │ │
-│  │  run_rate = 180kg / 30 = 6kg/day                           │ │
-│  │  lead_time = 2 days                                        │ │
-│  │  safety_stock = run_rate × 0.5 = 3kg                       │ │
-│  │  suggested_qty = (par - current) + (run_rate × lead_time)  │ │
-│  │                = (10 - 4.9) + (6 × 2)                      │ │
-│  │                = 5.1 + 12 = 17.1kg                         │ │
-│  │  Round up: 18kg                                            │ │
-│  └─────────────────────┬──────────────────────────────────────┘ │
-│                        │                                          │
-│                        ▼                                          │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  Node: SourcingAgent                                       │ │
-│  │  Tools:                                                    │ │
-│  │  - search_suppliers(normalized_sku_id)                     │ │
-│  │  - compare_prices(suppliers)                               │ │
-│  │  - check_reliability(supplier_id)                          │ │
-│  │                                                             │ │
-│  │  Execution:                                                 │ │
-│  │  suppliers = search_suppliers("chicken_breast_boneless")   │ │
-│  │  # Returns:                                                 │ │
-│  │  [                                                          │ │
-│  │    {id: "supp-A", price_kg: 12.50, lead: 1d, rating: 4.8}, │ │
-│  │    {id: "supp-B", price_kg: 11.80, lead: 2d, rating: 4.6}, │ │
-│  │    {id: "supp-C", price_kg: 13.00, lead: 0d, rating: 4.9}  │ │
-│  │  ]                                                          │ │
-│  │                                                             │ │
-│  │  Ranking logic (weighted):                                  │ │
-│  │  score = (0.5 × price) + (0.3 × lead_time) + (0.2 × rating)│ │
-│  │  Winner: supp-B (best price, acceptable lead time)         │ │
-│  └─────────────────────┬──────────────────────────────────────┘ │
-│                        │                                          │
-│                        ▼                                          │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  Node: CartDraftAgent                                      │ │
-│  │  Tools:                                                    │ │
-│  │  - create_cart_line(sku, qty, supplier)                    │ │
-│  │  - validate_cart_schema(cart)                              │ │
-│  │  - generate_reasoning(cart_line)                           │ │
-│  │                                                             │ │
-│  │  Execution:                                                 │ │
-│  │  cart = {                                                   │ │
-│  │    items: [                                                 │ │
-│  │      {                                                      │ │
-│  │        normalized_sku: "chicken_breast_boneless",          │ │
-│  │        qty: 18,                                            │ │
-│  │        unit: "kg",                                         │ │
-│  │        supplier: "supp-B",                                 │ │
-│  │        price_per_kg: 11.80,                                │ │
-│  │        total_price: 212.40,                                │ │
-│  │        reasoning: "Run-rate 6kg/day × 2d lead + 5.1kg to  │ │
-│  │                    reach par. Supplier B offers best value │ │
-│  │                    ($11.80/kg vs $12.50, $13.00)."         │ │
-│  │      }                                                      │ │
-│  │    ]                                                        │ │
-│  │  }                                                          │ │
-│  │  validate_cart_schema(cart)  # Pydantic validation passes  │ │
-│  └─────────────────────┬──────────────────────────────────────┘ │
-│                        │                                          │
-│                        ▼                                          │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  Node: HumanApproval (INTERRUPT)                           │ │
-│  │  - Save workflow state to PostgreSQL                       │ │
-│  │  - Send push notification to manager                       │ │
-│  │  - Display in app:                                         │ │
-│  │    "AI Suggested Reorder for Chicken Breast"              │ │
-│  │    Qty: 18kg                                               │ │
-│  │    Supplier: Supplier B                                    │ │
-│  │    Price: $212.40                                          │ │
-│  │    Reasoning: [show above]                                 │ │
-│  │  - Wait for user action: approve/edit/reject               │ │
-│  └─────────────────────┬──────────────────────────────────────┘ │
-│                        │                                          │
-│                        ▼                                          │
-│        Manager clicks "Approve"                                  │
-│                        │                                          │
-│                        ▼                                          │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  Node: CreatePOAgent                                       │ │
-│  │  Tools:                                                    │ │
-│  │  - medusa.orders.create(cart_data)                         │ │
-│  │  - notify_supplier(order_id)                               │ │
-│  │  - schedule_grn_reminder(delivery_date)                    │ │
-│  │                                                             │ │
-│  │  Execution:                                                 │ │
-│  │  order = medusa.orders.create({                            │ │
-│  │    branch_id: "branch-001",                                │ │
-│  │    supplier_id: "supp-B",                                  │ │
-│  │    items: [...cart.items],                                 │ │
-│  │    status: "confirmed",                                    │ │
-│  │    created_by: "ai-agent",                                 │ │
-│  │    approved_by: "manager-001"                              │ │
-│  │  })                                                         │ │
-│  │  # Returns: {order_id: "PO-2026-001", status: "confirmed"} │ │
-│  │                                                             │ │
-│  │  notify_supplier(order.id)  # Send email/API notification  │ │
-│  │  schedule_grn_reminder(order.delivery_date)                │ │
-│  └─────────────────────┬──────────────────────────────────────┘ │
-│                        │                                          │
-│                        ▼                                          │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  Node: FinalizeWorkflow                                    │ │
-│  │  - Log entire workflow execution to audit_logs             │ │
-│  │  - Emit event: order.created_by_ai                         │ │
-│  │  - Mark workflow state as "completed"                      │ │
-│  │  - Send confirmation to manager                            │ │
-│  └────────────────────────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────────────────┘
-                             │
-                             ▼
-                    PO Created: PO-2026-001
-                    Chicken Breast 18kg @ $11.80/kg
-                    Delivery: 2026-02-06 (2 days)
-                    
-                    Total time: 2 seconds
-                    (excluding human approval wait)
+ STEP-BY-STEP: QUOTE & NEGOTIATION
+ ═══════════════════════════════════════════════════
+
+ ① Restaurant requests quote (Dashboard button: "Request Quote")
+    │  Items: 50kg Salmon, 20kg Shrimp
+    │
+    ▼
+ ② Sales Agent receives quote request
+    │  Check: Can I auto-respond?
+    │  - Authority limit: AED 5,000 → YES (order = AED 3,200)
+    │  - Margin floor: 15% → Check cost...
+    │
+    ▼
+ ③ Calculate pricing
+    │  Cost: AED 2,200 → Price: AED 3,200 → Margin: 31% ✓
+    │  Customer tier: "Gold" → eligible for 5% volume discount
+    │  Adjusted: AED 3,040 → Margin: 28% ✓ (above floor)
+    │
+    ▼
+ ④ Upsell analysis
+    │  Menu scan: Chef has "Lobster Bisque" → no lobster in cart
+    │  Suggestion: "Add 10kg Lobster Tail @ AED 180/kg → 3% bundle discount"
+    │
+    ▼
+ ⑤ Generate binding quote (< 3 seconds total)
+    │  → Push to Restaurant Dashboard as notification
+    │  ┌──────────────────────────────────────────────────┐
+    │  │  💬 QUOTE FROM AL RAWDAH SEAFOOD                  │
+    │  │                                                    │
+    │  │  Salmon 50kg      AED 2,100 (5% Gold discount)   │
+    │  │  Shrimp 20kg      AED 940                         │
+    │  │  ──────────────────────────────                    │
+    │  │  Subtotal:        AED 3,040                        │
+    │  │                                                    │
+    │  │  💡 ADD: Lobster 10kg → unlock 3% bundle discount  │
+    │  │                                                    │
+    │  │  [ Accept ] [ Counter ] [ Decline ]                │
+    │  │  Valid for: 24 hours                                │
+    │  └──────────────────────────────────────────────────┘
+    │
+    ▼
+ ⑥ Restaurant clicks [Accept]
+    │  → PO auto-created
+    │  → E-Invoice generated (FTA-compliant)
+    │  → Supplier Portal shows "Deal Closed ✓"
+    │  → Sales Rep sees attribution credit in territory dashboard
 ```
 
 ---
 
-## Flow 3: GRN (Goods Received) → Invoice Match → Payment
+## 4. 3-Way Invoice Matching Flow
+
+**Trigger:** `grn.created` + `invoice.uploaded` events.
 
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│                  Delivery Arrives at Restaurant                  │
-│  Driver brings:                                                  │
-│  - 18kg Chicken Breast (2 boxes × 9kg)                           │
-│  - PO Reference: PO-2026-001                                     │
-└────────────────────────────┬─────────────────────────────────────┘
-                             │
-                             ▼
-┌──────────────────────────────────────────────────────────────────┐
-│              Storekeeper Opens GRN Module (Mobile App)           │
-│  - Scan PO barcode or enter PO-2026-001                          │
-│  - App loads PO details:                                         │
-│    Expected: 18kg Chicken Breast                                 │
-│    Supplier: Supplier B                                          │
-└────────────────────────────┬─────────────────────────────────────┘
-                             │
-                             ▼
-┌──────────────────────────────────────────────────────────────────┐
-│                    Receiving Workflow (GRN)                      │
-│                                                                  │
-│  Step 1: Quantity Check                                          │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  Expected: 18kg                                            │ │
-│  │  Received: [User weighs] 17.5kg                            │ │
-│  │  Discrepancy: -0.5kg (short delivery)                      │ │
-│  │  Action: Flag for later claim                              │ │
-│  └────────────────────────────────────────────────────────────┘ │
-│                                                                  │
-│  Step 2: Quality Check                                           │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  Condition: [✓] Good [ ] Damaged [ ] Expired               │ │
-│  │  Notes: "Minor packaging wear but product OK"              │ │
-│  │  Photos: [Upload 2 photos of boxes]                        │ │
-│  └────────────────────────────────────────────────────────────┘ │
-│                                                                  │
-│  Step 3: Signature                                               │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  Driver signature: [Canvas signature pad]                  │ │
-│  │  Receiver signature: [Canvas signature pad]                │ │
-│  │  Timestamp: 2026-02-06 08:15 AM                            │ │
-│  └────────────────────────────────────────────────────────────┘ │
-│                                                                  │
-│  Step 4: Submit GRN                                              │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  POST /admin/grn/create                                    │ │
-│  │  {                                                          │ │
-│  │    po_id: "PO-2026-001",                                   │ │
-│  │    items: [                                                │ │
-│  │      {                                                      │ │
-│  │        normalized_sku_id: "chicken_breast_boneless",       │ │
-│  │        qty_expected: 18.0,                                 │ │
-│  │        qty_received: 17.5,                                 │ │
-│  │        unit: "kg",                                         │ │
-│  │        quality: "good",                                    │ │
-│  │        notes: "Minor packaging wear",                      │ │
-│  │        photos: ["s3://grn/photo1.jpg", "..."]             │ │
-│  │      }                                                      │ │
-│  │    ],                                                       │ │
-│  │    signatures: {driver: "...", receiver: "..."},           │ │
-│  │    received_at: "2026-02-06T08:15:00Z"                     │ │
-│  │  }                                                          │ │
-│  └────────────────────────────────────────────────────────────┘ │
-└────────────────────────────┬─────────────────────────────────────┘
-                             │
-                             ▼
-┌──────────────────────────────────────────────────────────────────┐
-│                   GRN Processing (Backend)                       │
-│                                                                  │
-│  BEGIN TRANSACTION;                                              │
-│                                                                  │
-│  1. Insert GRN record                                            │
-│  INSERT INTO grn (po_id, received_by, status, ...)              │
-│  VALUES ('PO-2026-001', 'john', 'completed', ...);              │
-│                                                                  │
-│  2. Update inventory (add received qty)                          │
-│  UPDATE inventory                                                │
-│  SET qty_on_hand = qty_on_hand + 17.5                           │
-│  WHERE normalized_sku_id = 'chicken_breast_boneless'             │
-│    AND branch_id = 'branch-001';                                 │
-│  # New stock: 4.9 + 17.5 = 22.4kg                                │
-│                                                                  │
-│  3. Update PO status                                             │
-│  UPDATE orders                                                   │
-│  SET status = 'delivered', grn_id = [new_grn_id]                │
-│  WHERE id = 'PO-2026-001';                                       │
-│                                                                  │
-│  4. Create claim if discrepancy                                  │
-│  IF qty_received < qty_expected THEN                             │
-│    INSERT INTO claims (grn_id, type, qty_diff, status)          │
-│    VALUES ([grn_id], 'short_delivery', -0.5, 'open');           │
-│  END IF;                                                         │
-│                                                                  │
-│  5. Emit event: grn.completed                                    │
-│  COMMIT;                                                         │
-└────────────────────────────┬─────────────────────────────────────┘
-                             │
-                             ▼
-┌──────────────────────────────────────────────────────────────────┐
-│            Supplier Uploads Invoice (Next Day)                   │
-│  Supplier logs in, uploads PDF invoice                           │
-│  POST /supplier/invoice/upload                                   │
-│  File: invoice_B_12345.pdf                                       │
-└────────────────────────────┬─────────────────────────────────────┘
-                             │
-                             ▼
-┌──────────────────────────────────────────────────────────────────┐
-│                    Invoice OCR Pipeline                          │
-│                                                                  │
-│  Step 1: Store file                                              │
-│  S3: invoices/supp-B/invoice_B_12345.pdf                         │
-│                                                                  │
-│  Step 2: AWS Textract AnalyzeExpense                             │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  API Call:                                                 │ │
-│  │  textract.analyze_expense(document=pdf)                    │ │
-│  │                                                             │ │
-│  │  Extracted:                                                 │ │
-│  │  {                                                          │ │
-│  │    invoice_number: "INV-B-12345",                          │ │
-│  │    invoice_date: "2026-02-05",                             │ │
-│  │    vendor: "Supplier B LLC",                               │ │
-│  │    total: "$212.40",                                       │ │
-│  │    line_items: [                                           │ │
-│  │      {                                                      │ │
-│  │        description: "Chicken Breast Boneless Fresh",       │ │
-│  │        quantity: "18 KG",                                  │ │
-│  │        unit_price: "$11.80",                               │ │
-│  │        line_total: "$212.40"                               │ │
-│  │      }                                                      │ │
-│  │    ]                                                        │ │
-│  │  }                                                          │ │
-│  └────────────────────────────────────────────────────────────┘ │
-│                                                                  │
-│  Step 3: LangGraph Agent: InvoiceValidationAgent                 │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  Tools:                                                    │ │
-│  │  - parse_invoice_line(description)                         │ │
-│  │  - map_to_normalized_sku(description)                      │ │
-│  │  - validate_price(invoice_price, po_price)                 │ │
-│  │                                                             │ │
-│  │  Execution:                                                 │ │
-│  │  line = "Chicken Breast Boneless Fresh 18 KG"             │ │
-│  │  sku = map_to_normalized_sku(line)                         │ │
-│  │  # Returns: "chicken_breast_boneless"                      │ │
-│  │                                                             │ │
-│  │  Validation:                                                │ │
-│  │  invoice_qty = 18kg                                        │ │
-│  │  invoice_price_kg = $11.80                                 │ │
-│  │  invoice_total = $212.40                                   │ │
-│  └────────────────────────────────────────────────────────────┘ │
-│                                                                  │
-│  Step 4: 2-Way Match (PO vs Invoice)                             │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  Fetch PO-2026-001:                                        │ │
-│  │    Expected: 18kg @ $11.80/kg = $212.40                    │ │
-│  │                                                             │ │
-│  │  Compare:                                                   │ │
-│  │  ✓ Qty: PO 18kg == Invoice 18kg                            │ │
-│  │  ✓ Price: PO $11.80 == Invoice $11.80                      │ │
-│  │  ✓ Total: PO $212.40 == Invoice $212.40                    │ │
-│  │                                                             │ │
-│  │  Result: 2-Way Match PASS                                   │ │
-│  └────────────────────────────────────────────────────────────┘ │
-│                                                                  │
-│  Step 5: 3-Way Match (PO vs GRN vs Invoice)                      │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  Fetch GRN for PO-2026-001:                                │ │
-│  │    Received: 17.5kg (not 18kg)                             │ │
-│  │                                                             │ │
-│  │  Compare:                                                   │ │
-│  │  ✗ Qty: GRN 17.5kg ≠ Invoice 18kg                          │ │
-│  │                                                             │ │
-│  │  Result: 3-Way Match EXCEPTION                              │ │
-│  │  Reason: Supplier billed for 18kg but only 17.5kg delivered│ │
-│  │                                                             │ │
-│  │  Action:                                                    │ │
-│  │  - Flag invoice for manual review                          │ │
-│  │  - Create exception record                                 │ │
-│  │  - Suggest adjustment: $212.40 × (17.5/18) = $206.08       │ │
-│  │  - Notify finance team                                     │ │
-│  └────────────────────────────────────────────────────────────┘ │
-└────────────────────────────┬─────────────────────────────────────┘
-                             │
-                             ▼
-┌──────────────────────────────────────────────────────────────────┐
-│                Finance Manager Reviews Exception                 │
-│  Dashboard shows:                                                │
-│  - Invoice: $212.40 (for 18kg)                                   │
-│  - GRN: 17.5kg received                                          │
-│  - Recommended adjustment: $206.08                               │
-│  - Options:                                                      │
-│    ✓ Accept adjustment & request credit memo                    │
-│    ✓ Dispute with supplier                                      │
-│    ✓ Override (pay full if agreed with supplier)                │
-└────────────────────────────┬─────────────────────────────────────┘
-                             │
-                             ▼
-                    Manager: "Accept adjustment"
-                             │
-                             ▼
-┌──────────────────────────────────────────────────────────────────┐
-│                     Payment Processing                           │
-│  UPDATE invoices                                                 │
-│  SET match_status = 'adjusted',                                  │
-│      approved_amount = 206.08,                                   │
-│      approved_by = 'finance-001',                                │
-│      approved_at = NOW()                                         │
-│  WHERE id = [invoice_id];                                        │
-│                                                                  │
-│  Emit event: invoice.approved                                    │
-│                                                                  │
-│  IF payment_terms = 'net_30' THEN                                │
-│    Schedule payment for 30 days from invoice_date                │
-│  ELSE                                                            │
-│    Process payment immediately via gateway                       │
-│  END IF;                                                         │
-└──────────────────────────────────────────────────────────────────┘
+ STEP-BY-STEP: 3-WAY MATCH
+ ═══════════════════════════════════════════════════
+
+ ① GRN submitted (Storekeeper Mobile App)
+    │  Items received: Flour 48kg, Oil 3 tins
+    │  Photo evidence: ✓ captured
+    │  Discrepancy: Flour short by 2kg
+    │
+    ▼
+ ② Invoice uploaded (Finance via Dashboard or auto-imported)
+    │  Invoice claims: Flour 50kg, Oil 3 tins
+    │  Total: AED 510
+    │
+    ▼
+ ③ Compliance Agent runs 3-way match
+    │
+    │  ┌──────────────────────────────────────────────┐
+    │  │  PO          GRN          INVOICE     STATUS │
+    │  │  ─────────   ─────────    ─────────   ────── │
+    │  │  Flour 50kg  Flour 48kg   Flour 50kg   ⚠️   │
+    │  │  Oil 3 tin   Oil 3 tin    Oil 3 tin    ✅    │
+    │  └──────────────────────────────────────────────┘
+    │
+    │  Tolerance: 2% (configurable)
+    │  Flour variance: 4% → EXCEEDS tolerance → Exception flagged
+    │
+    ▼
+ ④ Dashboard Alert
+    │  ┌──────────────────────────────────────────────────┐
+    │  │  ⚠️ INVOICE EXCEPTION — PO #4521                 │
+    │  │                                                    │
+    │  │  Flour: PO says 50kg, received 48kg, billed 50kg  │
+    │  │  Overpayment risk: AED 6.00                        │
+    │  │                                                    │
+    │  │  Photo evidence: [View GRN Photo]                  │
+    │  │                                                    │
+    │  │  [ Accept As-Is ] [ Request Credit Note ]          │
+    │  └──────────────────────────────────────────────────┘
+    │
+    ▼
+ ⑤ Manager clicks [Request Credit Note]
+    │  → System generates credit note request
+    │  → Supplier Portal shows "Credit Note Required"
+    │  → Auto-adjusts invoice amount to AED 504
 ```
 
 ---
 
-## Flow 4: Kitchen Copilot (Daily Prep Plan Generation)
+## 5. Flash Deal Flow
+
+**Trigger:** Supplier uploads distressed inventory via Supplier Portal.
 
 ```
-Every day at 5:00 AM (scheduled cron)
-         │
-         ▼
-┌──────────────────────────────────────────────────────────────────┐
-│            Cron Job: Generate Daily Prep Plans                   │
-│  For each branch:                                                │
-│    Emit event: kitchen.prep_plan_requested                       │
-└────────────────────────────┬─────────────────────────────────────┘
-                             │
-                             ▼
-┌──────────────────────────────────────────────────────────────────┐
-│      Event Subscriber: PrepPlanSubscriber                        │
-│  Listen for: kitchen.prep_plan_requested                         │
-│  Action: Trigger LangGraph PrepPlanWorkflow                      │
-└────────────────────────────┬─────────────────────────────────────┘
-                             │
-                             ▼
-┌──────────────────────────────────────────────────────────────────┐
-│           LangGraph: PrepPlanWorkflow                            │
-│                                                                  │
-│  State: {                                                        │
-│    branch_id: "branch-001",                                      │
-│    date: "2026-02-07",                                           │
-│    forecast: null,                                               │
-│    recipes: null,                                                │
-│    prep_plan: null                                               │
-│  }                                                               │
-│                                                                  │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  Node: ForecastAgent                                       │ │
-│  │  Tools:                                                    │ │
-│  │  - fetch_historical_sales(branch, days=90)                 │ │
-│  │  - get_day_of_week()                                       │ │
-│  │  - get_weather_forecast()  # optional                      │ │
-│  │  - apply_forecast_model(history, context)                  │ │
-│  │                                                             │ │
-│  │  Execution:                                                 │ │
-│  │  history = fetch_historical_sales("branch-001", 90)        │ │
-│  │  # Returns: avg Friday sales = 120 orders                  │ │
-│  │  day = "Friday"                                            │ │
-│  │  weather = "Sunny, 25°C"                                   │ │
-│  │                                                             │ │
-│  │  forecast = {                                               │ │
-│  │    expected_orders: 125,  # 5% bump for good weather      │ │
-│  │    confidence: 0.85,                                       │ │
-│  │    item_breakdown: [                                       │ │
-│  │      {item: "Chicken Burger", qty: 50},                    │ │
-│  │      {item: "Caesar Salad", qty: 30},                      │ │
-│  │      {item: "Beef Tacos", qty: 45},                        │ │
-│  │      ...                                                    │ │
-│  │    ]                                                        │ │
-│  │  }                                                          │ │
-│  └─────────────────────┬──────────────────────────────────────┘ │
-│                        │                                          │
-│                        ▼                                          │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  Node: RecipeExpansionAgent                                │ │
-│  │  Tools:                                                    │ │
-│  │  - fetch_recipes(item_ids)                                 │ │
-│  │  - expand_bom(recipe, qty)                                 │ │
-│  │                                                             │ │
-│  │  Execution:                                                 │ │
-│  │  For "Chicken Burger" × 50:                                │ │
-│  │    recipe = fetch_recipe("Chicken Burger")                 │ │
-│  │    # Ingredients per unit:                                 │ │
-│  │    # - Chicken Breast: 150g                                │ │
-│  │    # - Bun: 1 unit                                         │ │
-│  │    # - Lettuce: 20g                                        │ │
-│  │    # - Tomato: 30g                                         │ │
-│  │    # - Sauce: 15ml                                         │ │
-│  │                                                             │ │
-│  │    For 50 units:                                           │ │
-│  │    - Chicken Breast: 150g × 50 = 7.5kg                     │ │
-│  │    - Buns: 50 units                                        │ │
-│  │    - Lettuce: 1kg                                          │ │
-│  │    - Tomato: 1.5kg                                         │ │
-│  │    - Sauce: 750ml                                          │ │
-│  │                                                             │ │
-│  │  Repeat for all items...                                    │ │
-│  │                                                             │ │
-│  │  Aggregate:                                                 │ │
-│  │  total_ingredients = {                                      │ │
-│  │    "chicken_breast_boneless": 18kg,                        │ │
-│  │    "bun_burger_white": 120 units,                          │ │
-│  │    "lettuce_iceberg": 4kg,                                 │ │
-│  │    ...                                                      │ │
-│  │  }                                                          │ │
-│  └─────────────────────┬──────────────────────────────────────┘ │
-│                        │                                          │
-│                        ▼                                          │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  Node: InventoryCheckAgent                                 │ │
-│  │  Tools:                                                    │ │
-│  │  - fetch_current_inventory(branch)                         │ │
-│  │  - check_expiry_dates(sku)                                 │ │
-│  │  - prioritize_fifo(sku)                                    │ │
-│  │                                                             │ │
-│  │  Execution:                                                 │ │
-│  │  inventory = fetch_current_inventory("branch-001")         │ │
-│  │  # Current stock: Chicken Breast = 22.4kg                  │ │
-│  │                                                             │ │
-│  │  For each ingredient in prep plan:                          │ │
-│  │    current = inventory.get(ingredient)                     │ │
-│  │    needed = total_ingredients[ingredient]                  │ │
-│  │    if current >= needed:                                   │ │
-│  │      status = "sufficient"                                 │ │
-│  │      use_from_batch = get_oldest_batch(ingredient)  # FIFO│ │
-│  │    else:                                                    │ │
-│  │      status = "insufficient"                               │ │
-│  │      trigger_reorder = True                                │ │
-│  │                                                             │ │
-│  │  Example:                                                   │ │
-│  │  - Chicken Breast: need 18kg, have 22.4kg ✓               │ │
-│  │  - Buns: need 120, have 80 ✗ → reorder 40                 │ │
-│  └─────────────────────┬──────────────────────────────────────┘ │
-│                        │                                          │
-│                        ▼                                          │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  Node: PrepPlanGenerator                                   │ │
-│  │  Tools:                                                    │ │
-│  │  - format_prep_instructions(ingredients)                   │ │
-│  │  - add_timing_suggestions(prep_list)                       │ │
-│  │  - generate_pdf(prep_plan)                                 │ │
-│  │                                                             │ │
-│  │  Execution:                                                 │ │
-│  │  prep_plan = {                                              │ │
-│  │    date: "2026-02-07",                                     │ │
-│  │    branch: "Main Kitchen",                                 │ │
-│  │    forecast_orders: 125,                                   │ │
-│  │    prep_items: [                                           │ │
-│  │      {                                                      │ │
-│  │        ingredient: "Chicken Breast",                       │ │
-│  │        qty: "18kg",                                        │ │
-│  │        action: "Trim and portion into 150g pieces",        │ │
-│  │        timing: "Start 8:00 AM, finish 9:30 AM",            │ │
-│  │        batch: "Use batch #2024-B (expires 2026-02-10)",    │ │
-│  │        storage: "Chiller 2"                                │ │
-│  │      },                                                     │ │
-│  │      {                                                      │ │
-│  │        ingredient: "Lettuce",                              │ │
-│  │        qty: "4kg",                                         │ │
-│  │        action: "Wash, core, and chop",                     │ │
-│  │        timing: "Start 9:00 AM, finish 9:45 AM",            │ │
-│  │        batch: "Use batch #2024-L (expires 2026-02-08)",    │ │
-│  │        storage: "Walk-in cooler"                           │ │
-│  │      },                                                     │ │
-│  │      ...                                                    │ │
-│  │    ],                                                       │ │
-│  │    alerts: [                                                │ │
-│  │      "Buns low: only 80 available, need 120. Reorder 40."  │ │
-│  │    ]                                                        │ │
-│  │  }                                                          │ │
-│  │                                                             │ │
-│  │  generate_pdf(prep_plan)                                    │ │
-│  │  # Save to: s3://prep-plans/branch-001/2026-02-07.pdf      │ │
-│  └─────────────────────┬──────────────────────────────────────┘ │
-│                        │                                          │
-│                        ▼                                          │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  Node: NotifyChef                                          │ │
-│  │  - Send push notification to chef app                      │ │
-│  │  - Send email with PDF attachment                          │ │
-│  │  - Display in-app: "Prep Plan Ready for Feb 7"             │ │
-│  │  - Mark workflow complete                                  │ │
-│  └────────────────────────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────────────────┘
-                             │
-                             ▼
-              Chef receives prep plan at 6:00 AM
-              Ready to start prep at 8:00 AM
+ STEP-BY-STEP: FLASH DEAL
+ ═══════════════════════════════════════════════════
+
+ ① Supplier flags distressed inventory on Portal
+    │  Item: Mushrooms 200kg, expiring in 72h
+    │  Discount: 40% off list price
+    │
+    ▼
+ ② Sales Agent runs menu intelligence
+    │  Scan all connected restaurants' menus via Weaviate
+    │  Query: "Which restaurants use mushrooms?"
+    │  Result: 20 restaurants with mushroom dishes
+    │
+    ▼
+ ③ Rank by relevance
+    │  - Purchase frequency (how often they buy mushrooms)
+    │  - Current stock level (are they running low?)
+    │  - Relationship tier (loyalty score)
+    │  Top 20 ranked and segmented
+    │
+    ▼
+ ④ Generate personalized offers
+    │  Each restaurant gets a tailored deal:
+    │  "Based on your Mushroom Risotto menu item and
+    │   current stock of 5kg (3-day supply), here's
+    │   a 40% discount on 20kg fresh mushrooms."
+    │
+    ▼
+ ⑤ Push to Restaurant Dashboard
+    │  → Dashboard notification: "🔥 Flash Deal Available"
+    │  → Push notification via FCM to mobile
+    │  ┌──────────────────────────────────────────────────┐
+    │  │  🔥 FLASH DEAL — Al Rawdah Trading               │
+    │  │                                                    │
+    │  │  Fresh Mushrooms 20kg @ AED 12/kg (was AED 20)    │
+    │  │  Expires: 72 hours                                 │
+    │  │  Relevance: "You use 15kg/week for Risotto"        │
+    │  │                                                    │
+    │  │  [ ✓ Add to Cart ] [ Skip ]                        │
+    │  └──────────────────────────────────────────────────┘
+    │
+    ▼
+ ⑥ Chef clicks [Add to Cart]
+    │  → Item added to next cart
+    │  → PO created → E-Invoice generated
+    │  → Supplier sees "Flash Deal: 8/20 accepted (40%)" on Portal
+    │  → Sales Rep sees commission credit in territory
 ```
 
 ---
 
-## Summary: Key Integration Points
+## 6. Smart Collections Flow
 
-| Flow | Trigger | LangGraph Workflow | Outcome |
-|------|---------|-------------------|---------|
-| **Catalog Upload** | Supplier uploads CSV | `CatalogNormalizationWorkflow` | SKUs normalized, ready for comparison |
-| **Low Stock** | POS sale depletes inventory | `AutoReorderWorkflow` | AI-suggested cart → Manager approval → PO |
-| **GRN** | Delivery received | Manual entry → 3-way match | Inventory updated, invoice matched |
-| **Invoice OCR** | Supplier uploads PDF | `InvoiceValidationAgent` | Extracted, matched, payment scheduled |
-| **Prep Plan** | Daily cron (5 AM) | `PrepPlanWorkflow` | Chef receives prep list by 6 AM |
+**Trigger:** Invoice due date reached (cron) or payment received (webhook).
 
-All workflows are **stateful**, **interruptible**, **auditable**, and **explainable**.
+```
+ STEP-BY-STEP: SMART COLLECTIONS
+ ═══════════════════════════════════════════════════
+
+ ① Invoice due date approaching
+    │  Collections Agent checks all invoices with:
+    │  due_date <= today + 3 days AND status != "paid"
+    │
+    ▼
+ ② Day 0 (Due date): Gentle reminder
+    │  → Dashboard notification: "Invoice #4521 is due today"
+    │  → Email to finance contact with invoice PDF attached
+    │
+    ▼
+ ③ Day +3: Firm reminder
+    │  → Dashboard notification (highlighted): "Invoice #4521 overdue"
+    │  → Email with "Please remit payment at your earliest convenience"
+    │
+    ▼
+ ④ Day +7: Escalate to Sales Rep
+    │  → Push notification to Sales Rep: "Account overdue — intervene"
+    │  → Territory dashboard shows account flagged yellow
+    │  → Rep can click to see full payment history
+    │
+    ▼
+ ⑤ Day +14: Flag as at-risk
+    │  → Account marked "At Risk" in territory dashboard (red)
+    │  → Manager report includes this account
+    │  → Future AI-closed deals for this account may require prepayment
+    │
+    ▼
+ ⑥ Payment received (webhook from payment provider)
+    │  → Invoice marked "Paid"
+    │  → DSO updated for this account
+    │  → Account health restored to green
+    │  → Dashboard shows "Payment received ✓"
+```
+
+---
+
+## 7. Sales Attribution Flow
+
+**Trigger:** Deal closed (by AI Agent or manually by Sales Rep).
+
+```
+ STEP-BY-STEP: SALES ATTRIBUTION
+ ═══════════════════════════════════════════════════
+
+ ① Deal closed (AI auto-close or Rep manual close)
+    │
+    ▼
+ ② Attribution Engine determines credit
+    │
+    │  Decision tree:
+    │  ┌────────────────────────────────────────────────┐
+    │  │ WHO CLOSED?          ATTRIBUTION     RATE     │
+    │  │ ──────────          ───────────     ────      │
+    │  │ AI Agent alone      → Territory Rep   2%     │
+    │  │ Rep (Takeover)      → Rep (direct)    6%     │
+    │  │ Flash Deal          → Territory Rep   4%     │
+    │  │ New Account (Rep)   → Rep (direct)    8%     │
+    │  └────────────────────────────────────────────────┘
+    │
+    ▼
+ ③ Territory mapping
+    │  - Lookup: Which rep owns this restaurant's territory?
+    │  - If disputed: escalate to Sales Manager
+    │
+    ▼
+ ④ Commission calculated and posted
+    │  → Sales Rep Dashboard shows live earnings update
+    │  → Monthly commission report auto-generated
+    │  → Finance dashboard shows total commission liability
+```
+
+---
+
+## 8. Delivery Tracking Flow
+
+**Trigger:** Supplier dispatch confirms order routing and driver departs.
+
+```
+ STEP-BY-STEP: DELIVERY TRACKING (RESTAURANT VIEW)
+ ═══════════════════════════════════════════════════
+
+ ① Dispatcher flags PO as "Out for Delivery"
+    │  Mobile App: Driver selects route
+    │  System calculates ETA based on live traffic
+    │
+    ▼
+ ② Restaurant Dashboard Update
+    │  Dashboard widget "Incoming Deliveries" updates
+    │  Status changes: Confirmed → Dispatched
+    │  Displays: Driver Name, Vehicle, ETA
+    │
+    ▼
+ ③ Push Notification (Approaching)
+    │  Trigger: Driver is 15 minutes away
+    │  Alert to Storekeeper: "Get ready, delivery is arriving soon."
+    │
+    ▼
+ ④ Live Tracking Map (Dashboard & Mobile)
+    │  Clicking "Track" shows real-time driver ping
+    │  Status updates continuously:
+    │  - "Next Stop"
+    │  - "Arriving in 5 mins"
+    │
+    ▼
+ ⑤ Arrival & Handover
+    │  Driver arrives → flags "Arrived" on Provider app
+    │  Initiates GRN flow (Step 4 of User Journey)
+```
+
+---
+
+## 9. Waste & Variance Logging Flow
+
+**Trigger:** Chef or Storekeeper logs a waste event, or periodic inventory count completes.
+
+```
+ STEP-BY-STEP: WASTE & VARIANCE ENGINE
+ ═══════════════════════════════════════════════════
+
+ ① Waste Logged (Mobile/Dashboard)
+    │  Chef enters: "5kg Tomatoes spoiled"
+    │  Selects Reason Code: "Overripe/Spoilage"
+    │
+    ▼
+ ② Variance Engine (Theoretical vs. Actual)
+    │  End of Day / Week:
+    │  Actual Stock = (Starting Stock + Purchases) - Ending Stock
+    │  Theoretical Stock = starting + purchases - POS consumption
+    │  Variance = Actual Stock - Theoretical Stock
+    │
+    ▼
+ ③ Root Cause Analysis (AI)
+    │  AI detects anomaly: "Tomatoes variance is 15% (normal < 5%)"
+    │  Correlates with Reason Codes and Delivery Quality notes
+    │  Identifies: Over-ordering vs. Recipe Drift
+    │
+    ▼
+ ④ Recommended Corrective Actions
+    │  AI surfaces alerts on Kitchen Copilot Dashboard:
+    │  - "Reduce Tomato Par Level by 10%"
+    │  - "Review Pesto recipe portions (variance drift detected)"
+    │  - "Ask Supplier B for riper tomatoes"
+    │
+    ▼
+ ⑤ Manager Action
+    │  Manager clicks [Apply Adjustment] to update Par Level
+```
+
+---
+
+## 10. Restaurant-Initiated RFQ Flow
+
+**Trigger:** Restaurant builds a custom requirement basket and requests bids from multiple suppliers.
+
+```
+ STEP-BY-STEP: RESTAURANT-INITIATED RFQ
+ ═══════════════════════════════════════════════════
+
+ ① Basket Creation
+    │  Chef adds items to RFQ Basket
+    │  Inputs: Item Name, Unit, Quantity
+    │  Optional Flags: Current Consumption (run-rate), Target Price
+    │
+    ▼
+ ② Send to Marketplace
+    │  Selects: "Send to Preferred Suppliers" OR "Broadcast to Category"
+    │  System anonymizes (if broadcast) and sends
+    │
+    ▼
+ ③ Suppliers Respond (Manual or AI Auto-Quote)
+    │  Prices entered by suppliers (Subject to their margin rules)
+    │  Responses returned with lead times
+    │
+    ▼
+ ④ Normalized Comparison (Dashboard)
+    │  AI Normalization Engine compares Apples-to-Apples
+    │  Displays matrix: Supplier A vs Supplier B vs Target Price
+    │  Highlights: "Supplier B meets target price, Supplier A has faster lead time"
+    │
+    ▼
+ ⑤ Selection & PO
+    │  Chef clicks [Award] to Supplier B
+    │  PO automatically generated for Supplier B
+    │  Other suppliers notified: "Bid Unsuccessful"
+```
+
+---
+
+## 11. Forecasting & Prep Plan Flow
+
+**Trigger:** Start of daily operations or weekly planning cycle.
+
+```
+ STEP-BY-STEP: FORECASTING & PREP PLAN
+ ═══════════════════════════════════════════════════
+
+ ① Demand Forecasting (Nightly Cron)
+    │  Ingests POS historicals, day of week, seasonality, local events
+    │  Predicts: "Tomorrow: 150 Burgers, 50 Salads, 80 Pizzas"
+    │
+    ▼
+ ② Explode Recipes to Prep Needs
+    │  Translates predicted dish sales to intermediate prep stages:
+    │  - 150 Burgers → 15kg Ground Beef Prep, 150 Buns
+    │  - 50 Salads → 5kg Washed Lettuce, 2L Vinaigrette
+    │
+    ▼
+ ③ Inventory Check & Expiry Prioritization
+    │  Checks Stock on Hand and Expiry dates
+    │  Flags: "5kg Tomatoes expiring tomorrow — prioritize in prep"
+    │
+    ▼
+ ④ Kitchen Copilot: Daily Prep List Generator
+    │  Generates highly specific instructions:
+    │  ┌─────────────────────────────────────────────────────┐
+    │  │ 📋 TODAY'S PREP LIST (Tuesday)                      │
+    │  │ - Batch 1 (08:00): Wash & cut 5kg Tomatoes (URGENT) │
+    │  │ - Batch 2 (09:00): Portion 15kg Ground Beef         │
+    │  │ - Batch 3 (10:00): Make 2L Vinaigrette              │
+    │  └─────────────────────────────────────────────────────┘
+    │
+    ▼
+ ⑤ Surplus Inspiration (Chef Review)
+    │  AI: "You have 10kg excess chicken nearing expiry."
+    │  Suggestion: "Run a 'Chicken Wrap' Lunch Special."
+    │  Chef clicks [Create Special] to inform FOH
+```

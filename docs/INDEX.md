@@ -1,157 +1,81 @@
-# F&B AI Platform — Complete Documentation Index
+# F&B AI Platform — Documentation Index
 
-> **Comprehensive guide to all architecture diagrams, flows, and technical specifications** | Last updated: February 2026
+> **B2B F&B Commerce Network** | Web-Only Architecture | Last updated: February 2026
 
 ---
 
 ## 🎯 Quick Navigation
 
 ### 🚀 Start Here (Executives & PMs)
-1. **[Procurement Manager Brainstorm](../PROCUREMENT-MANAGER-BRAINSTORM.md)** ⭐ **STRATEGIC** — Complete use case exploration: user journeys, business benefits, competitive advantages
-2. **[Implementation Guide](IMPLEMENTATION-GUIDE.md)** ⭐ **TECHNICAL** — 7-step autonomous procurement journey, tech stack, UAE compliance
-3. **[System Specification](system-specification.md)** — Executive summary, platform strategy, business value
-4. **[Complete Architecture Diagrams](complete-architecture-visual.md)** — Comprehensive visual overview of entire system
-5. **[Autonomous Sales Agent](autonomous_sales_agent.md)** — Supplier-side value proposition
+1. **[Consolidated System Design](CONSOLIDATED-SYSTEM-DESIGN.md)** ⭐ **START HERE** — Sole source of truth for platform architecture
+2. **[User Journeys](user-journeys.md)** — Restaurant, Supplier, and Sales Rep journey maps (before/after)
+3. **[System Specification](system-specification.md)** — Platform strategy, tech stack, personas, product modules
 
 ### 🏗️ Architecture (Engineers)
-1. **[Omnichannel WhatsApp-First (Technical)](omnichannel-whatsapp-architecture.md)** — Detailed technical architecture
-2. **[Omnichannel WhatsApp-First (Visual Edition)](omnichannel-whatsapp-architecture-v2.md)** ⭐ **NEW** — Easy-to-read visual guide
-3. **[Complete Architecture Diagrams](complete-architecture-visual.md)** — All layers, agents, integrations
-4. **[Deployment & Infrastructure](deployment-infrastructure.md)** — Cloud setup, K8s, security, DR
-5. **[MedusaJS Architecture](medusajs-architecture.md)** — Backend framework & custom modules
-6. **[Agentic Architecture](agentic-architecture.md)** — Multi-agent design patterns
-7. **[Data Model](data-model.md)** — Database schema, Pydantic models, state machines
+1. **[Architecture & Flows](architecture-and-flows.md)** — System architecture diagram, multi-agent workflow, ReAct pattern, core data flows
+2. **[Agent Reference](agent-reference.md)** — Complete catalog of 9 AI agents with tool calls, guardrails, state machines
+3. **[Complete Architecture Diagrams](complete-architecture-visual.md)** — Comprehensive visual overview of entire system
+4. **[MedusaJS Architecture](medusajs-architecture.md)** — Backend framework & custom modules
+5. **[Agentic Architecture](agentic-architecture.md)** — Multi-agent design patterns
+6. **[Data Model](data-model.md)** — Database schema, Pydantic models, state machines
+7. **[Deployment & Infrastructure](deployment-infrastructure.md)** — Cloud setup, security, DR
 
 ### 🔄 Implementation (Developers)
-1. **[Architecture & Flows](architecture-and-flows.md)** — Detailed workflows, ReAct patterns
-2. **[Detailed Flows](detailed-flows.md)** — Step-by-step: catalog upload, AI cart, GRN, invoice matching
-3. **[System Design Deep-Dive](system-design-deep-dive.md)** — Journey mapping, algorithms, logic specs
+1. **[Detailed Flows](detailed-flows.md)** — Step-by-step: SKU normalization, smart cart, negotiation, invoice matching, flash deals, collections, attribution
+2. **[Implementation Guide](IMPLEMENTATION-GUIDE.md)** — 7-step procurement journey, implementation roadmap
 
 ---
 
-## 📊 Architecture Layers
+## 📊 Architecture Overview
 
-### Layer 1: Presentation
-- **Restaurant App** (Next.js + React) — Manager UI, dashboards, approvals
-- **Supplier Portal** (Next.js + React) — Sales rep UI, performance dashboards
-- **Admin Dashboard** (Next.js + React) — System configuration, monitoring
-- **WhatsApp Integration** — Interactive buttons, flash deals, order notifications
+### Frontend Layer (Web & Mobile)
+- **Restaurant Web Dashboard** (Next.js + Shadcn/UI) — Smart Cart, Price Comparison, Invoice Matching, Kitchen Copilot
+- **Supplier Web Portal** (Next.js + Shadcn/UI) — Sales Command Center, Agent Control, Catalog Management, Flash Deals
+- **Sales Rep Territory Portal** (Next.js) — Territory Map, Attribution, Commission Tracker, Agent Takeover
+- **Storekeeper Mobile App** (React Native + Expo) — GRN Scanner, Prep List, Stock Count
 
-### Layer 2: API Gateway & Authentication
-- REST API (Express.js)
-- GraphQL API (optional)
-- JWT + RBAC auth
-- Rate limiting & request validation
-- API versioning
+### Communication Channels
+| Channel | Technology | Purpose |
+|:---|:---|:---|
+| Real-time Dashboard | WebSocket (Socket.io) | Live quotes, order status, negotiation badges |
+| Mobile Push | Firebase Cloud Messaging | GRN alerts, flash deals, order confirmations |
+| Email | Transactional (Resend) | Invoice delivery, payment reminders, reports |
 
-### Layer 3: Commerce Core (MedusaJS 2.0)
-- **B2B Commerce Engine**
-  - Products & pricing
-  - Orders & fulfillment
-  - Inventory management
-  - Customer groups & spending limits
-  - RFQ workflows
+> ⚠️ **No WhatsApp, Telegram, or SMS integration.** All user interactions are web-based or push notifications.
 
-- **Custom Modules**
-  - SKU normalization
-  - AI suggested cart
-  - GRN (Goods Received Notes)
-  - Invoice matching (2-way / 3-way)
-  - Waste tracking
+### AI Agent Mesh (LangGraph)
 
-- **Event Bus** (Redis/BullMQ)
-  - order.created, order.updated
-  - inventory.low_stock, inventory.adjusted
-  - invoice.uploaded, invoice.matched
-  - grn.completed, payment.due
+| Agent | Role | Model | Output Channel |
+|:---|:---|:---|:---|
+| **Planner** | Orchestrates multi-step tasks | GPT-4o | Internal (routes to sub-agents) |
+| **Purchasing** | Generates AI Smart Carts | GPT-4o-mini | Dashboard notification badge |
+| **Sales** | Autonomous negotiation & deals | GPT-4o | Dashboard + push notification |
+| **Compliance** | 3-way invoice matching | GPT-4o-mini | Dashboard alert (green/red) |
+| **Catalog** | SKU normalization & matching | GPT-4o-mini + ada-002 | Supplier Portal upload results |
+| **Inventory** | Stock monitoring & reorder triggers | GPT-4o-mini | Internal (feeds Purchasing Agent) |
+| **Kitchen Copilot** | Prep list generation | GPT-4o-mini | Mobile App checklist |
+| **Collections** | Payment follow-up escalation | GPT-4o-mini | Dashboard + email |
+| **Sourcing** | Supplier comparison & ranking | GPT-4o-mini | Internal (feeds Purchasing Agent) |
 
-### Layer 4: AI Agent Orchestration (LangGraph)
+### Core Commerce (MedusaJS 2.0)
+- Product & Pricing modules
+- Order & Fulfillment workflows
+- Cart with AI-suggested items
+- Customer groups & spending limits
+- GRN (Goods Received Notes)
+- Invoice matching (3-way)
 
-#### Restaurant Side Agents
-- **Planner Agent** — Decomposes tasks, routes to specialized agents
-- **Catalog / Normalization Agent** — Parses pack sizes, normalizes names, queries vector DB
-- **Sourcing Agent** — Compares suppliers, ranks by price/reliability
-- **Purchasing Agent** — Drafts smart carts, calculates quantities, validates with Pydantic
-- **Inventory Agent** — Monitors stock, depletes from POS, triggers reorders
-- **Kitchen Copilot** — Generates prep plans from forecast & inventory
-- **Compliance Agent** — Validates invoices, performs 3-way matching, generates e-invoices
+### Data Layer
+- **PostgreSQL (Supabase)** — All relational data with Row-Level Security
+- **Weaviate** — SKU embeddings (1536-dim) for semantic product matching
+- **Redis (Upstash)** — Event bus, caching, rate limiting
 
-#### Supplier Side Agents
-- **Autonomous Sales Agent** — Instant quote generation, basket-aware negotiation, upsells
-  - Quote-to-close in <3 seconds
-  - Margin guardrails (configurable floor)
-  - Menu-aware product recommendations
-  - Distressed inventory liquidation
-
-### Layer 5: Tools & Functions
-- **Pricing Tools**
-  - `calculate_cost_per_kg()`
-  - `apply_discount_authority()`
-  - `validate_margin()`
-
-- **Matching Tools**
-  - `parse_pack()`
-  - `normalize_name()`
-  - `search_similar_skus()`
-
-- **Compliance Tools**
-  - `parse_invoice_ocr()`
-  - `three_way_match()`
-  - `generate_e_invoice()`
-
-- **Notification Tools**
-  - `send_whatsapp()`
-  - `send_email()`
-  - `send_sms()`
-
-### Layer 6: External Integrations
-- **POS Systems**
-  - Foodics API (OAuth 2.0)
-  - Oracle Simphony STSG2
-  - Generic CSV/Excel upload
-
-- **Payment Gateway**
-  - Telr (process payments, refunds)
-  - 2Checkout (backup)
-
-- **E-Invoicing**
-  - Poppel Network (FTA compliance)
-  - ZATCA integration
-  - XML + PDF generation
-
-- **Document Processing**
-  - AWS Textract (OCR invoices, GRN photos)
-  - Google Document AI (fallback)
-
-- **Communication**
-  - WhatsApp Business API (interactive messages)
-  - SendGrid (email)
-  - Twilio (SMS)
-
-### Layer 7: Data & Storage
-- **PostgreSQL** (Primary DB)
-  - Order & transaction data
-  - Supplier catalogs
-  - Normalized SKUs
-  - Invoices, GRNs, audit logs
-  - Replicated to 2+ regions for HA
-
-- **Weaviate** (Vector DB)
-  - SKU embeddings (OpenAI Ada-002)
-  - Semantic search for product matching
-  - Equivalency groups
-
-- **Redis** (Cache & Queue)
-  - Session storage
-  - Cart caching
-  - Job queue (BullMQ)
-  - Event streaming
-
-- **AWS S3** (Object Storage)
-  - Supplier catalogs (CSV, PDF)
-  - Invoice PDFs & images
-  - GRN delivery photos
-  - System documents
+### External Integrations
+- **POS:** Foodics API (OAuth 2.0, webhooks)
+- **E-Invoicing:** UAE FTA Phase 2 (UBL 2.1 XML + PDF)
+- **Push:** Firebase Cloud Messaging
+- **OCR:** AWS Textract (invoice & document parsing)
+- **Payments:** Telr (gateway, refunds, settlement)
 
 ---
 
@@ -160,223 +84,108 @@
 ### Workflow 1: Restaurant Low Stock → AI Cart → Approval → PO
 
 ```
-Low Stock Triggered
+Low Stock Triggered (POS Webhook / Cron)
     ↓
-Inventory Agent: Fetch current levels, par, lead time
+Inventory Agent: Fetch current levels, par, lead times
     ↓
 Catalog Agent: Normalize SKU names, search equivalents
     ↓
-Sourcing Agent: Compare 3 suppliers, rank by price
+Sourcing Agent: Compare suppliers, rank by price + quality
     ↓
 Purchasing Agent: Draft cart with quantities & reasoning
     ↓
 Pydantic Validation: Ensure data integrity
     ↓
-Human Approval: Manager reviews (can edit or reject)
+Dashboard Notification: "Cart Ready" badge
     ↓
-PO Created: Send to supplier via Poppel/WhatsApp
+Manager Approval: Reviews on Web Dashboard (can edit/reject)
     ↓
-GRN Scheduled: Reminder set for delivery
+PO Created: Sent to Supplier Portal
+    ↓
+GRN Scheduled: Mobile App reminder set for delivery
 ```
 
-See detailed flows in: **[Detailed Flows](detailed-flows.md)**
+> 📖 See: **[Detailed Flows — Smart Cart Generation](detailed-flows.md#2-smart-cart-generation-flow)**
 
 ### Workflow 2: Supplier Autonomous Sales Agent
 
 ```
 Trigger Event:
-  - Quote request from chef
-  - Predictive order signal
-  - Flash deal opportunity
-  - POS depletion alert
+  - Quote request from restaurant dashboard
+  - Predictive order signal (POS depletion)
+  - Flash deal opportunity (distressed inventory)
     ↓
-Agent Perception: Intent classification, sentiment, menu parsing
+Agent Perception: Intent classification, menu parsing
     ↓
 Decision Engine: Price authority check, margin calculation
     ↓
 Offer Generation:
   - Quote: <3 second response, within guardrails
-  - Predictive draft: Smart substitutes, cheaper alternatives
   - Flash deal: Menu-matched, scarcity-driven
     ↓
-WhatsApp Interactive: Action buttons, 1-tap acceptance
+Dashboard Notification: Offer pushed to Restaurant Dashboard
     ↓
 Auto-Confirm PO: Reserve stock, generate E-Invoice
     ↓
+Attribution: Revenue credited to territory owner (Sales Rep)
+    ↓
 Upsell Check: Bundle recommendations (protect margin)
-    ↓
-Payment Link: Instant e-invoice via Poppel + Telr
 ```
 
-See detailed flows in: **[Autonomous Sales Agent](autonomous_sales_agent.md)**
+> 📖 See: **[Detailed Flows — Quote & Negotiation](detailed-flows.md#3-quote--negotiation-flow)**
 
-### Workflow 3: Invoice Reconciliation (2-Way / 3-Way Match)
+### Workflow 3: Invoice Reconciliation (3-Way Match)
 
 ```
-Invoice Uploaded (PDF)
+Invoice Uploaded (PDF via Dashboard) + GRN Submitted (Mobile App)
     ↓
-OCR Extraction (AWS Textract / Google Document AI)
+Compliance Agent: Compare PO vs GRN vs Invoice line items
     ↓
-LLM Parsing: Extract line items, quantities, prices
+Match Result:
+  ├─ ✅ All match → Auto-approve payment
+  └─ ⚠️ Variance → Exception alert on Dashboard
     ↓
-2-Way Match: PO Qty = Invoice Qty?
-    ├─ ✅ YES → Approve payment
-    └─ ❌ NO → Check GRN
-    ↓
-3-Way Match: PO vs GRN vs Invoice
-    ├─ Short delivery? → Flag shortage
-    ├─ Quality issue? → Photo evidence review
-    ├─ Overcharge? → Flag price variance
-    └─ Match resolved → Approve payment
-    ↓
-Dispute (if needed): Contact supplier, request credit memo
+Resolution: Manager reviews in Sideover (approve/dispute)
     ↓
 Audit Log: All steps recorded, immutable
 ```
 
-See detailed flows in: **[Architecture & Flows](architecture-and-flows.md)**
+> 📖 See: **[Detailed Flows — 3-Way Invoice Matching](detailed-flows.md#4-3-way-invoice-matching-flow)**
 
 ---
 
-## 🛠️ Key Technologies
-
-| Component | Technology | Why? |
-|---|---|---|
-| **Backend** | Node.js + TypeScript | Type-safe, async-first, REST + GraphQL |
-| **Commerce** | MedusaJS 2.0 | Open-source B2B, extensible, event-driven |
-| **AI Orchestration** | LangGraph | Stateful agents, human-in-the-loop, tool calling |
-| **Frontend** | Next.js 14+ | SSR, App Router, TypeScript, mobile-ready |
-| **Database** | PostgreSQL 15+ | ACID, JSON support, replication |
-| **Vector DB** | Weaviate | Semantic search, clustering, managed cloud |
-| **Cache/Queue** | Redis + BullMQ | Real-time, job processing, event streaming |
-| **LLM** | OpenAI GPT-4 | Reasoning, attribute extraction, negotiation |
-| **Embeddings** | OpenAI text-embedding-ada-002 | 1536-dim semantic vectors |
-| **OCR** | AWS Textract | Invoice & document extraction |
-| **Container** | Docker + ECS/Fargate | Serverless containers, auto-scaling |
-| **Orchestration** | Kubernetes (optional) | For agent mesh scaling |
-| **Monitoring** | Datadog | APM, logs, alerts, dashboards |
-| **E-Invoicing** | Poppel Network | FTA compliance, ZATCA integration |
-
----
-
-## 🌐 External API Integrations
-
-### POS Systems
-- **Foodics** — OAuth 2.0, fetch orders/inventory, webhooks
-- **Oracle Simphony** — STSG2 REST API, recipe-based depletion
-- **Generic** — CSV upload, scheduled ETL
-
-### Payment & Invoicing
-- **Telr** — Payment gateway, refunds, settlement
-- **Poppel Network** — E-Invoice generation, FTA compliance, ZATCA
-- **SendGrid** — Email delivery
-- **Twilio** — SMS & WhatsApp
-
-### Document Processing
-- **AWS Textract** — Invoice OCR, expense extraction
-- **Google Document AI** — Invoice parser, fallback
-
----
-
-## 🔐 Security & Compliance
-
-### Data Protection
-- **Encryption at Rest**: S3, RDS, Redis (all encrypted)
-- **Encryption in Transit**: TLS 1.3 for all APIs
-- **Key Management**: AWS KMS for master keys, annual rotation
-
-### Compliance
-- **UAE E-Invoicing**: FTA/ZATCA XML + PDF generation via Poppel
-- **GDPR**: If EU data, full compliance mode
-- **PCI-DSS**: Payment handling via Telr (no card storage)
-- **Audit Logs**: Every agent action logged, immutable, 3-year retention
-
-### Access Control
-- **JWT + RBAC**: Role-based access control (Admin, Manager, Storekeeper, etc.)
-- **Multi-Factor Auth**: Optional via Okta/Auth0
-- **WAF**: AWS Web Application Firewall + CloudFlare
-
----
-
-## 📈 Performance Metrics
-
-### System Health
-- **API Response Time**: <200ms (p95)
-- **Database Query Latency**: <50ms (p95)
-- **Event Queue Lag**: <1s
-- **Service Uptime**: 99.9% SLA
-
-### Business Metrics
-- **AI Cart Generation**: <30 seconds
-- **Autonomous Sales Response**: <3 seconds
-- **Invoice Matching Accuracy**: >99%
-- **Order Processing Time**: <5 minutes (end-to-end)
-
-### Agent Performance
-- **Agent Execution Latency**: 1-5s (depending on complexity)
-- **Tool Call Success Rate**: >99%
-- **Approval Wait Time**: Avg 15 min (manager action)
-
----
-
-## 📚 Document Structure
+## 📚 Document Map
 
 ```
 docs/
-├── complete-architecture-visual.md     ⭐ START HERE
-│   └── System layers, agents, integrations, flows
-├── deployment-infrastructure.md        ⭐ FOR DEVOPS
-│   └── Cloud setup, K8s, security, disaster recovery
-├── system-specification.md             📋 EXECUTIVE SUMMARY
-│   └── Strategy, business value, platform vision
-├── medusajs-architecture.md            🏗️ BACKEND
-│   └── MedusaJS 2.0, custom modules, LangGraph
-├── agentic-architecture.md             🤖 AI AGENTS
-│   └── Multi-agent design, ReAct patterns, tools
-├── autonomous_sales_agent.md           🎯 SALES AGENT
-│   └── Instant-close, negotiation, upsell logic
-├── architecture-and-flows.md           🔄 WORKFLOWS
-│   └── System flows, approval workflows, data flows
-├── data-model.md                       💾 DATA
-│   └── ER diagram, Pydantic schemas, state machines
-├── detailed-flows.md                   📝 IMPLEMENTATION
-│   └── Step-by-step catalog, cart, GRN, invoice flows
-├── system-design-deep-dive.md          🔍 DETAILED ANALYSIS
-│   └── Journey mapping, algorithms, technical logic
-└── architecture-diagrams.md            📊 SIMPLE DIAGRAMS
-    └── MVP flow, normalization, SKU matching (legacy)
+├── CONSOLIDATED-SYSTEM-DESIGN.md   ⭐ SOURCE OF TRUTH
+│   └── Executive summary, user journeys, architecture, agent specs
+├── user-journeys.md                👤 USER JOURNEYS
+│   └── Restaurant, Supplier, Sales Rep journeys (before/after)
+├── architecture-and-flows.md       🏗️ ARCHITECTURE
+│   └── System diagram, multi-agent workflow, data flows
+├── system-specification.md         📋 SPECIFICATION
+│   └── Strategy, tech stack, personas, modules, security
+├── agent-reference.md              🤖 AGENT REFERENCE
+│   └── All 9 agents with tools, triggers, guardrails
+├── detailed-flows.md               📝 IMPLEMENTATION FLOWS
+│   └── Step-by-step: SKU normalization, cart, negotiation, matching
+├── IMPLEMENTATION-GUIDE.md         🚀 ROADMAP
+│   └── 7-step procurement journey, implementation phases
+├── complete-architecture-visual.md 📊 VISUAL OVERVIEW
+│   └── System layers, agents, integrations
+├── medusajs-architecture.md        🏗️ BACKEND
+│   └── MedusaJS 2.0, custom modules
+├── agentic-architecture.md         🤖 AI PATTERNS
+│   └── Multi-agent design, ReAct patterns
+├── data-model.md                   💾 DATA MODEL
+│   └── ER diagram, Pydantic schemas
+└── deployment-infrastructure.md    ☁️ DEVOPS
+    └── Cloud setup, security, DR
 ```
 
 ---
 
-## 🚀 Deployment Checklist
-
-- [ ] **Infrastructure**: AWS account, VPC, RDS, S3, ECS setup
-- [ ] **Secrets**: Environment variables, API keys in AWS Secrets Manager
-- [ ] **Database**: PostgreSQL primary + replicas, backups configured
-- [ ] **Cache**: Redis cluster, BullMQ setup
-- [ ] **Vector DB**: Weaviate cloud instance, embeddings pipeline
-- [ ] **External APIs**: Poppel, Telr, Foodics API keys configured
-- [ ] **Monitoring**: Datadog agent deployed, dashboards created
-- [ ] **Security**: WAF, SSL certificates, KMS keys, audit logging
-- [ ] **CI/CD**: GitHub Actions, Docker builds, ECR registry
-- [ ] **Testing**: Unit, integration, E2E test suites passing
-- [ ] **Documentation**: Runbooks, API docs, operator guides
-
----
-
-## 💬 Support & Questions
-
-For questions about:
-- **Architecture**: See `complete-architecture-visual.md`
-- **Deployment**: See `deployment-infrastructure.md`
-- **API Design**: See `medusajs-architecture.md`
-- **AI Agents**: See `agentic-architecture.md` + `autonomous_sales_agent.md`
-- **Data Models**: See `data-model.md`
-- **Workflows**: See `detailed-flows.md` + `architecture-and-flows.md`
-
----
-
-**Last Updated**: February 2026  
-**Platform Version**: 2.0  
+**Last Updated**: February 2026
+**Platform Version**: 2.0 (Web-Only)
 **Status**: Production-Ready Architecture
