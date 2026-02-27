@@ -485,19 +485,118 @@ function buildIncomingPOs() {
 
 function buildCatalogManagement() {
   const gCols = '1.5fr 1fr 1fr .8fr .8fr 1fr';
-  const tools = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><input type="text" class="input" placeholder="Search products..." style="width:250px"><button class="btn btn-primary">+ Add Product</button></div>`;
-  const products = [
-    ['Premium Beef Tenderloin', 'Meat', 'AED 95.00/kg', 'b-green', 'In Stock (450kg)', '<button class="btn btn-outline" style="font-size:11px;padding:4px 8px">Edit</button>'],
-    ['Fresh Atlantic Salmon', 'Seafood', 'AED 82.50/kg', 'b-green', 'In Stock (120kg)', '<button class="btn btn-outline" style="font-size:11px;padding:4px 8px">Edit</button>'],
-    ['Basmati Rice (Gold)', 'Dry Goods', 'AED 8.50/kg', 'b-amber', 'Low Stock (50kg)', '<button class="btn btn-outline" style="font-size:11px;padding:4px 8px">Edit</button>'],
-    ['Olive Oil Extra Virgin', 'Oils', 'AED 34.00/L', 'b-green', 'In Stock (200L)', '<button class="btn btn-outline" style="font-size:11px;padding:4px 8px">Edit</button>'],
-    ['Yellow Onions', 'Vegetables', 'AED 4.50/kg', 'b-red', 'Out of Stock', '<button class="btn btn-outline" style="font-size:11px;padding:4px 8px">Edit</button>']
-  ];
+  const tools = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+    <input type="text" class="input" placeholder="Search products..." style="width:250px">
+    <div style="display:flex;gap:8px">
+      <input type="file" id="catalogUploadFile" accept=".csv" style="display:none" onchange="uploadCatalogFile(this)">
+      <button class="btn btn-outline" onclick="document.getElementById('catalogUploadFile').click()">📤 Upload CSV</button>
+      <button class="btn btn-primary">+ Add Product</button>
+    </div>
+  </div>`;
+
+  // Schedule the load right after the DOM updates
+  setTimeout(loadSupplierCatalog, 50);
+
   return `${tools}
+    <div id="uploadStatus" style="display:none;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;"></div>
     <div class="card mb24"><div class="card-title">📖 Product Catalog</div>
-      <div class="tbl"><div class="tbl-row tbl-head" style="grid-template-columns:${gCols}"><span>Product Name</span><span>Category</span><span>Base Price</span><span>Status</span><span>Inventory</span><span>Action</span></div>
-      ${products.map(r => tblRow([`<b>${r[0]}</b>`, r[1], r[2], `<span class="badge ${r[3]}">${r[4].split(' ')[0]} ${r[4].split(' ')[1] || ''}</span>`, `<span style="font-size:12px;color:var(--fg-muted)">${r[4]}</span>`, r[5]], gCols)).join('')}</div>
+      <div class="tbl" id="catalogTableContainer">
+        <div style="padding: 20px; text-align: center; color: var(--fg-muted)">⏳ Loading live catalog data from database...</div>
+      </div>
     </div>`;
+}
+
+async function loadSupplierCatalog() {
+  const container = document.getElementById('catalogTableContainer');
+  if (!container) return;
+  const supplierId = '75d19db2-5b9e-4e40-b6bc-edab30d5271a'; // Hardcode EuroProduce for testing
+  try {
+    const res = await fetch(`https://txllsqeqlsabcfnhzmhf.supabase.co/functions/v1/get-catalog?supplier_id=${supplierId}`);
+    if (!res.ok) throw new Error('Fetch failed');
+    const { items } = await res.json();
+
+    const gCols = '1.5fr 1fr 1fr .8fr .8fr 1fr';
+    let html = `<div class="tbl-row tbl-head" style="grid-template-columns:${gCols}"><span>Product Name</span><span>SKU</span><span>Price</span><span>AI Status</span><span>Pack Details</span><span>Action</span></div>`;
+
+    if (items.length === 0) {
+      html += `<div style="padding:20px; text-align:center; color:var(--fg-muted)">No items found. Upload a CSV catalog to get started.</div>`;
+    } else {
+      html += items.map(r => {
+        let aiBadge = r.normalization_status === 'pending' ? 'b-amber' : 'b-green';
+        let aiText = r.normalization_status === 'pending' ? '⏳ Normalizing' : '✅ Verified';
+        return tblRow([
+          `<b>${r.name}</b>`,
+          `<span style="font-size:12px;color:var(--fg-muted)">${r.sku}</span>`,
+          `${r.unit_price} ${r.currency}`,
+          `<span class="badge ${aiBadge}">${aiText}</span>`,
+          `<span style="font-size:12px;color:var(--fg-muted)">${r.pack}</span>`,
+          '<button class="btn btn-outline" style="font-size:11px;padding:4px 8px">Edit</button>'
+        ], gCols);
+      }).join('');
+    }
+    container.innerHTML = html;
+  } catch (e) {
+    container.innerHTML = `<div style="padding:20px; color:var(--fg-muted)">Error loading catalog: ${e.message}</div>`;
+  }
+}
+
+async function uploadCatalogFile(input) {
+  if (!input.files || input.files.length === 0) return;
+  const file = input.files[0];
+  const stat = document.getElementById('uploadStatus');
+  stat.style.display = 'block';
+  stat.style.background = 'rgba(59,130,246,0.1)';
+  stat.style.color = '#2563eb';
+  stat.style.border = '1px solid rgba(59,130,246,0.2)';
+  stat.innerHTML = '⏳ Uploading and processing ' + file.name + '...';
+
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    // Hardcode the EuroProduce supplier UUID for testing the upload
+    const supplierId = '75d19db2-5b9e-4e40-b6bc-edab30d5271a';
+
+    const res = await fetch(`https://txllsqeqlsabcfnhzmhf.supabase.co/functions/v1/catalog-upload?supplier_id=${supplierId}`, {
+      method: "POST",
+      body: formData
+    });
+
+    const body = await res.json();
+
+    if (!res.ok) {
+      throw new Error(body.error || "Upload failed");
+    }
+
+    stat.style.background = 'rgba(245,158,11,0.1)';
+    stat.style.color = '#d97706';
+    stat.style.border = '1px solid rgba(245,158,11,0.2)';
+    stat.innerHTML = '⏳ Uploaded ' + body.count + ' items. Triggering AI Normalization Pipeline...';
+
+    // 2. Trigger test-pipeline to actually process the new pending rows
+    const pipeRes = await fetch('https://txllsqeqlsabcfnhzmhf.supabase.co/functions/v1/test-pipeline', {
+      method: 'POST'
+    });
+
+    if (!pipeRes.ok) {
+      throw new Error("AI Pipeline trigger failed");
+    }
+
+    const pipeBody = await pipeRes.json();
+
+    stat.style.background = 'rgba(16,185,129,0.1)';
+    stat.style.color = '#059669';
+    stat.style.border = '1px solid rgba(16,185,129,0.2)';
+    stat.innerHTML = '✅ Successfully processed and normalized ' + pipeBody.processed + ' items via AI!';
+
+    // 3. Refresh the live catalog view to show the new items
+    loadSupplierCatalog();
+  } catch (e) {
+    stat.style.background = 'rgba(239,68,68,0.1)';
+    stat.style.color = '#dc2626';
+    stat.style.border = '1px solid rgba(239,68,68,0.2)';
+    stat.innerHTML = '❌ Error: ' + e.message;
+  }
 }
 
 function buildPricingAgent() {

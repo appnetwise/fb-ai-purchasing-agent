@@ -66,26 +66,26 @@
 
         /* Marketplace */
         {
-            dur: 3500, narr: '🤝 Marketplace & RFQ — Ahmed needs to source a new supplier for frozen pastries.',
+            dur: 3500, narr: '🤝 Marketplace & RFQ — Ahmed needs to source a new supplier for Mozzarella Cheese.',
             fn() { showPanel('r-marketplace'); }
         },
 
         {
-            dur: 7000, narr: '📝 Creating a new RFQ is instant with AI assistance.',
+            dur: 7000, narr: '📝 Creating an RFQ with target price and consumption data.',
             fn() {
                 const btn = findInPanel('.btn-primary');
                 if (btn) simulateClick(btn);
                 openDemoModal('New Bulk RFQ', [
                     { label: 'Category / Item', placeholder: 'e.g., Seafood' },
-                    { label: 'Estimated Volume', placeholder: '' },
+                    { label: 'Estimated Volume (with Consumption)', placeholder: '' },
                     { label: 'Target Price (Optional)', placeholder: '' }
                 ], 'Submit RFQ');
 
                 setTimeout(() => {
-                    simulateTyping('demoInput0', 'Premium Frozen Pastries', 50).then(() => {
-                        return simulateTyping('demoInput1', '100 boxes/week', 50);
+                    simulateTyping('demoInput0', 'Mozzarella Cheese', 40).then(() => {
+                        return simulateTyping('demoInput1', '100 kg (Use: 25kg/wk)', 40);
                     }).then(() => {
-                        return simulateTyping('demoInput2', 'AED 45/box', 50);
+                        return simulateTyping('demoInput2', 'AED 30/kg', 40);
                     }).then(() => {
                         setTimeout(() => {
                             const modalBtn = document.getElementById('demoModalBtn');
@@ -97,7 +97,8 @@
                                 const newRow = document.createElement('div');
                                 newRow.className = 'tbl-row';
                                 newRow.style.gridTemplateColumns = '1.5fr 1fr 1fr 1fr 1.5fr';
-                                newRow.innerHTML = `<span><b>RFQ-903</b> (Premium Frozen Pastries)</span><span>Active</span><span>0 Quotes</span><span>Closes in 48h</span><span><button class="btn btn-outline" style="padding:4px 8px;font-size:11px" disabled>Awaiting Quotes</button></span>`;
+                                newRow.id = 'demo-rfq-row';
+                                newRow.innerHTML = `<span><b>RFQ-903</b> (Mozzarella Cheese)</span><span>Active</span><span id="demo-rfq-quotes">0 Quotes</span><span>Closes in 48h</span><span><button id="demo-rfq-btn" class="btn btn-outline" style="padding:4px 8px;font-size:11px" disabled>Awaiting Quotes</button></span>`;
                                 newRow.style.transition = 'background 0.3s';
                                 newRow.style.background = 'rgba(16,185,129,0.1)';
                                 const head = tbl.querySelector('.tbl-head');
@@ -111,6 +112,63 @@
                         }, 500);
                     });
                 }, 800);
+            }
+        },
+
+        {
+            dur: 4500, narr: '🤖 AI Normalization — Suppliers quote in different pack sizes. AI normalizes to AED/kg.',
+            fn() {
+                const quotes = document.getElementById('demo-rfq-quotes');
+                const btn = document.getElementById('demo-rfq-btn');
+                if (quotes) {
+                    quotes.innerHTML = '<span class="badge b-amber">2 Quotes</span>';
+                }
+                if (btn) {
+                    btn.textContent = 'Compare Quotes';
+                    btn.removeAttribute('disabled');
+                    btn.className = 'btn btn-primary';
+                    flashElements('#demo-rfq-row', 0);
+                }
+            }
+        },
+
+        {
+            dur: 6500, narr: '⚖️ Comparable Pricing — Supplier A quotes 10kg blocks (AED 32/kg). Supplier B quotes 5kg blocks (AED 28/kg).',
+            fn() {
+                const btn = document.getElementById('demo-rfq-btn');
+                if (btn) simulateClick(btn);
+
+                openDemoModal('Compare Normalized Quotes', [
+                    { label: 'Target Price: AED 30/kg', placeholder: '-', value: 'Supplier A: 10kg block @ AED 320 ➔ AED 32/kg (Above Target)' },
+                    { label: 'Target Price: AED 30/kg', placeholder: '-', value: 'Supplier B: 5kg block @ AED 140 ➔ AED 28/kg (Meets Target ✔)' }
+                ], 'Approve Supplier B');
+
+                setTimeout(() => {
+                    const inputs = document.querySelectorAll('.demo-modal input');
+                    if (inputs[0]) { inputs[0].style.color = '#ef4444'; inputs[0].style.fontWeight = 'bold'; }
+                    if (inputs[1]) { inputs[1].style.color = '#10b981'; inputs[1].style.fontWeight = 'bold'; }
+                }, 100);
+
+                setTimeout(() => {
+                    const modalBtn = document.getElementById('demoModalBtn');
+                    if (modalBtn) simulateClick(modalBtn);
+
+                    const row = document.getElementById('demo-rfq-row');
+                    if (row) {
+                        row.innerHTML = `<span><b>PO-4722</b> (Mozzarella - Supplier B)</span><span><span class="badge b-green">Awarded</span></span><span>AED 28/kg</span><span>Confirmed</span><span><button class="btn btn-outline" style="padding:4px 8px;font-size:11px" disabled>Track Order</button></span>`;
+                        row.style.transition = 'background 0.3s';
+                        row.style.background = 'rgba(16,185,129,0.1)';
+                        setTimeout(() => { row.style.background = ''; }, 1000);
+                    }
+                    setTimeout(closeDemoModal, 400);
+                }, 4000);
+            }
+        },
+
+        {
+            dur: 3500, narr: '✅ Supplier B is awarded the PO! Savings captured successfully.',
+            fn() {
+                flashElements('#demo-rfq-row', 0);
             }
         },
 

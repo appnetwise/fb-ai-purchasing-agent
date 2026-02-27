@@ -1,0 +1,880 @@
+ 
+
+Project x — AI Purchase Manager (Business Plan + Product Scope + Developer Execution Spec) 
+
+Page 1 
+
+AI Purchase Manager 
+Business Plan + Product Scope + Developer Execution Spec 
+UAE F&B; Procurement Marketplace with Inventory, Payments/Credit, and AI Autopilot 
+Prepared for: Product and Engineering Team 
+Date: January 24, 2026 
+
+Page 2 — Contents 
+
+ 
+
+Problem and Opportunity 
+
+ 
+
+Solution Overview (Closed-Loop Platform) 
+
+ 
+
+Target Users and Personas 
+
+ 
+
+Platform Scope and Modules 
+
+ 
+
+AI Layer: Where AI Reduces Operations 
+
+ 
+
+Competitors and Positioning 
+
+ 
+
+UX Design Blueprint (Key Screens) 
+
+ 
+
+Developer Delivery Plan (Phases and Acceptance Tests) 
+
+ 
+
+Release Schedule (2-week Sprint Plan) 
+
+Page 3 — 1. Problem and Opportunity 
+
+Restaurants today often run procurement and operations through fragmented channels (WhatsApp, calls, emails), which creates errors, delays, weak price transparency, and margin leakage, duplication invoices  
+
+ 
+Suppliers struggle with inconsistent order formats, slow confirmations, limited demand visibility, and payment friction. 
+
+AI Purchase Manager solves this by turning procurement into a controlled workflow and adding an AI layer that automates routine decisions while keeping humans in approval control. 
+
+Core pain points (restaurant side) 
+
+Scattered supplier lists and manual ordering cause wrong items, missing items, and delays. 
+
+Prices cannot be compared fairly because items differ by naming, unit, and pack size. 
+
+Manual back-office work: LPOs, invoice matching, approvals, chasing deliveries. 
+
+Inventory surprises (stockouts) and overbuying increase spoilage and waste. 
+
+Limited visibility into waste, variance, recipe inefficiencies, and true food cost. 
+
+Delivery tracking  
+
+Core pain points (supplier side) 
+
+Orders arrive through multiple channels, increasing mistakes and response time. 
+
+No unified dashboard of sales, customers, route performance, and product trends. 
+
+No commission structure for the sales representative  
+
+Inventory planning is difficult without demand forecasting. 
+
+Promotion is running manually and through WhatsApp groups  
+
+Payment delays and cashflow variability hurt SMEs. 
+
+2. Solution Overview (Closed-Loop Platform) 
+
+AI Purchase Manager is a full closed-loop operating system: 
+Discover → Compare → Order → Track → Receive → Invoice → Pay/Credit → Inventory depletion → Low stock → AI drafts next order → Manager approves → Waste insights → Forecast and planning 
+
+List/Promote → Identify target restaurants → Outreach (human-approved) → Quote/RFQ response → Convert to first order → Repeat ordering nudges → Promotions → Upsell/cross-sell → Commission payout 
+
+North Star outcome 
+Reduce kitchen and back-office workload while lowering food cost via autonomous purchasing and waste intelligence, without sacrificing control or compliance. 
+
+3. Target Users and Personas 
+
+Restaurant roles 
+
+Owner/GM: approvals, cost control, supplier performance, visibility across branches 
+
+Operations Manager: fast ordering, fewer mistakes, AI-prepared cart, delivery reliability 
+
+Head Chef/Kitchen Manager: stock accuracy, prep planning, waste reduction, recipe optimization 
+
+Receiver/Storekeeper: simple receiving (GRN), discrepancy claims, photo evidence 
+
+Finance/AP: invoice matching, payment scheduling, audit trail, credit terms 
+
+Supplier roles 
+
+Supplier Owner/GM: sales dashboards, forecasting, customer retention, cashflow visibility 
+
+Sales Rep: manage quotes, promotions, follow-ups, account performance 
+
+Dispatcher/Logistics: picking, routing, delivery proof, substitution handling 
+
+Supplier Finance: invoicing, collections, credit status 
+
+4. Platform Scope and Modules 
+
+A) Marketplace and Supplier Discovery 
+
+Supplier profiles (coverage, lead time, MOQ, payment terms, certifications/halal) 
+
+Structured product catalogs (category, brand, grade, origin, pack size, unit) 
+
+Search and filters; favorites and preferred suppliers 
+
+RFQ to multiple suppliers and quote comparison (normalized unit cost) 
+
+B) Ordering, Tracking, and Receiving (GRN) 
+
+Purchase order/LPO generation and approval routing 
+
+Order status tracking (confirmed, dispatched, delivered) 
+
+Receiving workflow (GRN): quantities, substitutions, quality notes, photos 
+
+Discrepancy and claim workflow; delivery proof (signature/photo) 
+
+C) Invoices, Matching, and Payables Control 
+
+Invoice upload + OCR extraction 
+
+2-way match (PO vs invoice) and 3-way match (PO vs GRN vs invoice) 
+
+Exceptions: overcharge, short delivery, duplicate invoice 
+
+Payment schedules and audit logs 
+
+D) Payments and Credit (partner-led) 
+
+Pay online (payment gateway integration) 
+
+Pay later/credit terms through regulated partners (phase-based rollout) 
+
+E) Inventory + Reorder System 
+
+Stock on hand, expiry/batch, location (dry/chiller/freezer) 
+
+Par levels and reorder points per branch 
+
+POS integration (preferred) or interim manual depletion 
+
+Reorder templates per branch and supplier; stock transfers 
+
+Maybe E and D can be done through integration with foodics  
+
+F) Waste and Variance Intelligence 
+
+Waste logging with reason codes 
+
+Theoretical vs actual variance (requires recipes + POS or production data) 
+
+Near-expiry action center and recommended corrective actions 
+
+Integrate or collaborate with waste management partners  
+
+G) Forecasting + Kitchen Planning 
+
+Demand forecasts by daypart/weekday/seasonality 
+
+Daily prep plans and batch suggestions 
+
+Menu engineering insights and surplus-based specials suggestions 
+
+H) Overseas Supplier Gateway (Phase 2) 
+
+Onboarding portal (documents, translation, compliance checklist) 
+
+Distributor matchmaking within the UAE 
+
+Aggregated demand insights for overseas suppliers 
+
+5. AI Layer: Where AI Reduces Operations 
+
+AI is implemented as four practical engines. Start with rules and heuristics, then evolve to ML once data is clean. 
+
+Engine 1: SKU Normalization and Comparable Pricing (Moat) 
+
+Parse supplier catalogs, invoices, and POs into Normalized SKU objects 
+
+Convert units and pack sizes to comparable unit economics 
+
+Build equivalency sets (same item, different pack; approved substitutes) 
+
+Outcome: true price comparison and fewer ordering errors 
+
+Engine 2: AI Autopilot Purchasing (AI Suggested Cart) 
+
+Predict run-rate per item using sales/consumption trends and lead times 
+
+Generate a suggested cart per branch (days of cover + safety stock) 
+
+Recommend supplier per item using price + reliability + lead time 
+
+Approval workflow: AI drafts, Ops Manager edits/approves, PO created 
+
+Learning loop: capture manager edits as feedback 
+
+Engine 3: Waste Intelligence + Corrective Actions 
+
+Detect anomalies (variance spikes, unusual waste patterns) 
+
+Root-cause hints: over-portioning, spoilage, receiving errors, spec drift 
+
+Recommend actions: prep plan changes, recipe substitutions, supplier swaps, promotions 
+
+Optional: internal branch transfer suggestions for near-expiry items 
+
+Engine 4: Kitchen Copilot (Daily Operations) 
+
+Auto-generate prep lists based on forecast + current stock + expiry priorities 
+
+Batch cooking suggestions and FEFO/FIFO prompts 
+
+Surplus-based recipe ideas (chef approves) 
+
+Supplier AI (to support suppliers) 
+
+Sales dashboards and forecasts by customer, category, and route 
+
+Item list enhancement: when the customer enters the items list (RFQ/purchase request), they can also add consumption (if available) and the target price required per item. 
+
+Slow-moving stock alerts and recommended promotions 
+
+Customer churn risk alerts (ordering frequency drops) 
+
+Route consolidation and dispatch insights 
+
+6. Competitors and Positioning 
+
+Competitors exist across procurement platforms, back-of-house suites, wholesale marketplaces, and distributor ordering portals. AI Purchase Manager wins by closing the loop from purchasing to consumption and waste reduction with an AI approval workflow. 
+
+Positioning statement: 
+AI Purchase Manager is the closed-loop operating system for restaurant procurement and kitchen operations, reducing workload and food cost with AI autopilot purchasing and waste intelligence. 
+
+7. UX Design Blueprint (Key Screens) 
+
+Restaurant app navigation 
+
+Home Dashboard: AI Suggested Cart (approve/edit), low stock alerts, deliveries arriving, invoices pending approval, spend trend, top cost increases 
+
+Marketplace: search/filters, supplier pages, comparable Normalized SKU view 
+
+RFQ/Quotes: RFQ basket, quote inbox, comparison screen (unit price, lead time, MOQ, delivery fee) 
+
+Orders: drafts, approvals, PO history, tracking timeline 
+
+Receiving (GRN): accept/substitute/reject, photos, discrepancy claim 
+
+Invoices & Payments: match status, pay now/schedule, credit terms (if enabled) 
+
+Inventory: stock on hand, expiry, par levels, transfers, adjustments 
+
+Waste & Insights: waste log, variance dashboard, AI recommendations 
+
+Forecast & Prep: forecast view, prep plan, surplus specials suggestions 
+
+Supplier app navigation 
+
+Home: orders to confirm/dispatch, overdue invoices, sales overview 
+
+Catalog: products, pricing, promotions, availability 
+
+Quotes: RFQs received, respond with price/lead time/substitutions 
+
+Orders & Dispatch: picking list, delivery schedules, proof of delivery 
+
+Analytics: sales by customer/category, top products, forecasting, AI promo suggestions 
+
+Admin console 
+
+Supplier verification and category permissions 
+
+Catalog QA (duplicates, unit mismatches), Normalized SKU tools 
+
+Dispute resolution center and support workflows 
+
+Platform analytics (response time, success rate, GMV), audit logs, role management 
+
+8. Developer Delivery Plan (Phases and Acceptance Tests) 
+
+Sprint 0: Foundation 
+
+Finalize PRD, user stories, and acceptance criteria 
+
+Confirm architecture and core data model (NormalizedSKU, PO, GRN, Invoice, Inventory, Recipes, Waste, Forecast) 
+
+Roles/permissions and audit logging 
+
+Integration approach (choose first POS integration and payment gateway) 
+
+Phase 1 (MVP 1): Marketplace + RFQ + Orders 
+
+Supplier onboarding + catalog upload (CSV + UI) 
+
+Restaurant onboarding + roles 
+
+Marketplace search/browse and RFQ to multiple suppliers 
+
+Quote response and comparison; basic normalization rules 
+
+PO/LPO generation and order tracking statuses 
+
+Acceptance: RFQ 3 suppliers, compare quotes, create PO, track status 
+
+Phase 2 (MVP 2): Receiving + Invoices + Disputes 
+
+GRN receiving workflow with substitutions and photo evidence 
+
+Invoice upload + OCR extraction 
+
+2-way and 3-way matching and exception flags 
+
+Claims/dispute workflow 
+
+Acceptance: short delivery/overcharge detected and resolved 
+
+Phase 3 (MVP 3): Inventory + Low Stock Triggers 
+
+Inventory module (stock on hand, expiry, par levels) 
+
+Depletion: POS integration preferred; interim manual depletion supported 
+
+Low stock alerts and reorder templates per branch/supplier 
+
+Acceptance: low stock triggers reorder suggestions 
+
+Phase 4: AI Purchase Manager v1 (Autopilot Cart + Approvals) 
+
+Rules-based suggested cart (days of cover + lead time + safety stock) 
+
+Approval workflow (AI drafts, manager approves, PO created) 
+
+Explainability (why this quantity) + feedback capture 
+
+Acceptance: AI drafts cart, manager approves, PO generated; edits saved 
+
+Phase 5: Waste + Forecast + Kitchen Copilot 
+
+Waste logging + variance engine (theoretical vs actual) 
+
+Forecasting baseline and prep plan generator 
+
+AI corrective actions and surplus recipe suggestions 
+
+Phase 6: Payments/Credit + Overseas Supplier Portal 
+
+Pay online and settlement tracking 
+
+Partner-led credit terms integration 
+
+Overseas supplier onboarding, compliance checklist, distributor matchmaking, demand insights 
+
+9. Release Schedule (2-week Sprint Plan) 
+
+Sprint 0: Foundation → PRD, architecture, data model, roles, audit logs 
+
+Sprints 1–3: Marketplace + RFQ + Orders → MVP 1 live (RFQ, quotes, PO, tracking) 
+
+Sprints 4–5: Receiving + Invoices → MVP 2 live (GRN + invoice matching) 
+
+Sprints 6–7: Inventory + Low Stock → MVP 3 live (inventory + reorder templates) 
+
+Sprints 8–9: AI Cart + Approvals → AI Purchase Manager v1 (autopilot cart) 
+
+Sprints 10–11: Waste + Variance + Actions → waste intelligence + recommended actions 
+
+Sprints 12+: Payments/Credit + Overseas Portal → payment flows + partner credit + cross-border onboarding 
+
+Non-negotiable design decisions (to avoid rebuilds) 
+
+Normalized SKU layer is mandatory for comparable pricing 
+
+GRN (receiving) is the truth, not the supplier invoice 
+
+All financial actions must be audit logged 
+
+AI must be explainable and always allow human override 
+
+Pick one POS integration first; perfect it; then expand 
+
+References (public competitor sites) 
+
+Watermelon Ecosystem — https://watermelon.market/ 
+
+KASO — https://www.kaso.ai/ 
+
+Supy — https://supy.io/ 
+
+MarketMan — https://www.marketman.com/ 
+
+Foodics — https://www.foodics.com/ 
+Note: URLs are provided for context. Feature coverage varies by market and customer segment. 
+
+Shape 
+
+How restaurants & suppliers typically work today (the “current process”) 
+
+Restaurant (buyer) flow — what actually happens in most places 
+
+Planning / “what we need” 
+Chef/Ops checks yesterday’s sales + a quick look in chiller/freezer + Excel/notes (often not real-time). 
+
+Ordering (fragmented) 
+Orders go out by WhatsApp / phone calls / voice notes / photos of order guides / email to multiple suppliers. 
+Same item may be named differently per supplier, so comparisons are messy. 
+
+Supplier confirmation 
+Confirmation is often manual: “ok available / not available / substitute?” in WhatsApp. 
+
+Delivery & receiving (truth moment) 
+Receiver checks cartons quickly; shortages/substitutions happen. 
+Many restaurants don’t create a structured GRN (Goods Received Note) with photo evidence and discrepancy logging. 
+
+Invoice handling 
+Paper invoice comes with the driver or later by email. 
+Finance manually files it, checks it (sometimes late), and chases missing invoices. 
+
+Payment & credit 
+Payment is bank transfer / cash / cheque / post-dated. Credit terms exist but tracking is manual. 
+
+Inventory & waste 
+Inventory counts happen weekly/monthly; waste is logged inconsistently (if at all). 
+So “true food cost” and variance are often unknown until it’s too late. 
+
+Shape 
+
+Supplier (seller) flow — how they operate now 
+
+Order intake is multi-channel 
+Orders arrive via WhatsApp, calls, email, reps, sometimes handwritten—creating errors + retyping. 
+
+Picking, packing, dispatch 
+Warehouse builds picking list manually, substitutes on the fly, then sends driver. 
+
+Proof of delivery 
+Often just a signature, sometimes nothing structured and no tracking of delivery  
+
+Invoicing & collections 
+Invoices are generated, then collections are chased manually; credit exposure is hard to see. 
+
+Sales reps & growth 
+Reps manage accounts in their heads/WhatsApp, with no clean CRM, weak lead lists, and promotions done via WhatsApp groups. 
+
+That’s why your closed-loop concept is strong: it replaces “chat chaos” with a controlled workflow. 
+
+Shape 
+
+2) Platforms already solving (or trying to solve) similar problems 
+
+A) Middle East restaurant ↔ supplier ordering / marketplace platforms 
+
+These focus on digitizing ordering + connecting restaurants & suppliers (often with finance add-ons): 
+
+KASO (UAE/KSA): positioning as a procurement platform connecting restaurants & suppliers, digitizing ordering and helping suppliers “boost sales” and access new restaurant customers.  
+
+Watermelon Market / Watermelon Ecosystem: marketplace + broader ecosystem (ordering, supplier network, finance, POS, SaaS/analytics).  
+
+What they’re best at: replacing WhatsApp ordering with structured ordering + supplier discovery (plus optional finance services). 
+
+Shape 
+
+B) Back-of-house procurement, inventory, costing (restaurant operator control) 
+
+These focus on internal control: purchasing workflows, inventory, recipe costing, variance, approvals. 
+
+Supy: procurement workflows (requisitions, approvals, POs) + inventory/analytics for multi-branch operators.  
+
+MarketMan: purchasing + inventory management + vendor management; emphasizes reducing manual ordering and improving visibility.  
+
+Craftable: hospitality back-office (purchasing, inventory, invoicing, recipe/menu costing) and has been pushing invoice automation.  
+
+Apicbase: “AI-native” back-of-house OS for larger/multi-site; connects recipes, purchasing, inventory, COGS and pushes automated purchasing/forecasting.  
+
+What they’re best at: food-cost control, inventory discipline, approvals, variance tracking—less about being a UAE marketplace. 
+
+Shape 
+
+C) Distributor / wholesale ecommerce platforms (supplier growth + ordering) 
+
+These are built heavily for distributors/suppliers to reduce order errors and improve sales operations: 
+
+Choco: positions as a growth platform for food distributors/wholesalers; also has a restaurant ordering app to streamline supplier orders.  
+
+Cut+Dry: ordering from contracted suppliers + order guides + invoice/bill pay tools; strong “operator ordering” experience.  
+
+BlueCart: vendor platform + marketplace angle; tools for vendors to access buyers and streamline processes.  
+
+What they’re best at: supplier ecommerce, catalog ordering, reducing order errors, improving distributor sales efficiency. 
+
+Shape 
+
+D) POS / RMS suites that include purchasing/inventory modules (not marketplaces) 
+
+These are “systems of record” restaurants already use. 
+
+Foodics: provides inventory/purchasing capabilities and BI dashboards for purchasing analysis.  
+
+Oracle Simphony: inventory management modules with structured ordering/receiving workflows.  
+
+What they’re best at: core restaurant ops + integrations; not always great at supplier discovery or AI-driven procurement workflows out of the box. 
+
+Shape 
+
+3) Where the “gap” still exists (your best opportunity) 
+
+Most solutions do one of these well: 
+
+Marketplace ordering (A/C) OR 
+
+Internal back-office control (B) OR 
+
+POS/RMS operations (D) 
+
+AI Purchase Manager becomes dangerous when it truly closes the loop: 
+
+GRN as truth + SKU normalization (so pricing comparisons are real, and invoice errors are caught) 
+
+Inventory depletion → low stock → AI suggested cart → approvals (operator control) 
+
+Supplier AI Sales Manager (CRM + commissions + outreach + promo engine) — very few do this deeply in a UAE-native way 
+
+--------------------------------------------------------------------------------------------------------------------- 
+
+Who solves what today (market map) 
+
+1) Marketplace + ordering (two-sided: restaurants ↔ suppliers) 
+
+These platforms mainly replace WhatsApp ordering with structured ordering + supplier discovery: 
+
+KASO: marketplace + chat/ordering + tracking + LPOs; positioned for both restaurants and suppliers and mentions credit facilities / getting paid in advance.  
+
+Watermelon Ecosystem: marketplace + local sourcing + “order & invoice management” + finance + POS + marketing services (as an ecosystem).  
+
+BlueCart: vendor order management + marketplace angle, plus bill pay (BlueCart Pay).  
+
+Cut+Dry: ordering from suppliers + order guides + centralized invoice/bill pay.  
+
+What they’re trying to solve: ordering friction, supplier discovery, faster confirmation, and (in some cases) payments/working capital.  
+
+Shape 
+
+2) Restaurant back-office control (procurement, inventory, costing, variance) 
+
+These are built to control food cost and operations (often not a marketplace): 
+
+Supy: end-to-end procurement (requisitions/approvals/POs) + invoice AI scanning/matching and “AI-powered recommendations” messaging.  
+
+MarketMan: POs + receiving, price tracking/alerts, inventory; mentions “AI ordering” as an add-on and invoice management.  
+
+Apicbase: “AI-native back-of-house OS” connecting recipes, purchasing, inventory, and COGS (built for multi-site).  
+
+Crunchtime: inventory + forecasting and purchasing language, plus enterprise controls.  
+
+Oracle Restaurants Inventory Management: purchasing/receiving/stock management + recipe/product costing in an enterprise system.  
+
+Foodics (POS ecosystem): has purchase order workflows inside its inventory/accounting modules.  
+
+Appendix: Demo Access, KYC, Item Inputs, and Sales Executive Attribution 
+
+A1. 72-Hour Demo Access (Username + Password Only) 
+
+Objective: Allow a restaurant/business owner to explore all platform features using a time-limited demo account (valid for 72 hours) with virtual items and virtual prices. 
+
+Sequence 
+
+1. Owner creates demo credentials (username + password). Optional: business name, owner name, email/phone. 
+
+2. System provisions a demo tenant (demo restaurant workspace) and loads a demo dataset: virtual catalog (SKUs), virtual suppliers, and virtual pricing (optional sample history/analytics). 
+
+3. User can navigate all modules and simulate RFQs/orders. Any submit action is simulation only (no messages sent to suppliers; no real transactions). 
+
+4. Demo expires 72 hours from creation. After expiry the account is locked (or read-only) with a prompt to convert to live. 
+
+Rules 
+
+• All demo data must be isolated from live tenants and clearly labeled as Virtual/Demo. 
+
+• Demo mode must not allow live supplier communication, real ordering, invoicing, payments, or credit features. 
+
+A2. KYC Flow (Conversion from Demo to Live) 
+
+Objective: Verify the restaurant/business identity and authorized signatory before enabling live transactions. 
+
+KYC statuses and access 
+
+• Demo (No KYC): Full navigation with virtual data; simulation only. 
+
+• KYC Started/Pending: Drafting and setup allowed; live sending/ordering can be restricted until approval (configurable policy). 
+
+• KYC Approved: Full live access. 
+
+• KYC Rejected/Expired: Live actions restricted; user prompted to resubmit. 
+
+Step-by-step sequence 
+
+1. Trigger: KYC starts when the user selects Convert to Live or Enable Live Ordering. 
+
+2. Business details: legal name, trade license number, address/emirate, VAT/TRN (if applicable), authorized signatory (name, mobile, email). 
+
+3. Document upload (minimum set): Trade License (valid), Emirates ID/Passport (authorized signatory), VAT certificate (if applicable). Optional: proof of address, bank letter/IBAN, MOA (as required). 
+
+4. Verification: automated checks (optional) + manual review by admin/compliance. 
+
+5. Decision: Approved / Needs More Info / Rejected (include reason codes and reviewer notes). 
+
+6. Renewal: trade license expiry reminders; re-KYC/renewal flow where required. 
+
+Security and audit 
+
+• Store KYC documents encrypted at rest. 
+
+• Log every access to KYC documents (who viewed, when). 
+
+• Apply a retention policy based on compliance requirements. 
+
+A3. Item List Inputs Update (Consumption + Target Price) 
+
+Requirement: When the customer enters the items list (RFQ / purchase request / basket), they can also add consumption (if available) and the target price required per item. 
+
+Behavior 
+
+• Each line item supports: item name/SKU, unit, quantity, consumption (optional), and target price (optional). 
+
+• Quote comparison shows supplier quoted price vs target price, variance (amount/%), and a meets-target indicator. 
+
+A4. Sales Executive Mapping + Target Attribution 
+
+Objective: Link each restaurant to the relevant supplier/territory sales representative so sales are attributed to that representative and reflected in their targets. 
+
+Relationship model 
+
+• Preferred: Restaurant + Supplier -> Assigned Sales Executive (recommended to support different reps per supplier). 
+
+• Alternative: Restaurant -> Default Sales Executive (if the business uses one rep for the territory across suppliers). 
+
+Attribution rule 
+
+• Every RFQ, quote, order, and confirmed purchase stores RestaurantID, SupplierID, and SalesExecID (from mapping). 
+
+• Sales reporting and target tracking roll up by SalesExecID (by period, supplier, and restaurant). 
+
+Contact surface (optional) 
+
+• Restaurant profile displays assigned sales executive contact details (phone/WhatsApp). 
+
+• Optional notifications to sales executive for new RFQs/orders in their accounts. 
+
+ 
+
+Product Bundles (3 Tiers) 
+
+1) Starter — Purchasing Digitization 
+
+Ideal for: Single-location restaurants and small teams. 
+
+Includes 
+
+Restaurant onboarding and profile setup 
+
+Supplier directory and contact management 
+
+Item list / basket creation 
+
+RFQ creation and supplier quote comparison 
+
+Item-level inputs: Consumption (optional) and Target Price (optional) 
+
+Basic analytics (spend by supplier/item, top purchased items) 
+
+72-hour demo access (virtual items and virtual pricing) 
+
+ 
+
+2) Pro — Automation & Savings Control 
+
+Ideal for: Restaurants with frequent purchasing and approval needs. 
+
+Includes 
+
+All Starter features 
+
+Purchasing workflow and approvals (Owner/Manager permissions) 
+
+Consumption-driven insights (projected spend, reorder planning) 
+
+Price variance alerts vs Target Price 
+
+Price change tracking vs previous purchases (if purchase history exists) 
+
+Supplier performance insights (response time, quote competitiveness) 
+
+Advanced reporting (savings vs target, category spend breakdown) 
+
+KYC flow to enable live purchasing features (per platform rules) 
+
+Shape 
+
+3) Enterprise — multi-branch + Sales Executive Attribution 
+
+Ideal for: Restaurant groups/chains and supplier-linked rollouts. 
+
+Includes 
+
+All Pro features 
+
+Multi-branch management and consolidated dashboards 
+
+Role-based access control (Owner, Finance, Branch Manager, etc.) 
+
+Sales executive mapping: Restaurant ↔ Supplier ↔ Sales Executive 
+
+Automatic attribution of RFQs, quotes, orders, and purchases to Sales Executives 
+
+Sales target and performance dashboards (by executive/territory/restaurant) 
+
+Supplier portal (optional enablement): RFQ handling, quotation management, pipeline tracking 
+
+Audit logs and enterprise administration controls 
+
+KYC administration console (review queue, approvals/rejections, renewal reminders) 
+
+ 
+
+Customer Onboarding Flow (Restaurant / Business Owner) 
+
+1) Entry & Account Creation 
+
+Customer lands on website/app → clicks Get Started 
+
+System asks customer to choose: 
+
+Start Demo (72 hours) or Create Live Account 
+
+Customer creates Username + Password 
+
+System creates the account and assigns a workspace (restaurant tenant) 
+
+Shape 
+
+2) Basic Restaurant Setup (Required for both Demo & Live) 
+
+Customer enters restaurant details: 
+
+Restaurant name, branch name (if any) 
+
+Location/area, delivery address 
+
+Contact person name + mobile/email 
+
+System sets default preferences: 
+
+Currency (AED), language, units of measure 
+
+Customer selects categories they purchase (e.g., meat, poultry, veg, packaging) 
+
+Shape 
+
+3) Demo Path (If customer chose “Start Demo”) 
+
+System loads Demo Dataset into the workspace: 
+
+Virtual suppliers + contacts 
+
+Virtual items + virtual prices 
+
+Customer is guided through a short walkthrough: 
+
+Create item list → add consumption & target price → compare suppliers 
+
+Customer can explore all features with simulation-only transactions 
+
+Demo countdown shows time remaining (72 hours) 
+
+Customer sees CTA at key points: Convert to Live 
+
+Shape 
+
+4) Live Path (If customer chose “Create Live” OR converted from Demo) 
+
+System starts KYC case (status: Pending) 
+
+Customer completes KYC form: 
+
+Legal business name 
+
+Trade license number + expiry date 
+
+Address / emirate / VAT TRN (if applicable) 
+
+Authorized signatory info 
+
+Customer uploads documents: 
+
+Trade license 
+
+Emirates ID/passport (authorized signatory) 
+
+VAT certificate (if applicable) 
+
+Optional: bank/IBAN proof, MOA, proof of address 
+
+Customer submits → receives confirmation + status tracking 
+
+Shape 
+
+5) Admin Review & Activation 
+
+Admin/compliance reviews KYC 
+
+Decision: 
+
+Approved → live features unlocked immediately 
+
+More info required → customer receives checklist to resubmit 
+
+Rejected → customer receives reason + option to resubmit 
+
+After approval: 
+
+Customer receives “Account Activated” notification 
+
+Shape 
+
+6) Supplier Setup & Sales Executive Linking (Live) 
+
+Customer adds suppliers (or selects from marketplace list) 
+
+System/admin assigns sales executive per supplier to that restaurant: 
+
+Restaurant ↔ Supplier ↔ Sales Executive (phone number) 
+
+The sales executive is visible inside the restaurant profile for quick contact 
+
+All orders/transactions are attributed to the mapped sales executive for targets 
+
+Shape 
+
+7) First Live Transaction (Success Moment) 
+
+Customer creates first item list / basket 
+
+Customer adds: 
+
+items + quantities 
+
+consumption (optional) 
+
+target price required (optional) 
+
+Customer sends RFQ → receives supplier quotes → compares → confirms purchase 
+
+System records spend, savings vs target, and sales attribution automatically 
+
+ 

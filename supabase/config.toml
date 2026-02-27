@@ -1,0 +1,77 @@
+
+[functions.catalog-upload]
+enabled = true
+verify_jwt = true
+import_map = "./functions/catalog-upload/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/catalog-upload/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/catalog-upload/*.html" ]
+
+[functions.normalize-sku]
+enabled = true
+verify_jwt = true
+import_map = "./functions/normalize-sku/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/normalize-sku/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/normalize-sku/*.html" ]
+
+[functions.match-skus]
+enabled = true
+verify_jwt = true
+import_map = "./functions/match-skus/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/match-skus/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/match-skus/*.html" ]
+
+[functions.manage-equivalences]
+enabled = true
+verify_jwt = true
+import_map = "./functions/manage-equivalences/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/manage-equivalences/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/manage-equivalences/*.html" ]
+
+[functions.sku-compare]
+enabled = true
+verify_jwt = true
+import_map = "./functions/sku-compare/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/sku-compare/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/sku-compare/*.html" ]
+
+[functions.test-pipeline]
+enabled = true
+verify_jwt = true
+import_map = "./functions/test-pipeline/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/test-pipeline/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/test-pipeline/*.html" ]
+
+[functions.get-catalog]
+enabled = true
+verify_jwt = true
+import_map = "./functions/get-catalog/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/get-catalog/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/get-catalog/*.html" ]
